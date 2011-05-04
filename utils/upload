@@ -1,0 +1,27 @@
+#!/bin/sh
+if [ $# -lt 1 ]
+then
+	#echo "Uploads files to caesar and outputs the link to it."
+	echo "Uploads files to pandora and outputs the link to it."
+	echo "(the link also goes into clipboard)"
+	echo ""
+	echo "Usage: upload [FILE]"
+	echo ""
+	exit 1
+fi
+
+if [ ! -f "$1" ]
+then
+	echo "File "$1" does not exist."
+	exit 1
+fi
+
+#echo -n http://rblaster.web.elte.hu/tmp/"$1" | xclip 2>/dev/null
+#echo -n http://rblaster.web.elte.hu/tmp/"$1" | xclip -sel clip 2>/dev/null
+#echo    http://rblaster.web.elte.hu/tmp/"$1"
+#scp "$@" rblaster@caesar.elte.hu:~/public_html/tmp/
+
+echo -n http://people.inf.elte.hu/rblaster/tmp/"$1" | xclip 2>/dev/null
+echo -n http://people.inf.elte.hu/rblaster/tmp/"$1" | xclip -sel clip 2>/dev/null
+echo    http://people.inf.elte.hu/rblaster/tmp/"$1"
+scp "$@" rblaster@pandora.inf.elte.hu:~/public/public_html/tmp/

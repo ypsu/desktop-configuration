@@ -1,0 +1,55 @@
+export EDITOR=vim
+export GIT_EDITOR="$EDITOR"
+HISTFILESIZE=1000000000
+HISTSIZE=1000000
+HISTTIMEFORMAT='%F %T '
+HISTCONTROL=ignoredups
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -lh'
+alias lt='ls --color=always -lht | head'
+alias grep='grep --color=auto'
+alias t='/home/rlblaster/.bin/t'
+alias okular='okular >/dev/null'
+alias 32=LD_LIBRARY_PATH=/opt/lib32/lib/
+alias ccat='pygmentize -f console256 -P bg=dark -P style=native'
+alias gp='gp -q'
+alias gdb='gdb -q'
+alias vim='vim --servername VIM_SERVER'
+alias vimr='vim --remote'
+
+function __print_colored_git_branch
+{
+	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /' | tr -d '\n'
+}
+
+if test $TERM = xterm; then
+	PS1='\[$(settitle "`pwd`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
+else
+	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
+fi
+
+export PATH=/home/rlblaster/.bin:$PATH:/sbin:/usr/local/bin:/opt/java/jre/bin:/opt/java/bin:/opt/kde/bin:/opt/skype
+export LESSCHARSET='utf-8'
+complete -cf man
+complete -cf info
+complete -cf sudo
+
+export PYTHONSTARTUP=/home/rlblaster/.pythonrc.py
+
+PAGER=vimpager
+export PAGER
+
+function ,
+{
+	echo "$*" | gp -q
+}
+
+function disp
+{
+	echo "$1" | rev | sed 's/\(...\)/\1 /g' | rev
+}
+
+function settitle
+{
+	echo -n -e "\033]2;$1\007"
+}

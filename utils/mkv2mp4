@@ -1,0 +1,20 @@
+#!/bin/bash
+# You need at least twice the free space in W as the size of the mkv file!
+F="$1"
+
+FPS=23.976
+
+# video channel
+VC=1
+# audio channel
+AC=2
+
+set -x
+
+mkvextract tracks "$F" $AC:a.ac3
+mplayer a.ac3 -vo null -vc null -ao pcm:fast:file=a.wav -channels 2
+neroAacEnc -lc -if a.wav -of a.mp4
+rm a.ac3 a.wav
+mkvextract tracks "$F" $VC:a.264
+MP4Box a.mp4 -fps $FPS -add a.264 -nosys
+rm a.264

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+function usage_exit
+{
+	echo 'Usage: wakemeup HH:MM [prog]'
+	echo 'Usage: wakemeup now [prog]'
+	echo ''
+	echo 'Begins to kill your ear at HH:MM.'
+	echo 'Optionally it runs prog at that time, but be aware'
+	echo 'that when you kill this script, you kill your prog too.'
+	echo 'Works well with TopCoder startup script.'
+	exit 0
+}
+
+function play_music
+{
+	# max volume
+	amixer -c0 sset Master 1000dB+ > /dev/null
+	# play a disturbing music
+	while true; do
+		mplayer "/data/audio/disturbed/Disturbed_-_The Sickness/Disturbed - Down With The Sickness.mp3"
+	done
+}
+
+if (($# < 1)); then
+	usage_exit
+fi
+
+if ! grep -q '^[0-9][0-9]:[0-9][0-9]$\|^now$' <<< "$1"; then
+	usage_exit
+fi
+
+if test "$1" != "now"; then
+	while [ "`date '+%H:%M'`" != "$1" ]; do
+		sleep 58
+	done
+fi
+
+if (($# == 1)); then
+	play_music
+else
+	"$2" &
+	play_music
+fi

@@ -1,0 +1,392 @@
+" ypsu's vimscript
+
+" Various stuff added as time went by.
+" Compilation of single files had a little bit more focus because
+" at some point I was doing some ACM/TopCoder style coding competitions.
+
+set backspace=indent,eol,start
+set cmdheight=2
+set history=50          " keep 50 lines of command line history
+set ignorecase
+set incsearch           " do incremental searching
+set linebreak
+set nobackup
+set nocompatible
+set nohls
+set nowrap
+set nowritebackup
+set number
+set ruler               " show the cursor position all the time
+set showcmd             " display incomplete commands
+set tabpagemax=64
+set mouse=a
+set notimeout
+set ttimeout
+set ttimeoutlen=1
+set noswapfile
+set hidden
+if &term == "xterm"
+	set t_Co=256
+	colorscheme pablo
+elseif &term == "xterm-color"
+	set t_Co=88
+	colorscheme pablo
+else
+	set t_Co=16
+	colorscheme desert
+endif
+
+syntax on
+
+set tags=./tags;
+
+" Map <Enter> to : so I don't have to press shift to get to the command line.
+noremap <C-\> <Enter>
+map <Enter> :
+
+let &foldmethod = "marker"
+
+set autoindent
+set copyindent
+
+set noignorecase
+set nrformats=hex
+
+set completeopt+=longest
+set wildmode=longest,list,full
+set wildmenu
+set wildignore=*.dll,*.o,*.out,*.pyc,*.bak,*.exe,*.jpg,*.jpeg,*.png,*.gif,*.class,*.pdf
+
+set clipboard=unnamed
+
+" Some C/C++ specific autoindenting options
+let &cinoptions = ':0,g0,t0'
+" Display tabs to annoy myself
+let &lcs = "tab:> "
+set list
+
+" Most Recently Used Tab Page
+au TabLeave * let g:MRUtabPage = tabpagenr()
+fun MRUTab()
+	if exists( "g:MRUtabPage" )
+		exe "tabn " g:MRUtabPage
+	endif
+endfun
+noremap <silent> gl :call MRUTab()<Cr>
+
+" <Leader>l : turn on displaying red background after coloumn 80
+nnoremap <silent> <Leader>l
+      \ :if exists('w:long_line_match') <Bar>
+      \   silent! call matchdelete(w:long_line_match) <Bar>
+      \   unlet w:long_line_match <Bar>
+      \ else <Bar>
+      \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
+      \ endif<CR>
+
+" Disable automatically adding comment beginnings to the line
+autocmd BufEnter * set formatoptions-=ro
+
+" Enable file type detection.
+" Use the default filetype settings, so that mail gets 'tw' set to 72,
+" 'cindent' is on in C files, etc.
+" Also load indent files, to automatically do language-dependent indenting.
+filetype plugin indent on
+
+" Put these in an autocmd group, so that we can delete them easily.
+augroup vimrcEx
+	au!
+
+	" When editing a file, always jump to the last known cursor position.
+	" Don't do it when the position is invalid or when inside an event handler
+	" (happens when dropping a file on gvim).
+	autocmd BufReadPost *
+				\ if line("'\"") > 0 && line("'\"") <= line("$") |
+				\   exe "normal g`\"" |
+
+augroup END
+
+map Q gq
+
+let mapleader = "\\"
+
+map <Up> gk
+map <Down> gj
+map <Home> g0
+map <End> g$
+imap <Up> <C-O>gk
+imap <Down> <C-O>gj
+imap <Home> <C-O>g0
+imap <End> <C-O>g$
+
+" Move around windows
+map <M-Left> <C-w>h
+map <M-Right> <C-w>l
+map <M-Up> <C-w>k
+map <M-Down> <C-w>j
+
+
+map <Leader>n :next <CR>
+map <Leader>p :prev <CR>
+
+" Set meta keys
+set <M-h>=h
+set <M-j>=j
+set <M-k>=k
+set <M-l>=l
+set <M-z>=z
+set <M-x>=x
+
+" Move around windows
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" Move around tabs
+map <M-h> gT
+map <M-l> gt
+imap <M-h> <C-o>gT
+imap <M-l> <C-o>gt
+
+" Tag stack manipulation
+nmap <M-j> <C-]>
+nmap <M-k> <C-T>
+vmap <M-j> <C-]>
+vmap <M-k> <C-T>
+
+" Signs manipulation
+nmap <M-z> :call SignFixme()<CR>
+nmap <M-x> :call UnSignFixme()<CR>
+
+" F2 - Save
+map <F2> :update <CR>
+vmap <F2> <Esc><F2>gv
+" <Leader>F2 - Copy the whole buffer to the clipboard
+map <Leader><F2> gg"+yG``zz
+" Leader-F3 - Reload all
+map <Leader><F3> :bufdo set eventignore= \| e <CR>
+" F3 - Make
+map <F3> :make! -j2 <CR>
+vmap <F3> <Esc><F3>gv
+" F4 - Show terminal
+map <F4> :!exit <CR>
+vmap <F4> <Esc><F4>gv
+
+" Leader-s: submit/commit current file to git
+map <Leader>s :!git commit %:p -v<CR>
+" Leader-a: submit/commit all to git
+map <Leader>a :!git commit -av<CR>
+
+map <Leader>f :FufFile<CR>
+map <Leader>g <Leader>be
+
+let NERDCreateDefaultMappings=0
+map <Leader>c <plug>NERDCommenterComment
+map <Leader>u <plug>NERDCommenterUncomment
+map <Leader>t :NERDTreeToggle<CR>
+
+" Cmdline will be run and the output will be in quickfix.
+function CustomQuickMake(cmdline)
+	let tmp = &makeprg
+	let &makeprg = a:cmdline
+	make!
+	let &makeprg = tmp
+endfunction
+
+" Naughty keys for C development.
+" F5 - run
+" <Leader>F5 - run in gdb (must be built via F6) and print backtrace
+" F6 - debug build
+" <Leader>F6 - make
+" F7 - optimized build
+" F8 - debug (must be built via F6)
+" F9 - run to cursor in the debugger
+" <Leader>F9 - set a permanent breakpoint and run in the debugger
+" F11 - run via valgrind
+" F12 - check the code's coverage
+function SetCCommands()
+	set textwidth=0
+
+	map <F5> :!./a.out <CR>
+	map <Leader><F5> :call writefile(["r", "bt"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <F6> :call CustomQuickMake("gcc -fstack-protector-all -std=c99 -lm -Wall -W -g3 '%:p'") <CR>
+	map <Leader><F6> :make <CR>
+	map <F7> :call CustomQuickMake("gcc -std=c99 -O2 -lm -Wall -W '%:p'") <CR>
+	map <F8> :!gdb -q ./a.out <CR>
+	map <F9> :call writefile(["tbreak " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <F11> :!valgrind ./a.out <CR>
+	map <F12> :!gcc -Wall -g -fprofile-arcs -ftest-coverage '%:p'; ./a.out; gcov '%:p'; view '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; gcc '%:p' <CR>
+endfunction
+
+" Naughty keys for C++ development.
+" F5 - run
+" <Leader>F5 - run in gdb (must be built via F6) and print backtrace (assuming crash)
+" F6 - debug build
+" <Leader>F6 - make
+" F7 - optimized build
+" F8 - debug (must be built via F6)
+" F9 - run to cursor in the debugger
+" <Leader>F9 - set a permanent breakpoint and run in the debugger
+" F11 - run via valgrind
+" F12 - check the code's coverage
+" 
+" :LT - load my CPP template
+function SetCPPCommands()
+	set textwidth=0
+
+	map <F5> :!./a.out <CR>
+	map <Leader><F5> :call writefile(["r", "bt"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <F6> :call CustomQuickMake("g++ -fstack-protector-all -Wall -W -g3 -D_GLIBCXX_DEBUG -DATHOME '%:p'") <CR>
+	map <Leader><F6> :make <CR>
+	map <F7> :call CustomQuickMake("g++ -Wall -W -O2 -DATHOME '%:p'") <CR>
+	map <F8> :!gdb -q ./a.out <CR>
+	map <F9> :call writefile(["tbreak " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <F11> :!valgrind ./a.out <CR>
+	map <F12> :!g++ -Wall -g -fprofile-arcs -ftest-coverage '%:p'; ./a.out; gcov '%:p'; view '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; g++ '%:p' <CR>
+
+	com! LT 1,$d | r ~/.template.cpp | 1d | 33
+endfunction
+
+" ADA
+" F5 - run
+" <Leader>F5 - run in gdb (must be built via F6) and print backtrace
+" F6 - debug build
+" F7 - optimized build
+" F8 - debug (must be built via F6)
+" F9 - run to cursor in the debugger
+" <Leader>F9 - set a permanent breakpoint and run in the debugger
+function SetADACommands()
+	set textwidth=0
+	let &errorformat="%-Ggcc,%-Ggnat,%f:%l:%v: %m"
+
+	map <F5> :!./a.out <CR>
+	map <Leader><F5> :call writefile(["r", "bt"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <F6> :call CustomQuickMake("gnatmake -Wall -W -g3 -o a.out -gnatE -gnato -fstack-check '%:p'") <CR>
+	map <Leader><F7> :call CustomQuickMake("gnatmake -o a.out '%:p'") <CR>
+	map <F8> :!gdb -q ./a.out <CR>
+	map <F9> :call writefile(["tbreak " . expand("%:p") . "\:" . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
+endfunction
+
+" Cool keys for Haskell development.
+" F5 - run
+" F6 - load into ghci
+" F7 - build
+" F8 - optimised build
+function SetHSCommands()
+	set textwidth=0
+
+	map <F5> :!./a.out <CR>
+	map <F6> :!ghci '%:p' <CR>
+	map <F7> :call CustomQuickMake("ghc '%:p'") <CR>
+	map <F8> :call CustomQuickMake("ghc -O '%:p'") <CR>
+endfunction
+
+" Java
+" F5 - run
+" F7 - build
+function SetJavaCommands()
+	set textwidth=0
+
+	map <F5> :!java %:t:r <CR>
+	map <F7> :!javac %:p <CR>
+endfunction
+
+" Nasty keys for shell scripts.
+" F5 - run (needs to be executable)
+" F7 - make executable
+function SetShCommands()
+	set textwidth=0
+
+	map <F5> :!%:p <CR>
+	map <F7> :exec "!chmod +x '%:p'" \| echo 'Executable mark set.' <CR><CR>
+endfunction
+
+" Latex
+" F5 - display dvi with evince
+" F6 - compile to pdf & show
+" F8 - tex -> pdf
+" TODO: update these comments to match the mappings below
+function SetTexCommands()
+	"set textwidth=78
+
+	map <F5> :!evince %:t:r.pdf <CR>
+	map <F6> :!pdflatex -halt-on-error -file-line-error %:p && pdflatex -halt-on-error -file-line-error %:p && pdflatex -halt-on-error -file-line-error %:p \| sed $(echo -e -n 's/\\(Overfull.*\\)/\033[1;31m\1\033[0m/') ; rm -f %:t:r.log %:t:r.aux %:t:r.out %:t:r.toc <CR>
+
+	com! LT 1,$d | r ~/.template.tex | 1d | 17
+endfunction
+
+function SetDotCommands()
+	map <F5> :!feh a.png <CR>
+	map <F6> :!dot -Tpng %:p > a.png <CR>
+endfunction
+
+" Disable auto-omnicompletion.
+let g:OmniCpp_MayCompleteDot = 0
+let g:OmniCpp_MayCompleteArrow = 0
+
+" Set my beloved keys.
+autocmd BufEnter *.c call SetCCommands()
+autocmd BufEnter *.h,*.H,*.hxx,*.hpp,*.C,*.cpp,*.cxx,*.cc,*.cs call SetCPPCommands()
+autocmd BufEnter *.ada,*.adb call SetADACommands()
+autocmd BufEnter *.hs call SetHSCommands()
+autocmd BufEnter *.java call SetJavaCommands()
+autocmd BufEnter *.py,*.sh,*.pl call SetShCommands()
+autocmd BufEnter *.tex call SetTexCommands()
+autocmd BufEnter *.gv call SetDotCommands()
+
+" ex command for toggling hex mode - define mapping if desired
+command -bar Hexmode call ToggleHex()
+
+" helper function to toggle hex mode
+function ToggleHex()
+  " hex mode should be considered a read-only operation
+  " save values for modified and read-only for restoration later,
+  " and clear the read-only flag for now
+  let l:modified=&mod
+  let l:oldreadonly=&readonly
+  let &readonly=0
+  let l:oldmodifiable=&modifiable
+  let &modifiable=1
+  if !exists("b:editHex") || !b:editHex
+    " save old options
+    let b:oldft=&ft
+    let b:oldbin=&bin
+    " set new options
+    setlocal binary " make sure it overrides any textwidth, etc.
+    let &ft="xxd"
+    " set status
+    let b:editHex=1
+    " switch to hex editor
+    %!xxd
+  else
+    " restore old options
+    let &ft=b:oldft
+    if !b:oldbin
+      setlocal nobinary
+    endif
+    " set status
+    let b:editHex=0
+    " return to normal editing
+    %!xxd -r
+  endif
+  " restore values for modified and read only state
+  let &mod=l:modified
+  let &readonly=l:oldreadonly
+  let &modifiable=l:oldmodifiable
+endfunction
+
+let g:load_doxygen_syntax=1
+
+" Vim signs
+execute("sign define fixme text=!! linehl=StatusLine texthl=Error")
+
+function! SignFixme()
+	execute(":sign place ".line(".")." line=".line(".")." name=fixme file=".expand("%:p"))
+endfunction
+
+function! UnSignFixme()
+	execute(":sign unplace ".line("."))
+endfunction
