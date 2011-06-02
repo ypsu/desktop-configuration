@@ -39,7 +39,6 @@ int has_wid(const char *dirname, const char *wid)
 	sprintf(fname, "/proc/%s/environ", dirname);
 
 	f = fopen(fname, "r");
-	fseek(f, 0, SEEK_END);
 	length = fread(environ, 1, sizeof(environ), f);
 	fclose(f);
 
