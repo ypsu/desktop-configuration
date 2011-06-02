@@ -176,6 +176,8 @@ vmap <F4> <Esc><F4>gv
 map <Leader>s :!git commit %:p -v<CR>
 " Leader-a: submit/commit all to git
 map <Leader>a :!git commit -av<CR>
+" Leader-d: diff changes
+map <Leader>d :!git diff<CR>
 
 map <Leader>f :FufFile<CR>
 map <Leader>g <Leader>be
