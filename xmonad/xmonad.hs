@@ -131,6 +131,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,               xK_F12   ), spawn "amixer -c0 sset Master 5%+ >/dev/null")
 
     , ((modMask,               xK_backslash   ), spawn "/home/rlblaster/projects/latex-to-unicode/latex-to-unicode.sh")
+    , ((modMask,               xK_equal   ), spawn "/home/rlblaster/projects/gp-gui/gp-gui.sh")
  
     -- close focused window 
     , ((modMask,               xK_c     ), kill)
