@@ -1,3 +1,5 @@
+shopt -s checkwinsize
+
 export EDITOR=vim
 export GIT_EDITOR="$EDITOR"
 HISTFILESIZE=1000000000
