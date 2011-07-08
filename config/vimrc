@@ -314,7 +314,7 @@ endfunction
 function SetTexCommands()
 	"set textwidth=78
 
-	map <F5> :!evince %:t:r.pdf <CR>
+	map <F5> :!evince %:t:r.pdf & <CR><CR>
 	map <F6> :!pdflatex -halt-on-error -file-line-error %:p && pdflatex -halt-on-error -file-line-error %:p && pdflatex -halt-on-error -file-line-error %:p \| sed $(echo -e -n 's/\\(Overfull.*\\)/\033[1;31m\1\033[0m/') ; rm -f %:t:r.log %:t:r.aux %:t:r.out %:t:r.toc <CR>
 
 	com! LT 1,$d | r ~/.template.tex | 1d | 17
