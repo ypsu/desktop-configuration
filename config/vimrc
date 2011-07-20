@@ -135,6 +135,9 @@ set <M-k>=k
 set <M-l>=l
 set <M-z>=z
 set <M-x>=x
+set <M-]>=]
+
+map <M-]> <C-w>}
 
 " Move around windows
 map <C-h> <C-w>h
