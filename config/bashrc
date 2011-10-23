@@ -55,3 +55,7 @@ function settitle
 {
 	echo -n -e "\033]2;$1\007"
 }
+
+cd /home/rlblaster/.bin/termcfg.cmd/
+complete -W "$(echo *)" termcfg
+cd - >/dev/null
