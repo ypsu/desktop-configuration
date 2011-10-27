@@ -1,0 +1,25 @@
+!------------------------------------------------------------------------------
+! c o l o r -  s e t t i n g s
+
+*background: #000000
+*foreground: #ffffff
+
+URxvt.urlLauncher:         firefox
+URxvt.scrollBar:        false
+URxvt.font: -*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-*
+URxvt.boldFont:
+URxvt.italicFont:
+URxvt.boldItalicFont:
+URxvt.cursorColor: #009900
+URxvt.color4: #5050FF
+URxvt.color12: #6060FF
+URxvt.jumpScroll: true
+URxvt.skipScroll: true
+URxvt.saveLines: 10000
+URxvt.scrollTtyOutput:      false
+URxvt.scrollWithBuffer:     true
+URxvt.scrollTtyKeypress:    true
+
+URxvt.keysym.M-0: command:\033]710;-*-terminus-medium-*-*-*-14-*-*-*-*-*-*-*\007
+URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*\007
+URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*\007
