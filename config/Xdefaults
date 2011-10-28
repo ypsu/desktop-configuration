@@ -4,6 +4,7 @@
 *background: #000000
 *foreground: #ffffff
 
+URxvt.buffering:         true
 URxvt.urlLauncher:         firefox
 URxvt.scrollBar:        false
 URxvt.font: -*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-*
