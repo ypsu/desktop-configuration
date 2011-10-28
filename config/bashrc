@@ -32,6 +32,7 @@ fi
 
 export PATH=/home/rlblaster/.bin:$PATH:/sbin:/usr/local/bin:/opt/java/jre/bin:/opt/java/bin:/opt/kde/bin:/opt/skype
 export LESSCHARSET='utf-8'
+export GREP_OPTIONS='--color=auto'
 complete -cf man
 complete -cf info
 complete -cf sudo
