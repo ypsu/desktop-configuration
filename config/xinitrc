@@ -15,6 +15,6 @@ cd /home/rlblaster/.xmonad
 ./gmail.sh &
 cd
 
-terminal.sh &
+urxvt &
 firefox &
 exec xmonad
