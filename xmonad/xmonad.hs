@@ -107,6 +107,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
     -- launch a terminal
     [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+
+    -- launch a floating terminal
+    , ((modMask .|. controlMask, xK_Return), spawn "urxvt -name urxvt-floating")
  
     -- launch dmenu
     --, ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -295,6 +298,8 @@ myLayout = avoidStruts $
 myManageHook = composeAll
     [ resource  =? "desktop_window"                      --> doIgnore
     , resource  =? "kdesktop"                            --> doIgnore
+    , title =? "urxvt-floating"                          --> doFloat
+    , title =? "urxvt-start-on-1"                        --> doF(W.shift " 1 ")
     , className =? "Gimp"                                --> doFloat
     --, className =? "MPlayer"                             --> doFloat
     , className =? "Vuze"                                --> doF(W.shift " 9 ")
