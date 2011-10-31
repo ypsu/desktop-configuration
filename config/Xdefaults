@@ -20,6 +20,7 @@ URxvt.saveLines: 10000
 URxvt.scrollTtyOutput:      false
 URxvt.scrollWithBuffer:     true
 URxvt.scrollTtyKeypress:    true
+URxvt.geometry:    90x30
 
 URxvt.keysym.M-0: command:\033]710;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*\007
 URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*\007
