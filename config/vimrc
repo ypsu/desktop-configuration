@@ -25,10 +25,10 @@ set ttimeout
 set ttimeoutlen=1
 set noswapfile
 set hidden
-if &term == "xterm"
+if &term == "xterm" || &term == "rxvt-unicode-256color"
 	set t_Co=256
 	colorscheme pablo
-elseif &term == "xterm-color" || &term == "rxvt-unicode-256color"
+elseif &term == "xterm-color"
 	set t_Co=88
 	colorscheme pablo
 else
