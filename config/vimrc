@@ -184,6 +184,7 @@ map <Leader>d :!git diff<CR>
 
 map <Leader>f :FufFile<CR>
 map <Leader>g <Leader>be
+map <Leader>h :Hexmode<CR>
 
 let NERDCreateDefaultMappings=0
 map <Leader>c <plug>NERDCommenterComment
