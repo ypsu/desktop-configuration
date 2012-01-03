@@ -217,7 +217,7 @@ function SetCCommands()
 	map <Leader><F5> :call writefile(["r", "bt"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <F6> :call CustomQuickMake("gcc -fstack-protector-all -std=c99 -lm -Wall -W -g3 '%:p' -lgmp -lpthread -lrt") <CR>
 	map <Leader><F6> :make <CR>
-	map <F7> :call CustomQuickMake("gcc -std=c99 -O2 -lm -Wall -W '%:p' -lgmp -lpthread -lrt") <CR>
+	map <F7> :call CustomQuickMake("gcc -fopenmp -std=c99 -O2 -lm -Wall -W '%:p' -lgmp -lpthread -lrt") <CR>
 	map <F8> :!gdb -q ./a.out <CR>
 	map <F9> :call writefile(["tbreak " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
