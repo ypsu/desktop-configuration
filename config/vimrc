@@ -74,13 +74,13 @@ fun MRUTab()
 endfun
 noremap <silent> gl :call MRUTab()<Cr>
 
-" <Leader>l : turn on displaying red background after coloumn 80
+" <Leader>l : turn on displaying red background after coloumn 100
 nnoremap <silent> <Leader>l
       \ :if exists('w:long_line_match') <Bar>
       \   silent! call matchdelete(w:long_line_match) <Bar>
       \   unlet w:long_line_match <Bar>
       \ else <Bar>
-      \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
+      \   let w:long_line_match = matchadd('ErrorMsg', '\%>100v.\+', -1) <Bar>
       \ endif<CR>
 
 " Disable automatically adding comment beginnings to the line
