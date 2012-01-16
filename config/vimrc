@@ -183,6 +183,7 @@ map <Leader>a :!git commit -av<CR>
 map <Leader>d :!git diff<CR>
 
 map <Leader>f :FufFile<CR>
+map <Leader>F :FufCoverageFile<CR>
 map <Leader>g <Leader>be
 map <Leader>h :Hexmode<CR>
 
