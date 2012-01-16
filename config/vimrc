@@ -184,7 +184,7 @@ map <Leader>d :!git diff<CR>
 
 map <Leader>f :FufFile<CR>
 map <Leader>F :FufCoverageFile<CR>
-map <Leader>g <Leader>be
+map <Leader>g :FufBuffer<CR>
 map <Leader>h :Hexmode<CR>
 
 let NERDCreateDefaultMappings=0
