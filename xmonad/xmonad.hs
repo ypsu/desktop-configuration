@@ -55,21 +55,6 @@ myBorderWidth   = 1
 --
 myModMask       = mod4Mask
  
--- The mask for the numlock key. Numlock status is "masked" from the
--- current modifier status, so the keybindings will work with numlock on or
--- off. You may need to change this on some systems.
---
--- You can find the numlock modifier by running "xmodmap" and looking for a
--- modifier with Num_Lock bound to it:
---
--- > $ xmodmap | grep Num
--- > mod2        Num_Lock (0x4d)
---
--- Set numlockMask = 0 if you don't have a numlock key, or want to treat
--- numlock status separately.
---
-myNumlockMask   = mod2Mask
- 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
 -- workspace name. The number of workspaces is determined by the length
@@ -330,10 +315,9 @@ myPP h = defaultPP
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
  
---dzenFont = " -fn '-*-dejavu sans mono-medium-r-normal-*-11-*-*-*-*-*-*-*' "
-dzenFont = " -fn '-*-fixed-*-*-*-*-15-*-*-*-*-*-*-*' "
+dzenFont = "-fn '-*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*' ";
 dzenColors = " -bg '#000000' -fg '#777777' "
-dzenMiscOptions = " -h 16 -sa c -ta l -tw 1390 -e button3= "
+dzenMiscOptions = " -h 17 -sa c -ta l -tw 1390 -e button3= "
 
 dzenOptions = dzenColors ++ dzenFont ++ dzenMiscOptions
 statusBarCmd = "/home/rlblaster/.xmonad/dzen/dzen2 " ++ dzenOptions
@@ -345,7 +329,6 @@ main = do din <- spawnPipe statusBarCmd
                          terminal           = myTerminal,
                          borderWidth        = myBorderWidth,
                          modMask            = myModMask,
-                         numlockMask        = myNumlockMask,
                          workspaces         = myWorkspaces,
                          normalBorderColor  = myNormalBorderColor,
                          focusedBorderColor = myFocusedBorderColor,

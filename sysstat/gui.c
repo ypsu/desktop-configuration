@@ -17,7 +17,7 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 
-#define WINDOW_HEIGHT 16
+#define WINDOW_HEIGHT 17
 
 #define COL_BACKGROUND 0x000000
 #define COL_LIGHT_BG 0x111111
@@ -55,7 +55,7 @@ Font g_font;
 XftFont* g_xftfont;
 XftColor g_col_bg, g_col_fg, g_col_light, g_col_red, g_col_mid;
 
-int g_cur_network_interface;
+int g_cur_network_interface = 1;
 
 void create_color(unsigned long color, XftColor *xftcolor) // {{{1
 {
@@ -66,9 +66,7 @@ void create_color(unsigned long color, XftColor *xftcolor) // {{{1
 
 void setup_font(void) // {{{1
 {
-	//const char fontstr[] = "-*-dejavu sans mono-medium-r-normal-*-12-*-*-*-*-*-*-*";
-	//const char fontstr[] = "-*-fixed-*-*-*-*-9-*-*-*-*-*-*-*";
-	const char fontstr[] = "-*-fixed-*-*-*-*-15-*-*-*-*-*-*-*";
+	const char fontstr[] = "-*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*";
 	g_xftfont = XftFontOpenXlfd(g_dpy, g_screen, fontstr);
 	if(!g_xftfont)
 		g_xftfont = XftFontOpenName(g_dpy, g_screen, fontstr);
@@ -193,7 +191,7 @@ void toggle_big_screen(void) // {{{1
 
 	// draw the calendar
 	{
-		FILE *f = popen("remind -c+6 -b1 -m -w216 ~/.reminders", "r");
+		FILE *f = popen("remind -c+5 -b1 -m -w238 ~/.reminders", "r");
 		char buf[1024];
 		int y;
 		int i;
