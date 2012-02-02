@@ -62,7 +62,7 @@ set clipboard=unnamed
 " Some C/C++ specific autoindenting options
 let &cinoptions = ':0,g0,t0'
 " Display tabs to annoy myself
-let &lcs = "tab:> "
+let &lcs = "trail:.,tab:> "
 set list
 
 " Most Recently Used Tab Page
