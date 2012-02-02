@@ -4,7 +4,6 @@ xsetroot -cursor_name left_ptr
 xset r rate 300 40
 xset s 1200
 xset dpms 1200 1200 1200
-xset b off
 
 setxkbmap ushu -variant ushu
 xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
