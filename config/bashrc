@@ -31,6 +31,7 @@ else
 fi
 
 export PATH="/home/rlblaster/.bin:/usr/lib/colorgcc/bin:$PATH:/sbin:/usr/local/bin:/opt/java/jre/bin:/opt/java/bin:/opt/kde/bin:/opt/skype"
+export PATH="$PATH:/home/rlblaster/thesis/app/build"
 export LESSCHARSET='utf-8'
 export GREP_OPTIONS='--color=auto'
 complete -cf man
