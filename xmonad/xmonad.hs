@@ -109,8 +109,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch pidgin (gaim)
     , ((modMask,               xK_g     ), spawn "pidgin")
 
-    -- launch pidgin (gaim)
+    -- refresh screen
     , ((modMask,               xK_r     ), spawn "xrefresh")
+
+    -- add support for custom functions
+    , ((modMask,               xK_F1    ), spawn "touch /dev/shm/wmfn1")
+    , ((modMask,               xK_F2    ), spawn "touch /dev/shm/wmfn2")
+    , ((modMask,               xK_F3    ), spawn "touch /dev/shm/wmfn3")
+    , ((modMask,               xK_F4    ), spawn "touch /dev/shm/wmfn4")
 
     -- decrease volume
     , ((modMask,               xK_F11   ), spawn "amixer -c0 sset Master 5%- >/dev/null")
