@@ -128,6 +128,9 @@ map <M-Down> <C-w>j
 map <Leader>n :next <CR>
 map <Leader>p :prev <CR>
 
+" Quote in mail
+map <Leader>q :s/^/> / <CR>
+
 " Set meta keys
 set <M-h>=h
 set <M-j>=j
