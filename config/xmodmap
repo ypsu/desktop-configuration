@@ -1,7 +1,7 @@
 clear Lock
 keycode 0x42 = Escape
 
-keycode 108 = Mode_switch
+keycode 108 = Mode_switch Mode_switch
 keycode   9 = Escape NoSymbol Escape
 keycode  10 = 1 exclam
 keycode  11 = 2 at twosuperior dead_doubleacute
