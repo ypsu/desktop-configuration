@@ -87,7 +87,7 @@ int main(void)
 {
 	unsigned long wid = get_focused_window();
 	chdir_to_current_bash(wid);
-	const char *cmd = "/usr/bin/urxvt";
+	const char *cmd = "/usr/bin/urxvtc";
 	execl(cmd, cmd, NULL);
 	return 0;
 }
