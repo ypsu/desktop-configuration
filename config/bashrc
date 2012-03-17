@@ -36,7 +36,6 @@ export LESSCHARSET='utf-8'
 export GREP_OPTIONS='--color=auto'
 complete -cf man
 complete -cf info
-complete -cf sudo
 
 export PYTHONSTARTUP=/home/rlblaster/.pythonrc.py
 
