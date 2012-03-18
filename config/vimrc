@@ -25,6 +25,7 @@ set ttimeout
 set ttimeoutlen=1
 set noswapfile
 set hidden
+set tw=100
 if &term == "xterm" || &term == "rxvt-unicode-256color"
 	set t_Co=256
 	colorscheme pablo
