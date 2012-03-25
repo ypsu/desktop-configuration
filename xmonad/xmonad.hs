@@ -92,7 +92,8 @@ myFocusedBorderColor = "#ff0000"
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
     -- launch a terminal
-    [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+    [ ((modMask,               xK_Escape), spawn $ XMonad.terminal conf)
+    , ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch a floating terminal
     , ((modMask .|. controlMask, xK_Return), spawn "urxvtc -name urxvt-floating")
