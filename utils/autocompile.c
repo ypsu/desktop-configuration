@@ -119,6 +119,10 @@ void compile_tex(const char *fname)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	//sprintf(cmd, "evince $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
+>>>>>>> e9c005d833809a6ac8a7f85fe41b319e6d6ee379
 	sprintf(cmd, "touch $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
 	system(cmd);
 
