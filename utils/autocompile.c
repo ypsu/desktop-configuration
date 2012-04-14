@@ -80,6 +80,49 @@ void exec_command(const char *cmd)
 	fflush(stdout);
 }
 
+void compile_tex(const char *fname)
+{
+	printf("\e[H\e[2J");
+	printf("compiling %s\n", fname);
+	char cmd[4096];
+	int rv;
+
+	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' > /dev/null", fname);
+	rv = system(cmd);
+	if (rv != 0) {
+		printf("\e[31merror occured (1)\e[0m\n");
+		return;
+	}
+
+	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' > /dev/null", fname);
+	rv = system(cmd);
+	if (rv != 0) {
+		printf("\e[31merror occured (2)\e[0m\n");
+		return;
+	}
+
+	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' | grep Overfull", fname);
+	system(cmd);
+
+	char s[4096];
+	strcpy(s, fname);
+	int len = strlen(s);
+	assert(s[len-4] == '.');
+	assert(s[len-3] == 't');
+	assert(s[len-2] == 'e');
+	assert(s[len-1] == 'x');
+	s[len-4] = 0;
+
+	sprintf(cmd, "rm -f '%s.log' '%s.aux' '%s.out' '%s.toc'", s, s, s, s);
+	rv = system(cmd);
+	if (rv != 0) {
+		printf("\e[31merror occured (4)\e[0m\n");
+		return;
+	}
+
+	printf("\e[32mdone\e[0m\n");
+}
+
 int main(void)
 {
 	struct stat stat_buf;
@@ -116,6 +159,8 @@ int main(void)
 							"-Wextra -g3 '%s' -lgmp -lpthread -lrt",
 							ev->name);
 					exec_command(cmdbuf);
+				} else if (ends_with(ev->name, ".tex")) {
+					compile_tex(ev->name);
 				}
 			}
 		} while (begin < size);
