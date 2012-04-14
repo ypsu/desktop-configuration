@@ -87,38 +87,40 @@ void compile_tex(const char *fname)
 	char cmd[4096];
 	int rv;
 
-	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' > /dev/null", fname);
+	rv = system("mkdir -p .tmp");
+	if (rv != 0) {
+		printf("\e[31merror occured (0)\e[0m\n");
+		return;
+	}
+
+#define COMMON_CMD "pdflatex -halt-on-error -file-line-error -output-directory .tmp"
+	sprintf(cmd, COMMON_CMD " '%s' > /dev/null", fname);
 	rv = system(cmd);
 	if (rv != 0) {
 		printf("\e[31merror occured (1)\e[0m\n");
 		return;
 	}
 
-	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' > /dev/null", fname);
+	sprintf(cmd, COMMON_CMD " '%s' > /dev/null", fname);
 	rv = system(cmd);
 	if (rv != 0) {
 		printf("\e[31merror occured (2)\e[0m\n");
 		return;
 	}
 
-	sprintf(cmd, "pdflatex -halt-on-error -file-line-error '%s' | grep Overfull", fname);
+	sprintf(cmd, COMMON_CMD " '%s' | grep Overfull", fname);
 	system(cmd);
+#undef COMMON_CMD
 
-	char s[4096];
-	strcpy(s, fname);
-	int len = strlen(s);
-	assert(s[len-4] == '.');
-	assert(s[len-3] == 't');
-	assert(s[len-2] == 'e');
-	assert(s[len-1] == 'x');
-	s[len-4] = 0;
-
-	sprintf(cmd, "rm -f '%s.log' '%s.aux' '%s.out' '%s.toc'", s, s, s, s);
+	sprintf(cmd, "mv .tmp/*.pdf . && rm -rf .tmp");
 	rv = system(cmd);
 	if (rv != 0) {
 		printf("\e[31merror occured (4)\e[0m\n");
 		return;
 	}
+
+	sprintf(cmd, "touch $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
+	system(cmd);
 
 	printf("\e[32mdone\e[0m\n");
 }
