@@ -6,7 +6,7 @@
 --
 -- Normally, you'd only override those defaults you care about.
 --
- 
+
 import XMonad
 import XMonad.ManageHook
 import XMonad.Operations
@@ -18,7 +18,7 @@ import XMonad.Actions.SinkAll
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.SetWMName
-import XMonad.Layout 
+import XMonad.Layout
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders   ( noBorders, smartBorders )
 import XMonad.Layout.Tabbed
@@ -28,7 +28,7 @@ import XMonad.Layout.Master
 import XMonad.Layout.ThreeColumns
 import XMonad.Util.Run
 import System.Exit
- 
+
 import qualified XMonad.StackSet as W
 import qualified XMonad.Actions.FlexibleResize as Flex
 import qualified Data.Map        as M
@@ -44,18 +44,18 @@ import XMonad.Layout.MouseResizableTile
 --
 --myTerminal      = "terminal"
 myTerminal      = "/home/rlblaster/.bin/spawn-terminal"
- 
+
 -- Width of the window border in pixels.
 --
 myBorderWidth   = 1
- 
+
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
 --
 myModMask       = mod4Mask
- 
+
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
 -- workspace name. The number of workspaces is determined by the length
@@ -66,12 +66,12 @@ myModMask       = mod4Mask
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
 myWorkspaces    = [" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 ", " web ", " em "]
- 
+
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
 myFocusedBorderColor = "#ff0000"
- 
+
 -- Default offset of drawable screen boundaries from each physical
 -- screen. Anything non-zero here will leave a gap of that many pixels
 -- on the given edge, on the that screen. A useful gap at top of screen
@@ -85,19 +85,19 @@ myFocusedBorderColor = "#ff0000"
 -- Fields are: top, bottom, left, right.
 --
 -- myDefaultGaps   = [(16,16,0,0)]
- 
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
- 
+
     -- launch a terminal
     [ ((modMask,               xK_Escape), spawn $ XMonad.terminal conf)
     , ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch a floating terminal
     , ((modMask .|. controlMask, xK_Return), spawn "urxvtc -name urxvt-floating")
- 
+
     -- launch dmenu
     --, ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
     , ((modMask,               xK_p     ), spawn "gmrun")
@@ -128,66 +128,66 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     , ((modMask,               xK_backslash   ), spawn "/home/rlblaster/projects/latex-to-unicode/latex-to-unicode.sh")
     , ((modMask,               xK_equal   ), spawn "/home/rlblaster/projects/gp-gui/gp-gui.sh")
- 
+
     -- close focused window 
     , ((modMask,               xK_c     ), kill)
-    
+
     -- remove focused window from the current workspace
     , ((modMask .|. shiftMask,    xK_c     ), kill1) -- @@ Close the focused window
 
- 
+
      -- Rotate through the available layout algorithms
     , ((modMask              , xK_space ), sendMessage NextLayout)
- 
+
     --  Reset the layouts on the current workspace to default
     --, ((modMask .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
- 
+
     -- Resize viewed windows to the correct size
     , ((modMask,               xK_n     ), refresh)
- 
+
     -- Move focus to the next window
     , ((modMask,               xK_Tab   ), windows W.focusDown)
- 
+
     -- Move focus to the next window
     , ((modMask,               xK_j     ), windows W.focusDown)
- 
+
     -- Move focus to the previous window
     , ((modMask,               xK_k     ), windows W.focusUp  )
- 
+
     -- Move focus to the master window
     , ((modMask,               xK_m     ), windows W.focusMaster  )
- 
+
     -- Swap the focused window and the master window
     , ((modMask,               xK_Return), windows W.swapMaster)
- 
+
     -- Swap the focused window with the next window
     , ((modMask .|. shiftMask, xK_j     ), windows W.swapDown  )
- 
+
     -- Swap the focused window with the previous window
     , ((modMask .|. shiftMask, xK_k     ), windows W.swapUp    )
- 
+
     -- Shrink the master area
     , ((modMask,               xK_h     ), sendMessage Shrink)
- 
+
     -- Expand the master area
     , ((modMask,               xK_l     ), sendMessage Expand)
- 
+
     -- Push window back into tiling
     , ((modMask,               xK_t     ), withFocused $ windows . W.sink)
- 
+
     -- Increment the number of windows in the master area
     , ((modMask              , xK_comma ), sendMessage (IncMasterN 1))
- 
+
     -- Deincrement the number of windows in the master area
     , ((modMask              , xK_period), sendMessage (IncMasterN (-1)))
- 
+
     -- toggle the status bar gap
     -- , ((modMask              , xK_b     ),
     --      modifyGap (\i n -> let x = (XMonad.defaultGaps conf ++ repeat (0,0,0,0)) !! i
     --                         in if n == x then (0,0,0,0) else x))
     , ((modMask              , xK_b     ), sendMessage ToggleStruts)
     , ((modMask              , xK_s     ), sendMessage ToggleStruts)
- 
+
     -- switch to previous workspace
     , ((modMask, xK_z), toggleWS)
 
@@ -200,7 +200,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Quit xmonad
     , ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
- 
+
     -- Restart xmonad
     , ((modMask              , xK_q     ),
           broadcastMessage ReleaseResources >> restart "xmonad" True)
@@ -221,29 +221,29 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         {-, (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]-}
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask), (copy, shiftMask .|. controlMask)]]
 
- 
+
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
- 
+
     -- mod-button1, Set the window to floating mode and move by dragging
     [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w))
- 
+
     -- mod-button2, Raise the window to the top of the stack
     , ((modMask, button2), (\w -> focus w >> windows W.swapMaster))
- 
+
     -- mod-button3, Set the window to floating mode and resize by dragging
     , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
- 
+
     -- mouse scroll wheel, Cycle through workspaces
      , ((modMask, button4), (\_ -> moveTo Prev NonEmptyWS))
      , ((modMask, button5), (\_ -> moveTo Next NonEmptyWS))
     ]
- 
+
 ------------------------------------------------------------------------
 -- Layouts:
- 
+
 -- You can specify and transform your layouts by modifying these values.
 -- If you change layout bindings be sure to use 'mod-shift-space' after
 -- restarting (with 'mod-q') to reset your layout state to the new
@@ -263,19 +263,19 @@ myLayout = avoidStruts $
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
- 
+
      -- The default number of windows in the master pane
      nmaster = 1
- 
+
      -- Default proportion of screen occupied by master pane
      ratio   = 55/100
- 
+
      -- Percent of screen to increment by when resizing panes
      delta   = 3/100
- 
+
 ------------------------------------------------------------------------
 -- Window rules:
- 
+
 -- Execute arbitrary actions and WindowSet manipulations when managing
 -- a new window. You can use this to, for example, always float a
 -- particular program, or have a client always appear on a particular
@@ -299,11 +299,11 @@ myManageHook = composeAll
     , className =? "Pidgin"                              --> doF(W.shift " em ")
     , stringProperty "WM_WINDOW_ROLE" =? "browser"       --> doF(W.shift " web ")
     ]
- 
- 
+
+
 ------------------------------------------------------------------------
 -- Status bars and logging
- 
+
 -- dynamiclog pretty printer for dzen
 --
 myPP h = defaultPP 
@@ -319,10 +319,10 @@ myPP h = defaultPP
                   , ppTitle   = dzenColor "#777777" ""
                   , ppOutput   = hPutStrLn h
                   }
- 
+
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
- 
+
 dzenFont = "-fn '-*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*' ";
 dzenColors = " -bg '#000000' -fg '#777777' "
 dzenMiscOptions = " -h 17 -sa c -ta l -tw 1390 -e button3= "
@@ -341,11 +341,11 @@ main = do din <- spawnPipe statusBarCmd
                          normalBorderColor  = myNormalBorderColor,
                          focusedBorderColor = myFocusedBorderColor,
                          -- defaultGaps        = myDefaultGaps,
- 
+
                        -- key bindings
                          keys               = myKeys,
                          mouseBindings      = myMouseBindings,
- 
+
                        -- hooks, layouts
                          layoutHook         = myLayout,
                          manageHook         = myManageHook,
