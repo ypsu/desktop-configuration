@@ -93,7 +93,7 @@ void compile_tex(const char *fname)
 		return;
 	}
 
-#define COMMON_CMD "pdflatex -halt-on-error -file-line-error -output-directory .tmp"
+#define COMMON_CMD "pdflatex --shell-escape -halt-on-error -file-line-error -output-directory .tmp"
 	sprintf(cmd, COMMON_CMD " '%s' > /dev/null", fname);
 	rv = system(cmd);
 	if (rv != 0) {
@@ -119,10 +119,6 @@ void compile_tex(const char *fname)
 		return;
 	}
 
-<<<<<<< HEAD
-=======
-	//sprintf(cmd, "evince $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
->>>>>>> e9c005d833809a6ac8a7f85fe41b319e6d6ee379
 	sprintf(cmd, "touch $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
 	system(cmd);
 
