@@ -112,7 +112,7 @@ void compile_tex(const char *fname)
 	system(cmd);
 #undef COMMON_CMD
 
-	sprintf(cmd, "mv .tmp/*.pdf . && rm -rf .tmp");
+	sprintf(cmd, "mv .tmp/$(sed 's/.tex$/.pdf/' <<< '%s') . && rm -rf .tmp", fname);
 	rv = system(cmd);
 	if (rv != 0) {
 		printf("\e[31merror occured (4)\e[0m\n");
