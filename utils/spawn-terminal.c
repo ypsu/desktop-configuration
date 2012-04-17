@@ -6,6 +6,7 @@
 // starts in the home directory.
 
 #define _GNU_SOURCE
+#include <assert.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <stdio.h>
@@ -83,11 +84,13 @@ void chdir_to_current_bash(unsigned long wid)
 	closedir(dirp);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+	assert(argv[argc] == NULL);
+
 	unsigned long wid = get_focused_window();
 	chdir_to_current_bash(wid);
 	const char *cmd = "/usr/bin/urxvtc";
-	execl(cmd, cmd, NULL);
+	execv(cmd, argv);
 	return 0;
 }
