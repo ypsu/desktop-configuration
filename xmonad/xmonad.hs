@@ -96,7 +96,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch a floating terminal
-    , ((modMask .|. controlMask, xK_Return), spawn "urxvtc -name urxvt-floating")
+    , ((modMask .|. controlMask, xK_Return), spawn "spawn-terminal -name urxvt-floating")
 
     -- launch dmenu
     --, ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
