@@ -26,6 +26,7 @@ set ttimeoutlen=1
 set noswapfile
 set hidden
 set nojoinspaces
+set virtualedit+=block
 set tw=100
 if &term == "xterm" || &term == "rxvt-unicode-256color"
 	set t_Co=256
