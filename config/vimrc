@@ -198,6 +198,12 @@ map <Leader>c <plug>NERDCommenterComment
 map <Leader>u <plug>NERDCommenterUncomment
 map <Leader>t :NERDTreeToggle<CR>
 
+" Keep window and cursor position when switching buffers
+if v:version >= 700
+  au BufLeave * let b:winview = winsaveview()
+  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
+endif
+
 " Cmdline will be run and the output will be in quickfix.
 function CustomQuickMake(cmdline)
 	let tmp = &makeprg
