@@ -7,7 +7,7 @@
 URxvt.buffering:         true
 URxvt.urlLauncher:         firefox
 URxvt.scrollBar:        false
-URxvt.font: -*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*
+URxvt.font: -*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*,xft:DejaVu Sans Mono:pixelsize=12
 URxvt.boldFont:
 URxvt.italicFont:
 URxvt.boldItalicFont:
@@ -22,6 +22,6 @@ URxvt.scrollWithBuffer:     true
 URxvt.scrollTtyKeypress:    true
 URxvt.geometry:    90x30
 
-URxvt.keysym.M-0: command:\033]710;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*\007
-URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*\007
-URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*\007
+URxvt.keysym.M-0: command:\033]710;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*,xft:DejaVu Sans Mono:pixelsize=12\007
+URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*,xft:DejaVu Sans Mono\007
+URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*,xft:DejaVu Sans Mono\007
