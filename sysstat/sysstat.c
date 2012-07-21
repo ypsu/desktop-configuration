@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -208,41 +209,52 @@ void update_volume() // {{{1
 {
 	int err;
 	long int pmin, pmax, pvol;
-	snd_mixer_t *snd_mixer;
-	snd_mixer_elem_t *elem;
-	snd_mixer_selem_id_t *sid;
-	err = snd_mixer_open(&snd_mixer, 0);
+	static bool initialized = false;
+	static snd_mixer_t *snd_mixer;
+	static snd_mixer_elem_t *elem;
+	static snd_mixer_selem_id_t *sid;
+
+	if (!initialized) {
+		initialized = true;
+
+		err = snd_mixer_open(&snd_mixer, 0);
+		if (err < 0) {
+			puts(snd_strerror(err));
+			exit(2);
+		}
+
+		err = snd_mixer_attach(snd_mixer, "default");
+		if (err < 0) {
+			puts(snd_strerror(err));
+			exit(2);
+		}
+		err = snd_mixer_selem_register(snd_mixer, NULL, NULL);
+		if (err < 0) {
+			puts(snd_strerror(err));
+			exit(2);
+		}
+
+		err = snd_mixer_load(snd_mixer);
+		if (err < 0) {
+			puts(snd_strerror(err));
+			exit(2);
+		}
+
+		snd_mixer_selem_id_malloc(&sid);
+		snd_mixer_selem_id_set_index(sid, 0);
+		snd_mixer_selem_id_set_name(sid, "Master");
+		elem = snd_mixer_find_selem(snd_mixer, sid);
+		if (elem == NULL) {
+			puts("error in snd_mixer_find_selem");
+			exit(2);
+		}
+	}
+
+	err = snd_mixer_handle_events(snd_mixer);
 	if (err < 0) {
 		puts(snd_strerror(err));
 		exit(2);
 	}
-
-	err = snd_mixer_attach(snd_mixer, "default");
-	if (err < 0) {
-		puts(snd_strerror(err));
-		exit(2);
-	}
-	err = snd_mixer_selem_register(snd_mixer, NULL, NULL);
-	if (err < 0) {
-		puts(snd_strerror(err));
-		exit(2);
-	}
-
-	err = snd_mixer_load(snd_mixer);
-	if (err < 0) {
-		puts(snd_strerror(err));
-		exit(2);
-	}
-
-	snd_mixer_selem_id_alloca(&sid);
-	snd_mixer_selem_id_set_index(sid, 0);
-	snd_mixer_selem_id_set_name(sid, "Master");
-	elem = snd_mixer_find_selem(snd_mixer, sid);
-	if (elem == NULL) {
-		puts("error in snd_mixer_find_selem");
-		exit(2);
-	}
-
 	err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_MONO, &pvol);
 	if (err < 0) {
 		puts(snd_strerror(err));
@@ -251,10 +263,4 @@ void update_volume() // {{{1
 
 	snd_mixer_selem_get_playback_volume_range(elem, &pmin, &pmax);
 	g_volume_percent = (int) (pvol*100 / pmax);
-
-	snd_mixer_close(snd_mixer);
-	if (err < 0) {
-		puts(snd_strerror(err));
-		exit(2);
-	}
 }
