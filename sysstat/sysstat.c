@@ -209,6 +209,7 @@ void update_volume() // {{{1
 {
 	int err;
 	long int pmin, pmax, pvol;
+	bool first_run = false;
 	static bool initialized = false;
 	static snd_mixer_t *snd_mixer;
 	static snd_mixer_elem_t *elem;
@@ -216,7 +217,7 @@ void update_volume() // {{{1
 
 	if (!initialized) {
 		initialized = true;
-
+		first_run = true;
 		err = snd_mixer_open(&snd_mixer, 0);
 		if (err < 0) {
 			puts(snd_strerror(err));
@@ -255,12 +256,14 @@ void update_volume() // {{{1
 		puts(snd_strerror(err));
 		exit(2);
 	}
-	err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_MONO, &pvol);
-	if (err < 0) {
-		puts(snd_strerror(err));
-		exit(2);
-	}
+	if (first_run || err > 0) {
+		err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_MONO, &pvol);
+		if (err < 0) {
+			puts(snd_strerror(err));
+			exit(2);
+		}
 
-	snd_mixer_selem_get_playback_volume_range(elem, &pmin, &pmax);
-	g_volume_percent = (int) (pvol*100 / pmax);
+		snd_mixer_selem_get_playback_volume_range(elem, &pmin, &pmax);
+		g_volume_percent = (int) (pvol*100 / pmax);
+	}
 }
