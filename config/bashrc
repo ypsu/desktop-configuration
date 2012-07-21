@@ -25,7 +25,7 @@ function __print_colored_git_branch
 }
 
 if test $TERM = xterm || test $TERM = rxvt-unicode-256color; then
-	PS1='\[$(history -a)$(settitle "`pwd`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
+	PS1='\[$(settitle "`pwd`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
 else
 	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
 fi
