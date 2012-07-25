@@ -66,7 +66,7 @@ void create_color(unsigned long color, XftColor *xftcolor) // {{{1
 
 void setup_font(void) // {{{1
 {
-	const char fontstr[] = "-*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*";
+	const char fontstr[] = "-xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1";
 	g_xftfont = XftFontOpenXlfd(g_dpy, g_screen, fontstr);
 	if(!g_xftfont)
 		g_xftfont = XftFontOpenName(g_dpy, g_screen, fontstr);

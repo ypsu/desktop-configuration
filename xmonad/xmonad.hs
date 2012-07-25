@@ -323,7 +323,7 @@ myPP h = defaultPP
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
-dzenFont = "-fn '-*-Terminus-medium-*-*-*-16-*-*-*-*-*-*-*' ";
+dzenFont = "-fn '-xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1' ";
 dzenColors = " -bg '#000000' -fg '#777777' "
 dzenMiscOptions = " -h 17 -sa c -ta l -tw 1390 -e button3= "
 
