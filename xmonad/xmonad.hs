@@ -96,7 +96,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch a floating terminal
-    , ((modMask .|. controlMask, xK_Return), spawn "spawn-terminal -name urxvt-floating")
+    , ((modMask .|. controlMask, xK_Return), spawn "spawn-terminal -name XM-floating")
 
     -- launch dmenu
     --, ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -106,7 +106,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,               xK_o     ), spawn "opera")
 
     -- launch firefox
-    , ((modMask,               xK_f     ), spawn "/home/rlblaster/.bin/firefox")
+    , ((modMask,               xK_f     ), spawn "firefox")
 
     -- launch pidgin (gaim)
     , ((modMask,               xK_g     ), spawn "pidgin")
@@ -291,8 +291,8 @@ myLayout = avoidStruts $
 myManageHook = composeAll
     [ resource  =? "desktop_window"                      --> doIgnore
     , resource  =? "kdesktop"                            --> doIgnore
-    , title =? "urxvt-floating"                          --> doFloat
-    , title =? "urxvt-start-on-1"                        --> doF(W.shift " 1 ")
+    , title =? "XM-floating"                             --> doFloat
+    , title =? "XM-start-on-1"                           --> doF(W.shift " 1 ")
     , className =? "Gimp"                                --> doFloat
     --, className =? "MPlayer"                             --> doFloat
     , className =? "Vuze"                                --> doF(W.shift " 9 ")

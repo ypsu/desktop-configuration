@@ -25,3 +25,41 @@ URxvt.geometry:    90x30
 URxvt.keysym.M-0: command:\033]710;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*,xft:DejaVu Sans Mono:pixelsize=12\007
 URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*,xft:DejaVu Sans Mono\007
 URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*,xft:DejaVu Sans Mono\007
+
+XTerm*alwaysUseMods: true
+XTerm*cursorColor: #009900
+XTerm*cutNewline: false
+XTerm*allowBoldFonts: false
+XTerm*allowColorOps: true
+XTerm*color4: DodgerBlue4
+XTerm*decTerminalID: 102
+XTerm*eightBitInput: false
+XTerm*fastScroll: true
+XTerm*font: -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
+XTerm*font1: -xos4-terminus-medium-r-normal--12-120-72-72-c-60-iso10646-1
+XTerm*font2: -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
+XTerm*font3: -xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1
+XTerm*font4: -xos4-terminus-medium-r-normal--24-240-72-72-c-120-iso10646-1
+XTerm*font5: -xos4-terminus-medium-r-normal--28-280-72-72-c-140-iso10646-1
+XTerm*font6: -xos4-terminus-medium-r-normal--32-320-72-72-c-160-iso10646-1
+XTerm*geometry: 90x30
+XTerm*highlightSelection: true
+XTerm*jumpScroll: true
+XTerm*keyboardType: tcap
+XTerm*maxBufSize: 65536
+XTerm*minBufSize: 65536
+XTerm*modifyKeyboard: 15
+XTerm*modifyOtherKeys: 2
+XTerm*multiScroll: true
+XTerm*pointerMode: 0
+XTerm*saveLines: 10000
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
+XTerm*showBlinkAsBold: true
+XTerm*showMissingGlyphs: true
+XTerm*utf8Title: true
+XTerm*termName: xterm-color
+XTerm*VT100.translations:      #override \n\
+        Alt<Key>-: smaller-vt-font() \n\
+        Alt<Key>=: larger-vt-font() \n\
+        Ctrl<Key>6: string(0x1e) \n

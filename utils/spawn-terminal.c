@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 
 	unsigned long wid = get_focused_window();
 	chdir_to_current_bash(wid);
-	const char *cmd = "/usr/bin/urxvtc";
+	const char *cmd = "/usr/bin/xterm";
 	execv(cmd, argv);
 	return 0;
 }

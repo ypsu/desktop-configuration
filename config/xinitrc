@@ -17,7 +17,6 @@ cd /home/rlblaster/.xmonad
 ./gmail.sh &
 cd
 
-urxvtd -q -f
-urxvtc -name urxvt-start-on-1
+xterm -name XM-start-on-1 &
 firefox &
 exec xmonad

@@ -28,7 +28,8 @@ set hidden
 set nojoinspaces
 set virtualedit+=block
 set tw=100
-if &term == "xterm" || &term == "rxvt-unicode-256color"
+set t_RV=               " there are some problem with the cursor keys without this
+if &term == "xterm" || &term == "xterm-color" || &term == "rxvt-unicode-256color"
 	set t_Co=256
 	colorscheme pablo
 elseif &term == "xterm-color"
@@ -128,8 +129,10 @@ map <M-Up> <C-w>k
 map <M-Down> <C-w>j
 
 
-map <Leader>n :next <CR>
-map <Leader>p :prev <CR>
+map <C-Left> :prev <CR>
+map <C-Right> :next <CR>
+
+map <Leader>p :set invpaste <CR>:echo "paste mode: " . &paste<CR>
 
 " Quote in mail
 map <Leader>q :s/^/> / <CR>
@@ -167,6 +170,8 @@ vmap <M-k> <C-T>
 nmap <M-z> :call SignFixme()<CR>
 nmap <M-x> :call UnSignFixme()<CR>
 
+" F1 - Edit last file
+map <F1> <C-^>
 " F2 - Save
 map <F2> :update <CR>
 vmap <F2> <Esc><F2>gv
