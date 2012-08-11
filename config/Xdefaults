@@ -51,7 +51,7 @@ XTerm*minBufSize: 65536
 XTerm*modifyKeyboard: 15
 XTerm*modifyOtherKeys: 2
 XTerm*multiScroll: true
-XTerm*pointerMode: 0
+XTerm*pointerMode: 2
 XTerm*saveLines: 10000
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
