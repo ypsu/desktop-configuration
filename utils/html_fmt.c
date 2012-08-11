@@ -130,7 +130,7 @@ int main(void)
 	bool need_space = false;
 	find_next_word();
 	while (word_start < input_length) {
-		if (need_space && cur_width + word_fmtlength > WIDTH) {
+		if (need_space && 1 + cur_width + word_fmtlength > WIDTH) {
 			need_space = false;
 			add_newline();
 			continue;
