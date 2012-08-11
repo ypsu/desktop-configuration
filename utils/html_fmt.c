@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,14 +24,14 @@ void handle_case(const char *expr, const char *file, const char *func, int line)
 const int WIDTH = 78;
 
 #define MAX_BUFFER (1024*1024)
-char input[MAX_BUFFER];
+uint8_t input[MAX_BUFFER];
 int input_length;
 int lines;
 
-char output[MAX_BUFFER];
+uint8_t output[MAX_BUFFER];
 int output_length;
 
-char indent_str[MAXSTR];
+uint8_t indent_str[MAXSTR];
 int indent_length;
 
 int cur_width;
@@ -67,17 +68,18 @@ void find_next_word(void)
 	word_fmtlength = 0;
 	word_datalength = 0;
 	while (word_start + word_datalength < input_length) {
-		if (!in_tag && isspace(input[word_start + word_datalength]))
+		int ch = input[word_start + word_datalength];
+		if (!in_tag && isspace(ch))
 			break;
-		if (input[word_start + word_datalength] == '<') {
+		if (ch == '<') {
 			in_tag = true;
-		} else if (input[word_start + word_datalength] == '>') {
+		} else if (ch == '>') {
 			if (!in_tag) {
 				printf("Improper HTML tags!!!\n");
 				exit(1);
 			}
 			in_tag = false;
-		} else if (!in_tag) {
+		} else if (!in_tag && (ch < 128 || ch >= 192)) {
 			word_fmtlength += 1;
 		}
 		word_datalength += 1;
@@ -111,7 +113,7 @@ int main(void)
 
 	// If there are multiple lines indent the rest of them based on the second line's indent
 	if (lines > 1) {
-		char *newline = memchr(input, '\n', input_length);
+		uint8_t *newline = memchr(input, '\n', input_length);
 		assert(newline != NULL);
 		int start = newline - input + 1;
 		int i = start;
