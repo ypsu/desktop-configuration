@@ -407,6 +407,16 @@ let g:load_doxygen_syntax=1
 " Vim signs
 execute("sign define fixme text=!! linehl=StatusLine texthl=Error")
 
+function Mailmode()
+	set textwidth=72
+	set formatoptions+=tc
+	set spell
+	"set spelllang=hu
+	syntax on
+endfunction
+
+command Mailmode call Mailmode()
+
 function! SignFixme()
 	execute(":sign place ".line(".")." line=".line(".")." name=fixme file=".expand("%:p"))
 endfunction
