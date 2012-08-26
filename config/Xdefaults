@@ -31,7 +31,7 @@ XTerm*cursorColor: #009900
 XTerm*cutNewline: false
 XTerm*allowBoldFonts: false
 XTerm*allowColorOps: true
-XTerm*color4: DodgerBlue4
+XTerm*color4: DodgerBlue1
 XTerm*decTerminalID: 102
 XTerm*eightBitInput: false
 XTerm*fastScroll: true
