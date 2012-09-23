@@ -199,10 +199,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
      , ((modMask, xK_Left), moveTo Prev NonEmptyWS)
 
     -- Quit xmonad
-    , ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    {-, ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))-}
 
     -- Restart xmonad
-    , ((modMask              , xK_q     ),
+    , ((modMask .|. controlMask, xK_q     ),
           broadcastMessage ReleaseResources >> restart "xmonad" True)
 
     -- Fix the Java bug
