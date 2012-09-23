@@ -18,6 +18,7 @@ alias gp='gp -q'
 alias gdb='gdb -q'
 alias vim='vim --servername VIM_SERVER'
 alias vimr='vim --remote'
+alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu"'
 
 function __print_colored_git_branch
 {
