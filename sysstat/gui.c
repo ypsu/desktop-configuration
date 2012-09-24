@@ -13,7 +13,7 @@
 
 #include "sysstat.h"
 
-#define TOPWIDTH 530
+#define TOPWIDTH 620
 #define WIDTH 1920
 #define HEIGHT 1080
 
@@ -27,8 +27,8 @@
 
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
 #define POS_CPU (POS_TIME - (9*g_width))
-//#define POS_MEM (POS_CPU - (9*g_width))
-#define POS_VOL (POS_CPU - (9*g_width))
+#define POS_MEM (POS_CPU - (13*g_width))
+#define POS_VOL (POS_MEM - (9*g_width))
 #define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
 #define POS_BAT (POS_NET - (9*g_width))
 #define POS_YELLOW (POS_BAT - (2*g_width))
@@ -230,7 +230,7 @@ void toggle_big_screen(void) // {{{1
 
 void update_statistics(void) // Updates the statistics data. Should be called in exactly in one second intervals.{{{1
 {
-	//update_memory();
+	update_memory();
 	update_cpu();
 	update_network();
 	update_acpi();
@@ -270,16 +270,16 @@ void draw_cpu(void) // Draws the cpu bars {{{1
 	draw_at_x(POS_CPU, (percentage<80) ? &g_col_fg : &g_col_red, buf);
 }
 
-//void draw_memory(void) // Draws the memory usage {{{1
-//{
-	//char buf[16];
+void draw_memory(void) // Draws the memory usage {{{1
+{
+	char buf[32];
 
-	//sprintf(buf, "MEM:");
-	//draw_at_x(POS_MEM, &g_col_mid, buf);
+	sprintf(buf, "MEM:");
+	draw_at_x(POS_MEM, &g_col_mid, buf);
 
-	//sprintf(buf, "    %3d%%", g_memory_free);
-	//draw_at_x(POS_MEM, &g_col_fg, buf);
-//}
+	sprintf(buf, "    %5d MB", g_memory_committed);
+	draw_at_x(POS_MEM, &g_col_fg, buf);
+}
 
 void draw_network(void) // Draws the network stats {{{1
 {
@@ -366,12 +366,12 @@ void swap_buffers(void) // {{{1
 
 void update_screen(void) // Updates the screen {{{1
 {
-	//XSetForeground(g_dpy, g_topgc, 0x000000);
+	//XSetForeground(g_dpy, g_topgc, 0x000080);
 	//XFillRectangle(g_dpy, g_backbuffer, g_topgc, 0, 0, WIDTH, WINDOW_HEIGHT);
 
 	draw_sound();
 	draw_cpu();
-	//draw_memory();
+	draw_memory();
 	draw_network();
 	draw_time();
 	draw_bat();

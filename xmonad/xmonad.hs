@@ -325,7 +325,7 @@ myPP h = defaultPP
 
 dzenFont = "-fn '-xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1' ";
 dzenColors = " -bg '#000000' -fg '#777777' "
-dzenMiscOptions = " -h 17 -sa c -ta l -tw 1390 -e button3= "
+dzenMiscOptions = " -h 17 -sa c -ta l -tw 1300 -e button3= "
 
 dzenOptions = dzenColors ++ dzenFont ++ dzenMiscOptions
 statusBarCmd = "/home/rlblaster/.xmonad/dzen/dzen2 " ++ dzenOptions

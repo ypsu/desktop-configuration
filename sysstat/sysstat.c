@@ -9,6 +9,18 @@
 
 #include "sysstat.h"
 
+// When the condition is true, output the source location and abort
+#define HANDLE_CASE(cond) do{ if (cond) handle_case(#cond, __FILE__, __func__, __LINE__); } while(0)
+void handle_case(const char *expr, const char *file, const char *func, int line)
+{
+	printf("unhandled case, errno = %d (%m)\n", errno);
+	printf("in expression '%s'\n", expr);
+	printf("in function %s\n", func);
+	printf("in file %s\n", file);
+	printf("at line %d\n", line);
+	abort();
+}
+
 long long extract_file_number(const char* fname) // If a file contains only one positive number, this extracts that. {{{1
 {
 	FILE* f;
@@ -26,7 +38,9 @@ long long extract_file_number(const char* fname) // If a file contains only one 
 	return val;
 }
 // Global variable definitions. {{{1
-int g_memory_free;
+struct IO_INFO g_io[IO_CNT];
+
+int g_memory_committed;
 
 struct CPU_INFO g_cpu[CPU_CNT];
 
@@ -43,34 +57,39 @@ char g_date[DATE_LENGTH+1];
 
 int g_volume_percent;
 
+void update_io() // {{{
+{
+	static int fd = -1;
+	if (fd == -1) {
+		strcpy(g_io[0].name, "sda");
+		fd = open("/proc/diskstats", O_RDONLY);
+		HANDLE_CASE(fd == -1);
+	}
+	char buf[4096];
+	HANDLE_CASE(pread(fd, buf, 4096, 0) < 500);
+	char *p = memchr(buf, 'a', 4096);
+	HANDLE_CASE(p == NULL);
+	p += 1;
+	long long rd, wn;
+	HANDLE_CASE(sscanf(p, "%*s %*s %lld %*s %*s %*s %lld", &rd, &wn) != 2);
+	g_io[0].sectors_read_delta = rd - g_io[0].sectors_read;
+	g_io[0].sectors_written_delta = wn - g_io[0].sectors_written;
+	g_io[0].sectors_read = rd;
+	g_io[0].sectors_written = wn;
+}
+
 void update_memory() // {{{1
 {
-	FILE *f_meminfo;
-	char buf[256];
-	int total = -1, anonPages = -1;
-
-	f_meminfo = fopen("/proc/meminfo", "r");
-	if (f_meminfo == 0) {
-		printf("Fatal error: Couldn't open /proc/meminfo.\n");
-		exit(EXIT_FAILURE);
+	static int fd = -1;
+	if (fd == -1) {
+		fd = open("/proc/meminfo", O_RDONLY);
+		HANDLE_CASE(fd == -1);
 	}
-
-	while (fgets(buf, 256, f_meminfo) != NULL && (total == -1 || anonPages == -1)) {
-		if (total == -1 && strncmp(buf, "MemTotal", 8) == 0) {
-			sscanf(buf, "MemTotal: %d", &total);
-		} else if (anonPages == -1 && strncmp(buf, "AnonPages", 9) == 0) {
-			sscanf(buf, "AnonPages: %d", &anonPages);
-		}
-	}
-
-	fclose(f_meminfo);
-
-	if (total == -1 || anonPages == -1) {
-		printf("Runtime error in memory stat collecting routine.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	g_memory_free = (anonPages*100 + 50) / total;
+	char buf[4096];
+	HANDLE_CASE(pread(fd, buf, 4096, 0) < 1000);
+	long long committed;
+	HANDLE_CASE(sscanf(buf+812, "Committed_AS: %lld", &committed) != 1);
+	g_memory_committed = committed / 1024;
 }
 
 void update_cpu() // {{{1

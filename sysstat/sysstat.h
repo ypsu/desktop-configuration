@@ -10,9 +10,24 @@
 // The time interval between two measurements in milliseconds.
 #define TIME_GRANULARITY 1000
 
+// IO statistics. {{{1
+#define IO_CNT 1
+
+struct IO_INFO {
+	char name[8];
+	long sectors_read;
+	long sectors_written;
+	int sectors_read_delta;
+	int sectors_written_delta;
+};
+
+extern struct IO_INFO g_io[IO_CNT];
+
+void update_io();
+
 // Memory statistics. {{{1
-// Free memory in percentage.
-extern int g_memory_free;
+// Committed memory in MB.
+extern int g_memory_committed;
 
 void update_memory();
 
