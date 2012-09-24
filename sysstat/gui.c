@@ -26,11 +26,11 @@
 #define COL_FOREGROUND 0xCCCCCC
 
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
-#define POS_CPU (POS_TIME - (9*g_width))
-#define POS_MEM (POS_CPU - (13*g_width))
-#define POS_VOL (POS_MEM - (9*g_width))
-#define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
-#define POS_BAT (POS_NET - (9*g_width))
+#define POS_VOL (POS_TIME - (9*g_width))
+#define POS_CPU (POS_VOL - (9*g_width))
+#define POS_NET (POS_CPU - ((6+4+1+4+1)*g_width))
+#define POS_MEM (POS_NET - (13*g_width))
+#define POS_BAT (POS_MEM - (9*g_width))
 #define POS_YELLOW (POS_BAT - (2*g_width))
 #define POS_BLUE (POS_YELLOW - 1*g_width)
 #define POS_GREEN (POS_BLUE - 1*g_width)
