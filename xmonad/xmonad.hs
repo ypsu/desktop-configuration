@@ -26,7 +26,7 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Master
-import XMonad.Layout.ThreeColumns
+import XMonad.Layout.MultiColumns
 import XMonad.Util.Run
 import System.Exit
 
@@ -256,11 +256,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 myLayout = avoidStruts $
            toggleLayouts(noBorders Full) $ smartBorders $
-           --onWorkspace "3 web" (noBorders (tabbed shrinkText defaultTheme) ||| Grid ||| Mirror tiled ||| (mastered (3/100) (1/5) $ Tall 1 (3/100) (75/100)) ||| tiled) $
-           onWorkspace "3 web" (noBorders (tabbed shrinkText defaultTheme) ||| Grid ||| Mirror tiled ||| tiled) $
-           --onWorkspace "5 mm" (Mirror tiled ||| (mastered (3/100) (1/5) $ Tall 1 (3/100) (75/100)) ||| tiled ||| noBorders (tabbed shrinkText defaultTheme) ||| Grid) $
-           --onWorkspace "6 misc" ((mastered (3/100) (1/5) $ Tall 1 (3/100) (75/100)) ||| tiled ||| noBorders (tabbed shrinkText defaultTheme) ||| Grid ||| Mirror tiled) $
-           tiled ||| noBorders (tabbed shrinkText defaultTheme) ||| Grid ||| Mirror tiled ||| ThreeCol 1 (3/100) (1/2)
+           tiled ||| noBorders (tabbed shrinkText defaultTheme) ||| Grid ||| Mirror tiled ||| multiCol [1] 2 0.01 (-0.5)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
