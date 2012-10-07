@@ -27,6 +27,7 @@ URxvt.keysym.M-minus: command:\033]710;-*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
 URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*,xft:DejaVu Sans Mono\007
 
 XTerm*alwaysUseMods: true
+XTerm*bellIsUrgent: true
 XTerm*cursorColor: #009900
 XTerm*cutNewline: false
 XTerm*allowBoldFonts: false

@@ -18,6 +18,7 @@ import XMonad.Actions.SinkAll
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.UrgencyHook
 import XMonad.Layout
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders   ( noBorders, smartBorders )
@@ -309,6 +310,7 @@ myManageHook = composeAll
 myPP h = defaultPP 
                  { ppCurrent = wrap "^fg(#AAAAAA)^bg(#444444)^p(2)^ca(1,xdotool key super+" "^ca()^p(2)^fg()^bg()" . \wsId -> (wsId!!1) : ')' : (if (':' `elem` wsId) then drop 2 wsId else wsId)    -- Trim the '[Int]:' from workspace tags
                   , ppVisible = wrap "^bg(#000000)^fg(#AAAAAA)^p(2)" "^p(2)^fg()^bg()"
+                  , ppUrgent = wrap "^bg(#FFFF00)^fg(#000000)^p(2)" "^p(2)^fg()^bg()"
                   , ppHidden = wrap "^fg(#AAAAAA)^bg()^p(2)^ca(1,xdotool key super+" "^ca()^p(2)^fg()^bg()" . \wsId -> (wsId!!1) : ')' : (if (':' `elem` wsId) then drop 2 wsId else wsId)
                   , ppHiddenNoWindows = wrap "^fg(#444444)^bg(#000000)^p(2)^ca(1,xdotool key super+" "^ca()^p(2)^fg()^bg()" . id . \wsId -> (wsId!!1) : ')' : (if (':' `elem` wsId) then drop 2 wsId else wsId)
                   , ppSep     = "  ^fg(#777777)^r(2x2)^fg()  "
@@ -331,7 +333,7 @@ dzenOptions = dzenColors ++ dzenFont ++ dzenMiscOptions
 statusBarCmd = "/home/rlblaster/.xmonad/dzen/dzen2 " ++ dzenOptions
 
 main = do din <- spawnPipe statusBarCmd
-          xmonad $ defaultConfig 
+          xmonad $ withUrgencyHookC NoUrgencyHook urgencyConfig { suppressWhen = Focused } $ defaultConfig
                      {
                        -- simple stuff
                          terminal           = myTerminal,
