@@ -25,7 +25,7 @@ function __print_colored_git_branch
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /' | tr -d '\n'
 }
 
-if test $TERM = xterm || test $TERM = rxvt-unicode-256color; then
+if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then
 	PS1='\[$(settitle "`pwd`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
 else
 	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
