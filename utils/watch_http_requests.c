@@ -11,7 +11,7 @@ void handler(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes)
 	(void) user;
 	int sz = h->caplen;
 	//printf("captured a %d long packet!\n", sz);
-	char b[sz];
+	char b[sz+1];
 	memcpy(b, bytes, sz);
 	for (int i = 0; i < sz; ++i) {
 		if (b[i] < 32 && b[i] != '\n')
