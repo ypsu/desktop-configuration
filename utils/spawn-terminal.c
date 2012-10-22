@@ -84,13 +84,14 @@ void chdir_to_current_bash(unsigned long wid)
 	closedir(dirp);
 }
 
+char cmd[] = "/usr/bin/xterm";
 int main(int argc, char **argv)
 {
 	assert(argv[argc] == NULL);
 
 	unsigned long wid = get_focused_window();
 	chdir_to_current_bash(wid);
-	const char *cmd = "/usr/bin/xterm";
+	argv[0] = cmd;
 	execv(cmd, argv);
 	return 0;
 }
