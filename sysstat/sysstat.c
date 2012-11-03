@@ -95,10 +95,10 @@ void update_memory() // {{{1
 
 void update_cpu() // {{{1
 {
-	int rby;
-	int fd = -1;
-	char buf[4096];
+	static int fd = -1;
 	static struct CPU_INFO saved;
+	int rby;
+	char buf[4096];
 
 	if (fd == -1) {
 		fd = open("/proc/stat", O_RDONLY);
