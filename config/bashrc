@@ -2,6 +2,7 @@ shopt -s checkwinsize
 
 export EDITOR=vim
 export GIT_EDITOR="$EDITOR"
+PROMPT_COMMAND=
 HISTFILESIZE=1000000000
 HISTSIZE=1000000
 HISTTIMEFORMAT='%F %T '
@@ -26,7 +27,7 @@ function __print_colored_git_branch
 }
 
 if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then
-	PS1='\[$(settitle "`pwd`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
+	PS1='\[$(settitle "`pwd_suffix`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
 else
 	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
 fi
@@ -53,7 +54,14 @@ function disp
 	echo "$1" | rev | sed 's/\(...\)/\1 /g' | rev
 }
 
+function pwd_suffix
+{
+	pwd | sed 's:.\+\(/.*/.*\):...\1:'
+}
+
 function settitle
 {
 	echo -n -e "\033]2;$1\007"
 }
+
+trap 'echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a"' DEBUG
