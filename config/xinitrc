@@ -12,11 +12,4 @@ autocutsel -selection PRIMARY -fork
 
 rm -rf /home/rlblaster/contestapplet.conf.bak
 
-cd /home/rlblaster/.xmonad
-./sysstat &
-./gmail.sh &
-cd
-
-xterm -name XM-start-on-1 &
-firefox &
-exec xmonad
+exec i3

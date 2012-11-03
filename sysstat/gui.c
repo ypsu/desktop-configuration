@@ -17,7 +17,7 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 
-#define WINDOW_HEIGHT 17
+#define WINDOW_HEIGHT 21
 
 #define COL_BACKGROUND 0x000000
 #define COL_LIGHT_BG 0x111111
@@ -79,7 +79,7 @@ void setup_font(void) // {{{1
 
 	g_width = extents->width + 1;
 	g_height = g_xftfont->ascent + g_xftfont->descent;
-	assert(g_height == WINDOW_HEIGHT-1);
+	assert(g_height == WINDOW_HEIGHT-5);
 	g_topbase = g_xftfont->ascent + 1;
 	g_botbase = HEIGHT - 1 - g_xftfont->descent;
 
@@ -128,7 +128,14 @@ void initialize(void) // {{{1
 	wa.background_pixmap = (Pixmap) ParentRelative;
 	wa.event_mask = ExposureMask | ButtonPressMask | StructureNotifyMask;
 
-	g_topwindow = XCreateWindow(g_dpy, DefaultRootWindow(g_dpy),
+	sleep(1);
+	FILE *f = popen("xwininfo -name 'i3bar for output LVDS' | grep 'Window id' | sed 's/.*: 0x\\([0-9a-f]*\\) .*/\\1/'", "r");
+	assert(f != NULL);
+	unsigned int parent;
+	fscanf(f, "%x", &parent);
+	fclose(f);
+	//g_topwindow = XCreateWindow(g_dpy, DefaultRootWindow(g_dpy),
+	g_topwindow = XCreateWindow(g_dpy, parent,
 			WIDTH-TOPWIDTH, 0, TOPWIDTH, WINDOW_HEIGHT, 0, DefaultDepth(g_dpy, DefaultScreen(g_dpy)),
 			CopyFromParent, DefaultVisual(g_dpy, DefaultScreen(g_dpy)),
 			(unsigned long) (CWOverrideRedirect | CWBackPixmap | CWEventMask),
@@ -143,7 +150,7 @@ void initialize(void) // {{{1
 
 void draw_at_xy(int x, int y, XftColor *color, XftDraw *draw, const char *str, int lenmod) // {{{1
 {
-	XftDrawStringUtf8(draw, color, g_xftfont, x, y, (FcChar8*)str, strlen(str) - lenmod);
+	XftDrawStringUtf8(draw, color, g_xftfont, x, y+2, (FcChar8*)str, strlen(str) - lenmod);
 }
 
 void draw_at_x(int x, XftColor *color, const char *str) // {{{1
@@ -366,7 +373,7 @@ void swap_buffers(void) // {{{1
 
 void update_screen(void) // Updates the screen {{{1
 {
-	//XSetForeground(g_dpy, g_topgc, 0x000080);
+	//XSetForeground(g_dpy, g_topgc, 0x004000);
 	//XFillRectangle(g_dpy, g_backbuffer, g_topgc, 0, 0, WIDTH, WINDOW_HEIGHT);
 
 	draw_sound();

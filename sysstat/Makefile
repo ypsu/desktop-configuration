@@ -11,4 +11,4 @@ opt:
 	gcc -O3 -march=native -lm -Wall $(CFLAGS) -o sysstat sysstat.c gui.c $(LDFLAGS)
 
 install:
-	install sysstat ~/.xmonad/sysstat
+	install sysstat ~/.bin/sysstat
