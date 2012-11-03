@@ -26,7 +26,7 @@
 #define COL_FOREGROUND 0xCCCCCC
 
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
-#define POS_CPU (POS_TIME - ((10+9)*g_width))
+#define POS_CPU (POS_TIME - ((9+9)*g_width))
 #define POS_VOL (POS_CPU - (9*g_width))
 #define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
 #define POS_MEM (POS_NET - (13*g_width))
