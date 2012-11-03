@@ -98,7 +98,7 @@ void update_cpu() // {{{1
 	int rby;
 	int fd = -1;
 	char buf[4096];
-	struct CPU_INFO saved;
+	static struct CPU_INFO saved;
 
 	if (fd == -1) {
 		fd = open("/proc/stat", O_RDONLY);
