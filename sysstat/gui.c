@@ -13,7 +13,7 @@
 
 #include "sysstat.h"
 
-#define TOPWIDTH 620
+#define TOPWIDTH 700
 #define WIDTH 1920
 #define HEIGHT 1080
 
@@ -26,7 +26,7 @@
 #define COL_FOREGROUND 0xCCCCCC
 
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
-#define POS_CPU (POS_TIME - (9*g_width))
+#define POS_CPU (POS_TIME - ((10+9)*g_width))
 #define POS_VOL (POS_CPU - (9*g_width))
 #define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
 #define POS_MEM (POS_NET - (13*g_width))
@@ -258,23 +258,31 @@ void draw_sound(void) // Draws the sound volume {{{1
 
 void draw_cpu(void) // Draws the cpu bars {{{1
 {
-	char buf[16];
+	char buf[32];
 
 	unsigned user, system, idle;
 	unsigned percentage;
-	user = g_cpu[0].user + g_cpu[1].user;
-	system = g_cpu[0].system + g_cpu[1].system;
-	idle = g_cpu[0].idle + g_cpu[1].idle;
+	user = g_cpu.user;
+	system = g_cpu.system;
+	idle = g_cpu.idle;
 	if (user+system+idle != 0)
 		percentage = 100*(user+system) / (user+system+idle);
 	else
 		percentage = 0;
 
-	sprintf(buf, "CPU:");
+	sprintf(buf, "R/B:      CPU:");
 	draw_at_x(POS_CPU, &g_col_mid, buf);
 
-	sprintf(buf, "    %3d%%", percentage);
+	sprintf(buf, "              %3d%%", percentage);
 	draw_at_x(POS_CPU, (percentage<80) ? &g_col_fg : &g_col_red, buf);
+
+	char r = '+', b = '+';
+	if (g_cpu.running < 10)
+		r = g_cpu.running + '0';
+	if (g_cpu.blocked < 10)
+		b = g_cpu.blocked + '0';
+	sprintf(buf, "     %c/%c", r, b);
+	draw_at_x(POS_CPU, &g_col_fg, buf);
 }
 
 void draw_memory(void) // Draws the memory usage {{{1

@@ -31,16 +31,15 @@ extern int g_memory_committed;
 
 void update_memory();
 
-// CPU statistics. {{{1
-#define CPU_CNT 2
-
 struct CPU_INFO {
 	unsigned user;   // user + nice
 	unsigned system; // system + iowait
 	unsigned idle;   // idle
+
+	int running, blocked;
 };
 
-extern struct CPU_INFO g_cpu[CPU_CNT];
+extern struct CPU_INFO g_cpu;
 
 void update_cpu();
 

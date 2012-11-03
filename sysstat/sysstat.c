@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,7 +43,7 @@ struct IO_INFO g_io[IO_CNT];
 
 int g_memory_committed;
 
-struct CPU_INFO g_cpu[CPU_CNT];
+struct CPU_INFO g_cpu;
 
 const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "eth0", "eth1" };
 struct NETWORK_INFO g_network[NETWORK_INTERFACE_CNT];
@@ -94,44 +95,34 @@ void update_memory() // {{{1
 
 void update_cpu() // {{{1
 {
-	int cur_cpu;
-	char buf[256];
-	FILE* fstat;
-	static struct CPU_INFO cpus[CPU_CNT];
+	int rby;
+	int fd = -1;
+	char buf[4096];
+	struct CPU_INFO saved;
 
-	fstat = fopen("/proc/stat", "r");
-	if (fstat == 0) {
-		printf("Fatal error: Couldn't open /proc/stat.\n");
-		exit(EXIT_FAILURE);
+	if (fd == -1) {
+		fd = open("/proc/stat", O_RDONLY);
+		HANDLE_CASE(fd == -1);
 	}
 
-	// Query the cpu information.
-	for (cur_cpu = 0; cur_cpu < CPU_CNT; ++cur_cpu) {
-		fgets(buf, 256, fstat);
-		if (strncmp(buf, "cpu", 3) != 0) {
-			cur_cpu -= 1;
-			continue;
-		}
-		if (buf[3]-'0' == (char) cur_cpu) {
-			char ch;
-			unsigned user, nice, system, idle, iowait;
-			sscanf(buf, "cpu%c %u %u %u %u %u",
-					&ch, &user, &nice, &system, &idle, &iowait);
+	HANDLE_CASE((rby = pread(fd, buf, 4096, 0)) < 100);
 
-			g_cpu[cur_cpu].user = user + nice - cpus[cur_cpu].user;
-			g_cpu[cur_cpu].system = system + iowait - cpus[cur_cpu].system;
-			g_cpu[cur_cpu].idle = idle - cpus[cur_cpu].idle;
+	unsigned user, nice, system, idle, iowait;
+	HANDLE_CASE(sscanf(buf, "cpu %u %u %u %u %u", &user, &nice, &system, &idle, &iowait) != 5);
+	g_cpu.user = user + nice - saved.user;
+	g_cpu.system = system + iowait - saved.system;
+	g_cpu.idle = idle - saved.idle;
 
-			cpus[cur_cpu].user = user + nice;
-			cpus[cur_cpu].system = system + iowait;
-			cpus[cur_cpu].idle = idle;
-		} else {
-			cur_cpu -= 1;
-			continue;
-		}
-	}
+	saved.user = user + nice;
+	saved.system = system + iowait;
+	saved.idle = idle;
 
-	fclose(fstat);
+	char *p = memmem(buf, rby, "procs_running", 13);
+	HANDLE_CASE(p == NULL);
+	int running, blocked;
+	HANDLE_CASE(sscanf(p, "procs_running %d procs_blocked %d", &running, &blocked) != 2);
+	g_cpu.running = running-1;
+	g_cpu.blocked = blocked;
 }
 
 void update_network() // {{{1
