@@ -28,6 +28,7 @@ URxvt.keysym.M-equal: command:\033]710;-*-terminus-medium-*-*-*-24-*-*-*-*-*-*-*
 
 XTerm*alwaysUseMods: true
 XTerm*bellIsUrgent: true
+XTerm*cdXtraScroll: true
 XTerm*cursorColor: #009900
 XTerm*cutNewline: false
 XTerm*allowBoldFonts: false
@@ -43,14 +44,11 @@ XTerm*font3: -xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1
 XTerm*font4: -xos4-terminus-medium-r-normal--24-240-72-72-c-120-iso10646-1
 XTerm*font5: -xos4-terminus-medium-r-normal--28-280-72-72-c-140-iso10646-1
 XTerm*font6: -xos4-terminus-medium-r-normal--32-320-72-72-c-160-iso10646-1
-XTerm*geometry: 90x30
 XTerm*highlightSelection: true
 XTerm*jumpScroll: true
 XTerm*keyboardType: tcap
 XTerm*maxBufSize: 65536
 XTerm*minBufSize: 65536
-XTerm*modifyKeyboard: 15
-XTerm*modifyOtherKeys: 2
 XTerm*multiScroll: true
 XTerm*pointerMode: 2
 XTerm*saveLines: 10000
