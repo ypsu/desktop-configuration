@@ -185,4 +185,8 @@ bindsym $mod+r mode "resize"
 bar {
         position top
         tray_output none
+
+        colors {
+                urgent_workspace #ffff00 #ffff00 #000000
+        }
 }
