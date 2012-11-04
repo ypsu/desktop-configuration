@@ -26,8 +26,8 @@ floating_modifier $mod
 
 # custom workspaces
 # work mail
-bindsym $mod+q workspace wm
-bindsym $mod+Shift+q move container to workspace wm
+bindsym $mod+q workspace qc
+bindsym $mod+Shift+q move container to workspace qc
 # web
 bindsym $mod+w workspace web
 bindsym $mod+Shift+w move container to workspace web
