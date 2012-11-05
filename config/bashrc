@@ -64,4 +64,4 @@ function settitle
 	echo -n -e "\033]2;$1\007"
 }
 
-trap 'echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a" >/dev/null' DEBUG
+trap '(echo -e "$BASH_COMMAND" | grep -q "\|") || echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a"' DEBUG
