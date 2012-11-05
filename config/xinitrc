@@ -1,6 +1,5 @@
 #!/bin/bash
 
-xsetroot -cursor_name left_ptr
 xset r rate 300 40
 xset s 1200
 xset dpms 1200 1200 1200

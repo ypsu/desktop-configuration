@@ -153,6 +153,7 @@ exec_always sysstat
 exec gmail.sh
 exec xterm
 exec firefox
+exec xsetroot -cursor_name left_ptr
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
