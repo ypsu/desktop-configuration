@@ -136,7 +136,7 @@ void initialize(void) // {{{1
 	fclose(f);
 	//g_topwindow = XCreateWindow(g_dpy, DefaultRootWindow(g_dpy),
 	g_topwindow = XCreateWindow(g_dpy, parent,
-			WIDTH-TOPWIDTH, 0, TOPWIDTH, WINDOW_HEIGHT, 0, DefaultDepth(g_dpy, DefaultScreen(g_dpy)),
+			WIDTH-TOPWIDTH, -1, TOPWIDTH, WINDOW_HEIGHT, 0, DefaultDepth(g_dpy, DefaultScreen(g_dpy)),
 			CopyFromParent, DefaultVisual(g_dpy, DefaultScreen(g_dpy)),
 			(unsigned long) (CWOverrideRedirect | CWBackPixmap | CWEventMask),
 			&wa);
