@@ -22,19 +22,13 @@ void handle_case(const char *expr, const char *file, const char *func, int line)
 	abort();
 }
 
-long long extract_file_number(const char* fname) // If a file contains only one positive number, this extracts that. {{{1
+long long extract_file_number(int fd) // If a file contains only one positive number, this extracts that. {{{1
 {
-	FILE* f;
 	long long val = 0;
+	static char buf[32];
 
-	if (fname == 0)
-		return 0;
-	
-	f = fopen(fname, "r");
-	if (f != 0) {
-		fscanf(f, "%lld", &val);
-		fclose(f);
-	}
+	HANDLE_CASE(pread(fd, buf, 31, 0) <= 0);
+	sscanf(buf, "%lld", &val);
 
 	return val;
 }
@@ -128,30 +122,46 @@ void update_cpu() // {{{1
 void update_network() // {{{1
 {
 	static int initialized = 0;
-	static char up_filename[NETWORK_INTERFACE_CNT][256];
-	static char down_filename[NETWORK_INTERFACE_CNT][256];
+	static char up_fd[NETWORK_INTERFACE_CNT];
+	static char down_fd[NETWORK_INTERFACE_CNT];
 	int cur_int;
 
 	if (initialized == 0) {
 		initialized = 1;
 
 		for (cur_int = 0; cur_int < NETWORK_INTERFACE_CNT; ++cur_int) {
-			snprintf(down_filename[cur_int], 256,
-					"/sys/class/net/%s/statistics/rx_bytes",
-					NETWORK_INTERFACE[cur_int]);
-			snprintf(up_filename[cur_int], 256,
-					"/sys/class/net/%s/statistics/tx_bytes",
-					NETWORK_INTERFACE[cur_int]);
+			char buf[256];
+			const char *iface = NETWORK_INTERFACE[cur_int];
+			snprintf(buf, 256, "/sys/class/net/%s/statistics/rx_bytes", iface);
+			down_fd[cur_int] = open(buf, O_RDONLY);
+
+			snprintf(buf, 256, "/sys/class/net/%s/statistics/tx_bytes", iface);
+			up_fd[cur_int] = open(buf, O_RDONLY);
 		}
 	}
 
 	// Query the network information.
 	for (cur_int = 0; cur_int < NETWORK_INTERFACE_CNT; ++cur_int) {
 		long long down, up;
-		down = extract_file_number(down_filename[cur_int]);
-		up = extract_file_number(up_filename[cur_int]);
-		g_network[cur_int].down_delta = down - g_network[cur_int].download;
-		g_network[cur_int].up_delta = up - g_network[cur_int].upload;
+		long long old_down, old_up;
+		long long delta_down = 0, delta_up = 0;
+		old_down = g_network[cur_int].download;
+		old_up = g_network[cur_int].upload;
+		down = extract_file_number(down_fd[cur_int]);
+		up = extract_file_number(up_fd[cur_int]);
+
+		if (old_down > 4000000000 && down < old_down)
+			down += 1LL << 32;
+		if (old_up > 4000000000 && up < old_up)
+			up += 1LL << 32;
+
+		if (down >= old_down)
+			delta_down = down - old_down;
+		if (up >= old_up)
+			delta_up = up - old_up;
+
+		g_network[cur_int].down_delta = delta_down;
+		g_network[cur_int].up_delta = delta_up;
 		g_network[cur_int].download = down;
 		g_network[cur_int].upload = up;
 	}
