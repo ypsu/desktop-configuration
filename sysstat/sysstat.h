@@ -26,6 +26,9 @@ extern struct IO_INFO g_io[IO_CNT];
 void update_io();
 
 // Memory statistics. {{{1
+// Dirty memory in KB.
+extern int g_memory_dirty;
+extern int g_memory_writeback;
 // Committed memory in MB.
 extern int g_memory_committed;
 

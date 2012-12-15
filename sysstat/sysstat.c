@@ -36,6 +36,8 @@ long long extract_file_number(int fd) // If a file contains only one positive nu
 // Global variable definitions. {{{1
 struct IO_INFO g_io[IO_CNT];
 
+int g_memory_dirty;
+int g_memory_writeback;
 int g_memory_committed;
 
 struct CPU_INFO g_cpu;
@@ -83,8 +85,15 @@ void update_memory() // {{{1
 	}
 	char buf[4096];
 	HANDLE_CASE(pread(fd, buf, 4096, 0) < 500);
+	const int line_length = 28;
 	long long committed;
-	HANDLE_CASE(sscanf(buf+812, "Committed_AS: %lld", &committed) != 1);
+	long long dirty;
+	long long writeback;
+	HANDLE_CASE(sscanf(buf+15*line_length, "Dirty: %lld", &dirty) != 1);
+	HANDLE_CASE(sscanf(buf+16*line_length, "Writeback: %lld", &writeback) != 1);
+	HANDLE_CASE(sscanf(buf+29*line_length, "Committed_AS: %lld", &committed) != 1);
+	g_memory_dirty = dirty;
+	g_memory_writeback = writeback;
 	g_memory_committed = committed / 1024;
 }
 

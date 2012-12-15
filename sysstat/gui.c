@@ -14,15 +14,16 @@
 
 #include "sysstat.h"
 
-#define TOPWIDTH 700
+#define TOPWIDTH 750
 #define WIDTH 1920
-#define HEIGHT 1080
+#define HEIGHT 1200
 
 #define WINDOW_HEIGHT 21
 
 #define COL_BACKGROUND 0x000000
 #define COL_LIGHT_BG 0x111111
 #define COL_RED 0xFF0000
+#define COL_YELLOW 0xFFFF00
 #define COL_MIDGROUND  0x888888
 #define COL_FOREGROUND 0xCCCCCC
 
@@ -30,9 +31,9 @@
 #define POS_CPU (POS_TIME - ((9+9)*g_width))
 #define POS_VOL (POS_CPU - (9*g_width))
 #define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
-#define POS_MEM (POS_NET - (13*g_width))
+#define POS_MEM (POS_NET - (30*g_width))
 #define POS_BAT (POS_MEM - (9*g_width))
-#define POS_YELLOW (POS_BAT - (2*g_width))
+#define POS_YELLOW (POS_MEM - (2*g_width))
 #define POS_BLUE (POS_YELLOW - 1*g_width)
 #define POS_GREEN (POS_BLUE - 1*g_width)
 #define POS_RED (POS_GREEN - 1*g_width)
@@ -54,7 +55,7 @@ int g_height, g_width; // Font width and height.
 int g_topbase, g_botbase; // Font baselines.
 Font g_font;
 XftFont* g_xftfont;
-XftColor g_col_bg, g_col_fg, g_col_light, g_col_red, g_col_mid;
+XftColor g_col_bg, g_col_fg, g_col_light, g_col_red, g_col_yellow, g_col_mid;
 
 int g_cur_network_interface = 0;
 
@@ -92,6 +93,7 @@ void setup_font(void) // {{{1
 	create_color(COL_MIDGROUND, &g_col_mid);
 	create_color(COL_LIGHT_BG, &g_col_light);
 	create_color(COL_RED, &g_col_red);
+	create_color(COL_YELLOW, &g_col_yellow);
 }
 
 void setup_xdbe(void) // {{{1
@@ -290,11 +292,15 @@ void draw_memory(void) // Draws the memory usage {{{1
 {
 	char buf[32];
 
-	sprintf(buf, "MEM:");
+	sprintf(buf, "DIRTY:           MEM:");
 	draw_at_x(POS_MEM, &g_col_mid, buf);
 
-	sprintf(buf, "    %5d MB", g_memory_committed);
+	sprintf(buf, "                     %5d MB", g_memory_committed);
 	draw_at_x(POS_MEM, &g_col_fg, buf);
+
+	XftColor col = (g_memory_writeback == 0 ? g_col_fg : g_col_yellow);
+	sprintf(buf, "      %6d KB", g_memory_dirty + g_memory_writeback);
+	draw_at_x(POS_MEM, &col, buf);
 }
 
 void draw_network(void) // Draws the network stats {{{1
@@ -350,24 +356,24 @@ void draw_indicators(void) // Draws the colored indicators {{{1
 {
 	struct stat buf;
 
+	if (stat("/dev/shm/R", &buf) == 0) {
+		XSetForeground(g_dpy, g_topgc, 0x0000FF);
+		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_RED, 0, 1*g_width, WINDOW_HEIGHT-1);
+	}
+
 	if (stat("/dev/shm/G", &buf) == 0) {
 		XSetForeground(g_dpy, g_topgc, 0x00FF00);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_GREEN, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 
 	if (stat("/dev/shm/B", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0x0000FF);
+		XSetForeground(g_dpy, g_topgc, 0xFF0000);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_BLUE, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 
 	if (stat("/dev/shm/Y", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0xFFFF00);
+		XSetForeground(g_dpy, g_topgc, 0x00FFFF);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_YELLOW, 0, 1*g_width, WINDOW_HEIGHT-1);
-	}
-
-	if (stat("/dev/shm/R", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0xFF0000);
-		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_RED, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 }
 
