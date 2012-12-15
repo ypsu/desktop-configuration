@@ -18,7 +18,7 @@
 #define WIDTH 1920
 #define HEIGHT 1200
 
-#define WINDOW_HEIGHT 21
+#define WINDOW_HEIGHT 17
 
 #define COL_BACKGROUND 0x000000
 #define COL_LIGHT_BG 0x111111
@@ -28,10 +28,10 @@
 #define COL_FOREGROUND 0xCCCCCC
 
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
-#define POS_CPU (POS_TIME - ((9+9)*g_width))
+#define POS_CPU (POS_TIME - ((9+8)*g_width))
 #define POS_VOL (POS_CPU - (9*g_width))
-#define POS_NET (POS_VOL - ((6+4+1+4+1)*g_width))
-#define POS_MEM (POS_NET - (30*g_width))
+#define POS_NET (POS_VOL - ((6+4+1+4+1-2)*g_width))
+#define POS_MEM (POS_NET - (26*g_width))
 #define POS_BAT (POS_MEM - (9*g_width))
 #define POS_YELLOW (POS_MEM - (2*g_width))
 #define POS_BLUE (POS_YELLOW - 1*g_width)
@@ -68,7 +68,7 @@ void create_color(unsigned long color, XftColor *xftcolor) // {{{1
 
 void setup_font(void) // {{{1
 {
-	const char fontstr[] = "-xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1";
+	const char fontstr[] = "-xos4-terminus-medium-r-normal--12-120-72-72-c-60-iso10646-1";
 	g_xftfont = XftFontOpenXlfd(g_dpy, g_screen, fontstr);
 	if(!g_xftfont)
 		g_xftfont = XftFontOpenName(g_dpy, g_screen, fontstr);
