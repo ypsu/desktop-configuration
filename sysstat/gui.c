@@ -291,14 +291,16 @@ void draw_cpu(void) // Draws the cpu bars {{{1
 void draw_memory(void) // Draws the memory usage {{{1
 {
 	char buf[32];
+	XftColor col;
 
 	sprintf(buf, "DIRTY:           MEM:");
 	draw_at_x(POS_MEM, &g_col_mid, buf);
 
+	col = (g_memory_committed < 300 ? g_col_fg : g_col_yellow);
 	sprintf(buf, "                     %5d MB", g_memory_committed);
-	draw_at_x(POS_MEM, &g_col_fg, buf);
+	draw_at_x(POS_MEM, &col, buf);
 
-	XftColor col = (g_memory_writeback == 0 ? g_col_fg : g_col_yellow);
+	col = (g_memory_writeback == 0 ? g_col_fg : g_col_yellow);
 	sprintf(buf, "      %6d KB", g_memory_dirty + g_memory_writeback);
 	draw_at_x(POS_MEM, &col, buf);
 }
