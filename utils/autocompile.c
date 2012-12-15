@@ -167,7 +167,7 @@ int main(void)
 			}
 		} while (begin < size);
 		if (should_make) {
-			exec_command("make -j2");
+			exec_command("make");
 		}
 	}
 	return 0;

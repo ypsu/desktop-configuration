@@ -6,9 +6,4 @@ xset dpms 1200 1200 1200
 
 xmodmap ~/.xmodmap
 
-autocutsel -fork
-autocutsel -selection PRIMARY -fork
-
-rm -rf /home/rlblaster/contestapplet.conf.bak
-
 exec i3

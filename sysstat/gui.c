@@ -55,7 +55,7 @@ Font g_font;
 XftFont* g_xftfont;
 XftColor g_col_bg, g_col_fg, g_col_light, g_col_red, g_col_mid;
 
-int g_cur_network_interface = 1;
+int g_cur_network_interface = 0;
 
 void create_color(unsigned long color, XftColor *xftcolor) // {{{1
 {
@@ -129,7 +129,7 @@ void initialize(void) // {{{1
 	wa.event_mask = ExposureMask | ButtonPressMask | StructureNotifyMask;
 
 	sleep(1);
-	FILE *f = popen("xwininfo -name 'i3bar for output LVDS' | grep 'Window id' | sed 's/.*: 0x\\([0-9a-f]*\\) .*/\\1/'", "r");
+	FILE *f = popen("xwininfo -name 'i3bar for output xroot-0' | grep 'Window id' | sed 's/.*: 0x\\([0-9a-f]*\\) .*/\\1/'", "r");
 	assert(f != NULL);
 	unsigned int parent;
 	fscanf(f, "%x", &parent);
@@ -209,7 +209,7 @@ void toggle_big_screen(void) // {{{1
 		pclose(f);
 
 		y += g_height;
-		for (i = 0; i < 2; ++i) {
+		for (i = 0; i < NETWORK_INTERFACE_CNT; ++i) {
 			sprintf(buf, "%5s: Down: %6lld MB; Up: %6lld MB", NETWORK_INTERFACE[i],
 					g_network[i].download / 1024 / 1024, g_network[i].upload / 1024 / 1024);
 			draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 1);
@@ -240,7 +240,7 @@ void update_statistics(void) // Updates the statistics data. Should be called in
 	update_memory();
 	update_cpu();
 	update_network();
-	update_acpi();
+	//update_acpi();
 	update_date();
 	update_volume();
 }
@@ -455,12 +455,12 @@ int main(void) // {{{1
 					break;
 
 				case 4:
-					system("amixer -c0 sset Master 5%+ >/dev/null");
+					system("amixer -M sset PCM 5%+ >/dev/null");
 					update_volume();
 					break;
 
 				case 5:
-					system("amixer -c0 sset Master 5%- >/dev/null");
+					system("amixer -M set PCM 5%- >/dev/null");
 					update_volume();
 					break;
 

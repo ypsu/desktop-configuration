@@ -26,13 +26,7 @@ function __print_colored_git_branch
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /' | tr -d '\n'
 }
 
-if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then
-	PS1='\[$(settitle "`pwd_suffix`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
-else
-	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
-fi
-
-export PATH="/home/rlblaster/.bin:/usr/lib/colorgcc/bin:$PATH:/sbin:/usr/local/bin:/opt/java/jre/bin:/opt/java/bin:/opt/kde/bin:/opt/skype"
+export PATH="/home/rlblaster/.bin:/root:$PATH"
 export PATH="$PATH:/home/rlblaster/thesis/app/build"
 export LESSCHARSET='utf-8'
 export GREP_OPTIONS='--color=auto'
@@ -64,4 +58,9 @@ function settitle
 	echo -n -e "\033]2;$1\007"
 }
 
-trap '(echo "$BASH_COMMAND" | grep -q "^[^\\]*$") && echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a"' DEBUG
+if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then
+	PS1='\[$(settitle "`pwd_suffix`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
+	trap '(echo "$BASH_COMMAND" | grep -q "^[^\\]*$") && echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a"' DEBUG
+else
+	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
+fi

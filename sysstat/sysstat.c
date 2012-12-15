@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +40,7 @@ int g_memory_committed;
 
 struct CPU_INFO g_cpu;
 
-const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "eth0", "eth1" };
+const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "eth0" };
 struct NETWORK_INFO g_network[NETWORK_INTERFACE_CNT];
 
 struct ACPI_INFO g_acpi_info;
@@ -81,7 +82,7 @@ void update_memory() // {{{1
 		HANDLE_CASE(fd == -1);
 	}
 	char buf[4096];
-	HANDLE_CASE(pread(fd, buf, 4096, 0) < 1000);
+	HANDLE_CASE(pread(fd, buf, 4096, 0) < 500);
 	long long committed;
 	HANDLE_CASE(sscanf(buf+812, "Committed_AS: %lld", &committed) != 1);
 	g_memory_committed = committed / 1024;
@@ -150,9 +151,9 @@ void update_network() // {{{1
 		down = extract_file_number(down_fd[cur_int]);
 		up = extract_file_number(up_fd[cur_int]);
 
-		if (old_down > 4000000000 && down < old_down)
+		if (old_down > 4000000000u && down < old_down)
 			down += 1LL << 32;
-		if (old_up > 4000000000 && up < old_up)
+		if (old_up > 4000000000u && up < old_up)
 			up += 1LL << 32;
 
 		if (down >= old_down)
@@ -225,10 +226,50 @@ void update_date() // {{{1
 	}
 }
 
+#define MAX_LINEAR_DB_SCALE 24
+
+static inline bool use_linear_dB_scale(long dBmin, long dBmax)
+{
+	return dBmax - dBmin <= MAX_LINEAR_DB_SCALE * 100;
+}
+
+static double get_normalized_volume(snd_mixer_elem_t *elem, snd_mixer_selem_channel_id_t channel)
+{
+	long min, max, value;
+	double normalized;
+	//double min_norm;
+	int err;
+
+	err = snd_mixer_selem_get_playback_dB_range(elem, &min, &max);
+	if (err < 0 || min >= max) {
+		err = snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+		if (err < 0 || min == max)
+			return 0;
+
+		err = snd_mixer_selem_get_playback_volume(elem, channel, &value);
+		if (err < 0)
+			return 0;
+
+		return (value - min) / (double)(max - min);
+	}
+
+	err = snd_mixer_selem_get_playback_dB(elem, channel, &value);
+	if (err < 0)
+		return 0;
+
+	if (use_linear_dB_scale(min, max))
+		return (value - min) / (double)(max - min);
+
+	normalized = exp10((value - max) / 6000.0);
+	//min_norm = exp10((min - max) / 6000.0);
+	//normalized = (normalized - min_norm) / (1 - min_norm);
+
+	return normalized;
+}
+
 void update_volume() // {{{1
 {
 	int err;
-	long int pmin, pmax, pvol;
 	bool first_run = false;
 	static bool initialized = false;
 	static snd_mixer_t *snd_mixer;
@@ -263,7 +304,7 @@ void update_volume() // {{{1
 
 		snd_mixer_selem_id_malloc(&sid);
 		snd_mixer_selem_id_set_index(sid, 0);
-		snd_mixer_selem_id_set_name(sid, "Master");
+		snd_mixer_selem_id_set_name(sid, "PCM");
 		elem = snd_mixer_find_selem(snd_mixer, sid);
 		if (elem == NULL) {
 			puts("error in snd_mixer_find_selem");
@@ -277,13 +318,6 @@ void update_volume() // {{{1
 		exit(2);
 	}
 	if (first_run || err > 0) {
-		err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_MONO, &pvol);
-		if (err < 0) {
-			puts(snd_strerror(err));
-			exit(2);
-		}
-
-		snd_mixer_selem_get_playback_volume_range(elem, &pmin, &pmax);
-		g_volume_percent = (int) (pvol*100 / pmax);
+		g_volume_percent = lrint(100.0*get_normalized_volume(elem, SND_MIXER_SCHN_MONO));
 	}
 }
