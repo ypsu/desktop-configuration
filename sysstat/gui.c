@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
@@ -404,6 +405,8 @@ int main(void) // {{{1
 	struct timeval update_interval;
 	struct timeval curtime;
 
+	signal(SIGCHLD, SIG_IGN);
+
 	update_interval.tv_sec = TIME_GRANULARITY / 1000;
 	update_interval.tv_usec = TIME_GRANULARITY % 1000 * 1000;
 
@@ -451,7 +454,10 @@ int main(void) // {{{1
 					break;
 
 				case 3:
-					g_cur_network_interface = 1 - g_cur_network_interface;
+					if (fork() == 0) {
+						execl("/usr/bin/sync", "/usr/bin/sync", NULL);
+						exit(0);
+					}
 					break;
 
 				case 4:
