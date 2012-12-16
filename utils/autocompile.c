@@ -109,12 +109,14 @@ int main(void)
 				should_make = should_make || ends_with(ev->name, "akefile");
 			} else {
 				if (ends_with(ev->name, ".c")) {
-					sprintf(cmdbuf, "gcc -fstack-protector-all -std=c99 "
+					sprintf(cmdbuf, "clang -mfloat-abi=hard -D__ARM_PCS_VFP "
+							"-fstack-protector-all -std=c99 "
 							"-lm -Wall -Wextra -g3 '%s' -lgmp "
 							"-lpthread -lrt", ev->name);
 					exec_command(cmdbuf);
 				} else if (cpp_source(ev->name)) {
-					sprintf(cmdbuf, "g++ -fstack-protector-all "
+					sprintf(cmdbuf, "clang++ -fstack-protector-all "
+							"-mfloat-abi=hard -D__ARM_PCS_VFP "
 							"-D_GLIBCXX_DEBUG -DATHOME -lm -Wall "
 							"-Wextra -g3 '%s' -lgmp -lpthread -lrt",
 							ev->name);
