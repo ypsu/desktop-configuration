@@ -70,6 +70,8 @@ bool cpp_source(const char *name)
 void exec_command(const char *cmd)
 {
 	printf("\e[H\e[2J");
+	printf("\e[H\e[2J");
+	printf("\e[H\e[2J");
 	puts(cmd);
 	int rv = system(cmd);
 	if (rv == 0)
