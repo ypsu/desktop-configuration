@@ -80,51 +80,6 @@ void exec_command(const char *cmd)
 	fflush(stdout);
 }
 
-void compile_tex(const char *fname)
-{
-	printf("\e[H\e[2J");
-	printf("compiling %s\n", fname);
-	char cmd[4096];
-	int rv;
-
-	rv = system("mkdir -p .tmp");
-	if (rv != 0) {
-		printf("\e[31merror occured (0)\e[0m\n");
-		return;
-	}
-
-#define COMMON_CMD "pdflatex --shell-escape -halt-on-error -file-line-error -output-directory .tmp"
-	sprintf(cmd, COMMON_CMD " '%s' > /dev/null", fname);
-	rv = system(cmd);
-	if (rv != 0) {
-		printf("\e[31merror occured (1)\e[0m\n");
-		return;
-	}
-
-	sprintf(cmd, COMMON_CMD " '%s' > /dev/null", fname);
-	rv = system(cmd);
-	if (rv != 0) {
-		printf("\e[31merror occured (2)\e[0m\n");
-		return;
-	}
-
-	sprintf(cmd, COMMON_CMD " '%s' | grep Overfull", fname);
-	system(cmd);
-#undef COMMON_CMD
-
-	sprintf(cmd, "mv .tmp/$(sed 's/.tex$/.pdf/' <<< '%s') . && rm -rf .tmp", fname);
-	rv = system(cmd);
-	if (rv != 0) {
-		printf("\e[31merror occured (4)\e[0m\n");
-		return;
-	}
-
-	sprintf(cmd, "touch $(sed 's/.tex$/.pdf/' <<< '%s')", fname);
-	system(cmd);
-
-	printf("\e[32mdone\e[0m\n");
-}
-
 int main(void)
 {
 	struct stat stat_buf;
@@ -142,6 +97,7 @@ int main(void)
 			ev = next_event();
 			HANDLE_CASE(ev->len > 3000);
 			if (just_make_it) {
+				should_make = should_make || ends_with(ev->name, ".tex");
 				should_make = should_make || ends_with(ev->name, ".h");
 				should_make = should_make || ends_with(ev->name, ".hh");
 				should_make = should_make || ends_with(ev->name, ".hpp");
@@ -161,8 +117,6 @@ int main(void)
 							"-Wextra -g3 '%s' -lgmp -lpthread -lrt",
 							ev->name);
 					exec_command(cmdbuf);
-				} else if (ends_with(ev->name, ".tex")) {
-					compile_tex(ev->name);
 				}
 			}
 		} while (begin < size);
