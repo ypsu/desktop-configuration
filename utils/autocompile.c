@@ -114,7 +114,7 @@ int main(void)
 							"-lpthread -lrt", ev->name);
 					exec_command(cmdbuf);
 				} else if (cpp_source(ev->name)) {
-					sprintf(cmdbuf, "g++ -std=c++0x -fstack-protector-all "
+					sprintf(cmdbuf, "g++ -fstack-protector-all "
 							"-D_GLIBCXX_DEBUG -DATHOME -lm -Wall "
 							"-Wextra -g3 '%s' -lgmp -lpthread -lrt",
 							ev->name);
