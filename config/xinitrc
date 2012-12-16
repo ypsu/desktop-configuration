@@ -5,5 +5,6 @@ xset s 1200
 xset dpms 1200 1200 1200
 
 xmodmap ~/.xmodmap
+rm -f ~/contestapplet.conf.bak
 
 exec i3
