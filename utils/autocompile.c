@@ -118,7 +118,9 @@ int main(void)
 					sprintf(cmdbuf, "clang++ -fstack-protector-all "
 							"-mfloat-abi=hard -D__ARM_PCS_VFP "
 							"-D_GLIBCXX_DEBUG -DATHOME -lm -Wall "
-							"-Wextra -g3 '%s' -lgmp -lpthread -lrt",
+							"-Wextra -g3 '%s' -lgmp -lpthread -lrt "
+							"-L/home/rlblaster/.bin/ -lclangfix "
+							"-Wl,-rpath,/home/rlblaster/.bin/ ",
 							ev->name);
 					exec_command(cmdbuf);
 				}
