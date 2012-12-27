@@ -201,7 +201,7 @@ void toggle_big_screen(void) // {{{1
 
 	// draw the calendar
 	{
-		FILE *f = popen("remind -c+5 -b1 -m -w238 ~/.reminders", "r");
+		FILE *f = popen("remind -c+9 -b1 -m -w318 ~/.reminders", "r");
 		char buf[1024];
 		int y;
 		int i;
