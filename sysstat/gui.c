@@ -219,14 +219,6 @@ void toggle_big_screen(void) // {{{1
 			y += g_height;
 		}
 
-		y += g_height;
-		sprintf(buf, "ACPI: %s", g_acpi_info.bat_note);
-		draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 0);
-		y += g_height;
-		sprintf(buf, "Temperature: %d C", g_acpi_info.temperature);
-		draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 0);
-		y += g_height;
-
 		f = popen("df -lh", "r");
 		for (y += g_height; fgets(buf, 256, f) != NULL; y += g_height) {
 			draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 1);
