@@ -241,7 +241,7 @@ function SetCCommands()
 	map <F9> :call writefile(["tbreak " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <F11> :!valgrind ./a.out <CR>
-	map <F12> :!gcc -Wall -g -fprofile-arcs -ftest-coverage '%:p'; ./a.out; gcov '%:p'; view '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; gcc '%:p' <CR>
+	map <F12> :!gcc -std=c99 -g -fprofile-arcs -ftest-coverage '%:p' -lm -lpthread -lrt; ./a.out; gcov -a -b -c '%:p'; vim '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; rm a.out <CR>
 endfunction
 
 " Naughty keys for C++ development.
@@ -269,7 +269,7 @@ function SetCPPCommands()
 	map <F9> :call writefile(["tbreak " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <Leader><F9> :call writefile(["break " . expand("%:p") . ':' . line("."), "r"], "gdb-tmp-cmdlist") \| !gdb -q -x gdb-tmp-cmdlist ./a.out; rm gdb-tmp-cmdlist <CR>
 	map <F11> :!valgrind ./a.out <CR>
-	map <F12> :!g++ -Wall -g -fprofile-arcs -ftest-coverage '%:p'; ./a.out; gcov '%:p'; view '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; g++ '%:p' <CR>
+	map <F12> :!g++ -fprofile-arcs -ftest-coverage '%:p'; ./a.out; gcov -a -b -c '%:p'; vim '%:p.gcov'; rm %:p:r.{gcda,gcno} *.gcov; rm a.out <CR>
 
 	com! LT 1,$d | r ~/.template.cpp | 1d | 33
 endfunction
