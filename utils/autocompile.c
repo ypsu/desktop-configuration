@@ -116,7 +116,6 @@ int main(void)
 					exec_command(cmdbuf);
 				} else if (cpp_source(ev->name)) {
 					sprintf(cmdbuf, "g++ -fstack-protector-all "
-							"-mfloat-abi=hard -D__ARM_PCS_VFP "
 							"-D_GLIBCXX_DEBUG -DATHOME -lm -Wall "
 							"-Wextra -g3 '%s' -lgmp -lpthread -lrt ",
 							ev->name);
