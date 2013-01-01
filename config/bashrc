@@ -63,3 +63,6 @@ if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-2
 else
 	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
 fi
+
+# temporary workaround for clang
+export LD_LIBRARY_PATH=/usr/lib/llvm
