@@ -215,7 +215,7 @@ void toggle_big_screen(void) // {{{1
 		for (i = 0; i < NETWORK_INTERFACE_CNT; ++i) {
 			sprintf(buf, "%5s: Down: %6lld MB; Up: %6lld MB", NETWORK_INTERFACE[i],
 					g_network[i].download / 1024 / 1024, g_network[i].upload / 1024 / 1024);
-			draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 1);
+			draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 0);
 			y += g_height;
 		}
 
