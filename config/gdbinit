@@ -2,12 +2,12 @@ set history save
 set history filename ~/.gdb_history
 
 # C++ pretty printers
-python
-import sys
-sys.path.insert(0, '/home/rlblaster/.gdb/python')
-from libstdcxx.v6.printers import register_libstdcxx_printers
-register_libstdcxx_printers (None)
-end
+#python
+#import sys
+#sys.path.insert(0, '/home/rlblaster/.gdb/python')
+#from libstdcxx.v6.printers import register_libstdcxx_printers
+#register_libstdcxx_printers (None)
+#end
 
 
 # GMP debug functions
