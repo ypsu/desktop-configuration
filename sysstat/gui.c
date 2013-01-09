@@ -169,7 +169,7 @@ void toggle_big_screen(void) // {{{1
 		XDestroyWindow(g_dpy, g_fullwindow);
 		g_fullwindow = 0;
 
-		system("kill -9 `ps x | grep 'sleep 123.45' | grep -v grep | sed 's/ *\\([0-9]*\\).*/\\1/'`");
+		system("kill -USR1 $(pidof gmail-checker)");
 		return;
 	}
 

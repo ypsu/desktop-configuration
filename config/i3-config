@@ -156,7 +156,8 @@ bindsym $mod+Shift+c reload
 
 # startup stuff
 workspace 1 output xroot-0
-exec_always sysstat
+exec sysstat
+exec gmail-checker
 exec xterm
 
 # colors
