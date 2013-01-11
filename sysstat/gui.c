@@ -466,7 +466,7 @@ int main(void) // {{{1
 					break;
 
 				case 5:
-					system("amixer -M set PCM 5%- >/dev/null");
+					system("amixer -M sset PCM 5%- >/dev/null");
 					update_volume();
 					break;
 

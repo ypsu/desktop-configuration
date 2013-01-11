@@ -47,8 +47,8 @@ bindsym $mod+backslash exec /home/rlblaster/prog/latex-to-unicode/latex-to-unico
 for_window [title="Latex to Unicode converter"] floating enable
 bindsym $mod+t exec links -g
 
-bindsym $mod+F11 exec amixer -c0 sset Master 5%-
-bindsym $mod+F12 exec amixer -c0 sset Master 5%+
+bindsym $mod+F11 exec amixer -M sset PCM 5%-
+bindsym $mod+F12 exec amixer -M sset PCM 5%+
 
 bindsym $mod+F1 exec touch /dev/shm/wmfn1
 bindsym $mod+F2 exec touch /dev/shm/wmfn2
