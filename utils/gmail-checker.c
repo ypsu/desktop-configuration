@@ -42,19 +42,24 @@ void init_ssl(void)
 	HANDLE_CASE(SSL_CTX_load_verify_locations(ctx, NULL, "/etc/ssl/certs/") == 0);
 }
 
-void init_connection(void)
+bool init_connection(void)
 {
 	SSL *ssl;
 
 	bio = BIO_new_ssl_connect(ctx);
-	HANDLE_CASE(bio == NULL);
+	if (bio == NULL)
+		return false;
 	BIO_get_ssl(bio, &ssl);
 	SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
 	//BIO_set_conn_hostname(bio, "localhost:9994");
 	BIO_set_conn_hostname(bio, "imap.gmail.com:993");
-	HANDLE_CASE(BIO_do_connect(bio) <= 0);
-	HANDLE_CASE(SSL_get_verify_result(ssl) != X509_V_OK);
-	HANDLE_CASE(BIO_do_handshake(bio) <= 0);
+	if (BIO_do_connect(bio) <= 0)
+		return false;
+	if (SSL_get_verify_result(ssl) != X509_V_OK)
+		return false;
+	if (BIO_do_handshake(bio) <= 0)
+		return false;
+	return true;
 }
 
 void destroy_connection(void)
@@ -103,31 +108,41 @@ bool read_line(void)
 	return true;
 }
 
-void send_command(const char *cmd)
+bool send_command(const char *cmd)
 {
 	int by = BIO_puts(bio, cmd);
-	HANDLE_CASE(by != (int) strlen(cmd));
+	if (by != (int) strlen(cmd))
+		return false;
 	buf[0] = 0;
 
 	while (true) {
-		if (!read_line())
-			continue;
+		if (!read_line()) {
+			if (errno == EINTR)
+				continue;
+			else
+				return false;
+		}
 		//printf("got: %s", buf);
 		if (strncmp(buf, "xxx OK", 6) == 0)
 			break;
-		HANDLE_CASE(strncmp(buf, "xxx ", 4) == 0);
+		if (strncmp(buf, "xxx ", 4) == 0)
+			return false;
 		handle_response(buf);
 		buf[0] = 0;
 	}
+	return true;
 }
 
 void check_email(void)
 {
 	char username[64], password[64];
 	FILE *f = fopen("/home/rlblaster/personal/.gmail_pwd", "r");
-	HANDLE_CASE(f == NULL);
-	HANDLE_CASE(fscanf(f, "%60s %60s", username, password) != 2);
-	HANDLE_CASE(fclose(f) != 0);
+	if (f == NULL)
+		return;
+	if (fscanf(f, "%60s %60s", username, password) != 2)
+		return;
+	if (fclose(f) != 0)
+		return;
 	char cmdbuf[256];
 	sprintf(cmdbuf, "xxx LOGIN %s %s\r\n", username, password);
 	send_command(cmdbuf);
@@ -138,7 +153,8 @@ void check_email(void)
 		send_command("xxx SEARCH UNSEEN\r\n");
 
 		int by = BIO_puts(bio, "xxx IDLE\r\n");
-		HANDLE_CASE(by != (int) strlen("xxx IDLE\r\n"));
+		if (by != (int) strlen("xxx IDLE\r\n"))
+			return;
 		buf[0] = 0;
 
 		// first read_line should return "+ idling"
@@ -155,16 +171,25 @@ int main(void)
 	HANDLE_CASE(atexit(unexpected_exit) != 0);
 
 	// We use this interface for signal so that SA_RESTART is not set
-	struct sigaction act = {};
+	struct sigaction act;
+	memset(&act, 0, sizeof act);
 	act.sa_handler = noop_sighandler;
 	HANDLE_CASE(sigaction(SIGUSR1, &act, NULL) == -1);
 	HANDLE_CASE(sigaction(SIGALRM, &act, NULL) == -1);
 	alarm(600);
 
 	init_ssl();
-	init_connection();
-	check_email();
-	destroy_connection();
+
+	while (true) {
+		if (init_connection()) {
+			unlink("/dev/shm/R");
+			check_email();
+		}
+		destroy_connection();
+		unlink("/dev/shm/B");
+		close(open("/dev/shm/R", O_RDWR | O_CREAT, 0777));
+		sleep(30);
+	}
 
 	return 0;
 }
