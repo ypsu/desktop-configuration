@@ -4,6 +4,7 @@
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <resolv.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +53,7 @@ bool init_connection(void)
 	BIO_get_ssl(bio, &ssl);
 	SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
 	//BIO_set_conn_hostname(bio, "localhost:9994");
+	res_init();
 	BIO_set_conn_hostname(bio, "imap.gmail.com:993");
 	if (BIO_do_connect(bio) <= 0)
 		return false;
