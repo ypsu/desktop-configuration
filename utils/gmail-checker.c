@@ -96,7 +96,11 @@ bool read_line(void)
 	int len = strlen(buf);
 	while (len < BUFSZ-4) {
 		int by = BIO_read(bio, &ch, 1);
-		HANDLE_CASE(by == 0);
+		if (by == 0) {
+			buf[len] = 0;
+			errno = EIO;
+			return false;
+		}
 		if (by == -1) {
 			buf[len] = 0;
 			return false;
