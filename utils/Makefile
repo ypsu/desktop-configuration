@@ -1,9 +1,9 @@
 .PHONY: clean all
 
-sources := $(filter-out clangfix.c,$(wildcard *.c))
+sources := $(wildcard *.c)
 binaries := $(patsubst %.c,/home/$(USER)/.bin/%,$(sources))
 
-all: $(binaries) /home/$(USER)/.bin/libclangfix.so
+all: $(binaries)
 
 common_opts := -std=c99 -g -Wall -Wextra -Werror -O2
 link_opts := -lm -lrt -lX11 -lpcap -lssl -lcrypto
@@ -11,10 +11,6 @@ link_opts := -lm -lrt -lX11 -lpcap -lssl -lcrypto
 clean:
 	rm $(binaries)
 
-/home/$(USER)/.bin/libclangfix.so: clangfix.c
-	@echo building $@
-	@clang $(common_opts) -fpic -shared -nostdlib -o $@ $<
-
 /home/$(USER)/.bin/%: %.c
 	@echo building $@
-	@clang $(common_opts) -o $@ $< $(link_opts)
+	@gcc $(common_opts) -o $@ $< $(link_opts)
