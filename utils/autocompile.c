@@ -104,6 +104,7 @@ int main(void)
 				should_make = should_make || ends_with(ev->name, ".hh");
 				should_make = should_make || ends_with(ev->name, ".hpp");
 				should_make = should_make || ends_with(ev->name, ".c");
+				should_make = should_make || ends_with(ev->name, ".s");
 				should_make = should_make || cpp_source(ev->name);
 				should_make = should_make || ends_with(ev->name, ".sh");
 				should_make = should_make || ends_with(ev->name, "akefile");
