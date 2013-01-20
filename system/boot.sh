@@ -9,6 +9,7 @@ function log() {
 	echo -e "\e[33m""$@""\e[0m"
 }
 
+setfont -f /usr/share/kbd/consolefonts/ter-g12n.psf.gz
 hostname eper
 
 log Mounting system dirs
@@ -48,8 +49,6 @@ echo Setting tty keymap
 echo Setting up environment
 export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
-echo Setting font
-setfont -f /usr/share/kbd/consolefonts/ter-g12n.psf.gz
 logexec modprobe snd_bcm2835
 logexec alsactl restore
 echo Setting kernel variables
