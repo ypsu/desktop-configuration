@@ -47,7 +47,7 @@ echo Setting tty keymap
 (dumpkeys | grep -i keymaps; echo keycode 58 = Escape) | loadkeys - >/dev/null
 echo Setting up environment
 export LC_ALL=en_US.UTF-8
-export PATH=/home/rlblaster/.sbin:$PATH
+export PATH=/root/.sbin:$PATH
 echo Setting font
 setfont -f /usr/share/kbd/consolefonts/ter-g12n.psf.gz
 logexec modprobe snd_bcm2835
@@ -62,7 +62,7 @@ echo 16384 > /proc/sys/vm/min_free_kbytes
 log Starting X in the background
 echo 'startx &'
 cd ~rlblaster
-su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
+PATH=/home/rlblaster/.bin:$PATH su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
 cd - >/dev/null
 
 log Setting time

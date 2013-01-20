@@ -13,7 +13,7 @@ int main(void)
 		abort();
 
 	if (chpid == 0) {
-		const char *argv[] = { "/root/boot.sh", NULL };
+		const char *argv[] = { "/root/.sbin/boot.sh", NULL };
 		const char *envp[] = { NULL };
 		execve(argv[0], (char**) argv, (char**) envp);
 		abort();

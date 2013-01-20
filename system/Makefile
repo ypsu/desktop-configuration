@@ -1,10 +1,10 @@
 .PHONY: clean all
 
 scripts_src := $(wildcard *.sh)
-scripts_dst := $(patsubst %,/home/$(USER)/.sbin/%,$(scripts_src))
+scripts_dst := $(patsubst %,$(HOME)/.sbin/%,$(scripts_src))
 
 sources := $(wildcard *.c)
-binaries := $(patsubst %.c,/home/$(USER)/.sbin/%,$(sources))
+binaries := $(patsubst %.c,$(HOME)/.sbin/%,$(sources))
 
 all: $(scripts_dst) $(binaries)
 
@@ -14,17 +14,17 @@ link_opts := -lm
 clean:
 	rm $(binaries)
 
-/home/$(USER)/.sbin/halt: halt.c
+$(HOME)/.sbin/halt: halt.c
 	@echo building $@
 	@gcc $(common_opts) -o $@ $< $(link_opts)
 	@echo linking reboot and poweroff
-	@ln -s halt /home/$(USER)/.sbin/reboot
-	@ln -s halt /home/$(USER)/.sbin/poweroff
+	@ln -s halt $(HOME)/.sbin/reboot &>/dev/null || true
+	@ln -s halt $(HOME)/.sbin/poweroff &>/dev/null || true
 
-/home/$(USER)/.sbin/%: %.c
+$(HOME)/.sbin/%: %.c
 	@echo building $@
 	@gcc $(common_opts) -o $@ $< $(link_opts)
 
-/home/$(USER)/.sbin/%: %
-	@echo linking $@
-	@ln -s $(PWD)/$< $@
+$(HOME)/.sbin/%: %
+	@echo copying $@
+	@cp $(PWD)/$< $@

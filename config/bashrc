@@ -26,7 +26,7 @@ function __print_colored_git_branch
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /' | tr -d '\n'
 }
 
-export PATH="/home/rlblaster/.sbin:/home/rlblaster/.bin:/usr/lib/colorgcc/bin:$PATH"
+export PATH="/home/rlblaster/.bin:/usr/lib/colorgcc/bin:$PATH"
 export LESSCHARSET='utf-8'
 export GREP_OPTIONS='--color=auto'
 complete -cf man
