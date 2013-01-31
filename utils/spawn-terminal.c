@@ -58,7 +58,7 @@ int is_bash(const char *dirname)
 	char exe[16] = {};
 	sprintf(fname, "/proc/%s/exe", dirname);
 	readlink(fname, exe, sizeof(exe) - 1);
-	return strcmp(exe, "/bin/bash") == 0;
+	return strcmp(exe, "/bin/bash") == 0 || strcmp(exe, "/usr/bin/bash") == 0;
 }
 
 void chdir_to_current_bash(unsigned long wid)
