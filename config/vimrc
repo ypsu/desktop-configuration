@@ -41,6 +41,9 @@ else
 	colorscheme desert
 endif
 
+" disable paren highlighting as it is slow on Raspberry Pi
+let g:loaded_matchparen = 1
+
 syntax on
 
 set tags=./tags;
