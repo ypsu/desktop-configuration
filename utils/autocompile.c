@@ -86,7 +86,10 @@ int main(void)
 {
 	struct stat stat_buf;
 	int rv = stat("Makefile", &stat_buf);
-	if (rv == 0) just_make_it = true;
+	if (rv == 0) {
+		just_make_it = true;
+		exec_command("make");
+	}
 
 	inotify_fd = inotify_init();
 	HANDLE_CASE(inotify_fd == -1);
