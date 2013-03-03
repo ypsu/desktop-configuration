@@ -90,11 +90,11 @@ int main(int argc, char **argv)
 	}
 
 	puts("Unmounting filesystems");
-	system("umount -a");
+	system("umount -r -a");
 	puts("Syncing");
 	sync();
 	puts("Remounting root");
-	system("mount -o remount,ro /");
+	system("mount -r -o remount,ro /");
 	sync();
 	if (request == CMD_REBOOT) {
 		puts("Rebooting");
