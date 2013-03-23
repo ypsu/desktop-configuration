@@ -42,7 +42,7 @@ int g_memory_committed;
 
 struct CPU_INFO g_cpu;
 
-const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "eth0" };
+const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "wlp4s0", "enp8s0" };
 struct NETWORK_INFO g_network[NETWORK_INTERFACE_CNT];
 
 struct ACPI_INFO g_acpi_info;
@@ -313,7 +313,7 @@ void update_volume() // {{{1
 
 		snd_mixer_selem_id_malloc(&sid);
 		snd_mixer_selem_id_set_index(sid, 0);
-		snd_mixer_selem_id_set_name(sid, "PCM");
+		snd_mixer_selem_id_set_name(sid, "Master");
 		elem = snd_mixer_find_selem(snd_mixer, sid);
 		if (elem == NULL) {
 			puts("error in snd_mixer_find_selem");

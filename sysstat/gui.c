@@ -30,10 +30,10 @@
 #define POS_TIME (TOPWIDTH - (DATE_LENGTH*g_width))
 #define POS_CPU (POS_TIME - ((9+8)*g_width))
 #define POS_VOL (POS_CPU - (9*g_width))
-#define POS_NET (POS_VOL - ((6+4+1+4+1-2)*g_width))
+#define POS_NET (POS_VOL - ((8+4+1+4+1-2)*g_width))
 #define POS_MEM (POS_NET - (26*g_width))
 #define POS_BAT (POS_MEM - (9*g_width))
-#define POS_YELLOW (POS_MEM - (2*g_width))
+#define POS_YELLOW (POS_BAT - (2*g_width))
 #define POS_BLUE (POS_YELLOW - 1*g_width)
 #define POS_GREEN (POS_BLUE - 1*g_width)
 #define POS_RED (POS_GREEN - 1*g_width)
@@ -132,7 +132,7 @@ void initialize(void) // {{{1
 	wa.event_mask = ExposureMask | ButtonPressMask | StructureNotifyMask;
 
 	sleep(1);
-	FILE *f = popen("xwininfo -name 'i3bar for output xroot-0' | grep 'Window id' | sed 's/.*: 0x\\([0-9a-f]*\\) .*/\\1/'", "r");
+	FILE *f = popen("xwininfo -name 'i3bar for output LVDS' | grep 'Window id' | sed 's/.*: 0x\\([0-9a-f]*\\) .*/\\1/'", "r");
 	assert(f != NULL);
 	unsigned int parent;
 	fscanf(f, "%x", &parent);
@@ -201,7 +201,7 @@ void toggle_big_screen(void) // {{{1
 
 	// draw the calendar
 	{
-		FILE *f = popen("remind -c+9 -b1 -m -w318 ~/.reminders", "r");
+		FILE *f = popen("remind -c+8 -b1 -m -w318 ~/.reminders", "r");
 		char buf[1024];
 		int y;
 		int i;
@@ -219,6 +219,14 @@ void toggle_big_screen(void) // {{{1
 			y += g_height;
 		}
 
+		y += g_height;
+		sprintf(buf, "ACPI: %s", g_acpi_info.bat_note);
+		draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 0);
+		y += g_height;
+		sprintf(buf, "Temperature: %d C", g_acpi_info.temperature);
+		draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 0);
+		y += g_height;
+
 		f = popen("df -lh", "r");
 		for (y += g_height; fgets(buf, 256, f) != NULL; y += g_height) {
 			draw_at_xy(0, y + g_topbase, &g_col_fg, xftdraw, buf, 1);
@@ -235,7 +243,7 @@ void update_statistics(void) // Updates the statistics data. Should be called in
 	update_memory();
 	update_cpu();
 	update_network();
-	//update_acpi();
+	update_acpi();
 	update_date();
 	update_volume();
 }
@@ -288,7 +296,7 @@ void draw_memory(void) // Draws the memory usage {{{1
 	sprintf(buf, "DIRTY:           MEM:");
 	draw_at_x(POS_MEM, &g_col_mid, buf);
 
-	col = (g_memory_committed < 300 ? g_col_fg : g_col_yellow);
+	col = (g_memory_committed < 2000 ? g_col_fg : g_col_yellow);
 	sprintf(buf, "                     %5d MB", g_memory_committed);
 	draw_at_x(POS_MEM, &col, buf);
 
@@ -320,10 +328,10 @@ void draw_network(void) // Draws the network stats {{{1
 
 	char buf[64];
 
-	sprintf(buf, "%5s:", NETWORK_INTERFACE[g_cur_network_interface]);
+	sprintf(buf, "%6s:", NETWORK_INTERFACE[g_cur_network_interface]);
 	draw_at_x(POS_NET, &g_col_mid, buf);
 
-	sprintf(buf, "      %4llu/%4llu", down_sum / AGGREGATE_SIZE / 1024 / (TIME_GRANULARITY/1000), up_sum / AGGREGATE_SIZE / 1024 / (TIME_GRANULARITY/1000));
+	sprintf(buf, "       %5llu/%5llu", down_sum / AGGREGATE_SIZE / 1024 / (TIME_GRANULARITY/1000), up_sum / AGGREGATE_SIZE / 1024 / (TIME_GRANULARITY/1000));
 	draw_at_x(POS_NET, &g_col_fg, buf);
 }
 
@@ -351,7 +359,7 @@ void draw_indicators(void) // Draws the colored indicators {{{1
 	struct stat buf;
 
 	if (stat("/dev/shm/R", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0x0000FF);
+		XSetForeground(g_dpy, g_topgc, 0xFF0000);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_RED, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 
@@ -361,12 +369,12 @@ void draw_indicators(void) // Draws the colored indicators {{{1
 	}
 
 	if (stat("/dev/shm/B", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0xFF0000);
+		XSetForeground(g_dpy, g_topgc, 0x0000FF);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_BLUE, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 
 	if (stat("/dev/shm/Y", &buf) == 0) {
-		XSetForeground(g_dpy, g_topgc, 0x00FFFF);
+		XSetForeground(g_dpy, g_topgc, 0xFFFF00);
 		XFillRectangle(g_dpy, g_backbuffer, g_topgc, POS_YELLOW, 0, 1*g_width, WINDOW_HEIGHT-1);
 	}
 }
@@ -453,6 +461,10 @@ int main(void) // {{{1
 					toggle_big_screen();
 					break;
 
+				case 2:
+					g_cur_network_interface ^= 1;
+					break;
+
 				case 3:
 					if (fork() == 0) {
 						execl("/usr/bin/sync", "/usr/bin/sync", NULL);
@@ -461,12 +473,12 @@ int main(void) // {{{1
 					break;
 
 				case 4:
-					system("amixer -M sset PCM 5%+ >/dev/null");
+					system("amixer -M sset Master 5%+ >/dev/null");
 					update_volume();
 					break;
 
 				case 5:
-					system("amixer -M sset PCM 5%- >/dev/null");
+					system("amixer -M sset Master 5%- >/dev/null");
 					update_volume();
 					break;
 

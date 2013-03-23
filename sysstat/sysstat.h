@@ -47,7 +47,7 @@ extern struct CPU_INFO g_cpu;
 void update_cpu();
 
 // Network statistics. {{{1
-#define NETWORK_INTERFACE_CNT 1
+#define NETWORK_INTERFACE_CNT 2
 
 extern const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16];
 

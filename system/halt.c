@@ -42,6 +42,14 @@ bool killall(int sig)
 	return !found_process;
 }
 
+void redirect_output(void)
+{
+	freopen("/dev/tty1", "w", stdout);
+	freopen("/dev/tty1", "w", stderr);
+	setlinebuf(stdout);
+	setlinebuf(stderr);
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 1) {
@@ -65,10 +73,7 @@ int main(int argc, char **argv)
 	}
 	setuid(0);
 
-	freopen("/dev/console", "w", stdout);
-	freopen("/dev/console", "w", stderr);
-	setlinebuf(stdout);
-	setlinebuf(stderr);
+	redirect_output();
 
 	system("chvt 1");
 	mypid = getpid();
@@ -77,17 +82,19 @@ int main(int argc, char **argv)
 	}
 
 	puts("Sending SIGTERM to the processes");
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		if (killall(SIGTERM))
 			break;
-		sleep(1);
+		usleep(200000);
 	}
+	redirect_output(); // output is closed after killing X for some reason
 	puts("Sending SIGKILL to the processes");
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		if (killall(SIGKILL))
 			break;
-		sleep(1);
+		usleep(200000);
 	}
+	redirect_output(); // output is closed after killing X for some reason
 
 	puts("Unmounting filesystems");
 	system("umount -r -a");
@@ -98,11 +105,9 @@ int main(int argc, char **argv)
 	sync();
 	if (request == CMD_REBOOT) {
 		puts("Rebooting");
-		sleep(1);
 		reboot(LINUX_REBOOT_CMD_RESTART);
 	} else if (request == CMD_POWEROFF) {
 		puts("Shutting down");
-		sleep(1);
 		reboot(LINUX_REBOOT_CMD_POWER_OFF);
 	}
 	return 0;

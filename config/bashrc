@@ -26,7 +26,7 @@ function __print_colored_git_branch
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /' | tr -d '\n'
 }
 
-export PATH="/home/rlblaster/.bin:/usr/lib/colorgcc/bin:$PATH"
+export PATH="/home/rlblaster/.bin:/root/.sbin/:/usr/lib/colorgcc/bin:$PATH"
 export LESSCHARSET='utf-8'
 export GREP_OPTIONS='--color=auto'
 complete -cf man
@@ -63,6 +63,3 @@ if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-2
 else
 	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
 fi
-
-# temporary workaround for clang
-export LD_LIBRARY_PATH=/usr/lib/llvm

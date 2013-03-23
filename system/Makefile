@@ -17,6 +17,8 @@ clean:
 $(HOME)/.sbin/halt: halt.c
 	@echo building $@
 	@gcc $(common_opts) -o $@ $< $(link_opts)
+	@echo adding setuid rights
+	@chmod +s $(HOME)/.sbin/halt
 	@echo linking reboot and poweroff
 	@ln -s halt $(HOME)/.sbin/reboot &>/dev/null || true
 	@ln -s halt $(HOME)/.sbin/poweroff &>/dev/null || true

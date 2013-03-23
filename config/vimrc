@@ -25,7 +25,6 @@ set ttimeout
 set ttimeoutlen=1
 set noswapfile
 set hidden
-set nofsync
 set nojoinspaces
 set virtualedit+=block
 set tw=100
@@ -41,7 +40,7 @@ else
 	colorscheme desert
 endif
 
-" disable paren highlighting as it is slow on Raspberry Pi
+" disable paren highlighting
 let g:loaded_matchparen = 1
 
 syntax on
