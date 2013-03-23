@@ -301,7 +301,7 @@ void draw_memory(void) // Draws the memory usage {{{1
 	draw_at_x(POS_MEM, &col, buf);
 
 	col = (g_memory_writeback == 0 ? g_col_fg : g_col_yellow);
-	sprintf(buf, "      %6d KB", g_memory_dirty + g_memory_writeback);
+	sprintf(buf, "      %7d KB", g_memory_dirty + g_memory_writeback);
 	draw_at_x(POS_MEM, &col, buf);
 }
 
@@ -473,12 +473,12 @@ int main(void) // {{{1
 					break;
 
 				case 4:
-					system("amixer -M sset Master 5%+ >/dev/null");
+					system("amixer -M -c0 sset Master 5%+ >/dev/null");
 					update_volume();
 					break;
 
 				case 5:
-					system("amixer -M sset Master 5%- >/dev/null");
+					system("amixer -M -c0 sset Master 5%- >/dev/null");
 					update_volume();
 					break;
 

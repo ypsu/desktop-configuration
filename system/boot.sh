@@ -55,6 +55,7 @@ echo 100 > /proc/sys/vm/dirty_ratio
 echo 12000 > /proc/sys/vm/dirty_expire_centisecs
 echo  6000 > /proc/sys/vm/dirty_writeback_centisecs
 echo 131072 > /proc/sys/vm/min_free_kbytes
+(sleep 30; cpupower frequency-set -g powersave) &
 
 log Starting X in the background
 echo 'startx &'
