@@ -473,12 +473,12 @@ int main(void) // {{{1
 					break;
 
 				case 4:
-					system("amixer -M -c0 sset Master 5%+ >/dev/null");
+					system("amixer -M -c0 sset PCM 5%+ >/dev/null");
 					update_volume();
 					break;
 
 				case 5:
-					system("amixer -M -c0 sset Master 5%- >/dev/null");
+					system("amixer -M -c0 sset PCM 5%- >/dev/null");
 					update_volume();
 					break;
 

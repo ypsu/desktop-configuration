@@ -246,7 +246,7 @@ static double get_normalized_volume(snd_mixer_elem_t *elem, snd_mixer_selem_chan
 {
 	long min, max, value;
 	double normalized;
-	//double min_norm;
+	double min_norm;
 	int err;
 
 	err = snd_mixer_selem_get_playback_dB_range(elem, &min, &max);
@@ -270,8 +270,8 @@ static double get_normalized_volume(snd_mixer_elem_t *elem, snd_mixer_selem_chan
 		return (value - min) / (double)(max - min);
 
 	normalized = exp10((value - max) / 6000.0);
-	//min_norm = exp10((min - max) / 6000.0);
-	//normalized = (normalized - min_norm) / (1 - min_norm);
+	min_norm = exp10((min - max) / 6000.0);
+	normalized = (normalized - min_norm) / (1 - min_norm);
 
 	return normalized;
 }
@@ -313,7 +313,7 @@ void update_volume() // {{{1
 
 		snd_mixer_selem_id_malloc(&sid);
 		snd_mixer_selem_id_set_index(sid, 0);
-		snd_mixer_selem_id_set_name(sid, "Master");
+		snd_mixer_selem_id_set_name(sid, "PCM");
 		elem = snd_mixer_find_selem(snd_mixer, sid);
 		if (elem == NULL) {
 			puts("error in snd_mixer_find_selem");
