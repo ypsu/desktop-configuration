@@ -179,7 +179,7 @@ void toggle_big_screen(void) // {{{1
 	wa.event_mask = ExposureMask | ButtonPressMask | StructureNotifyMask;
 
 	g_fullwindow = XCreateWindow(g_dpy, DefaultRootWindow(g_dpy),
-			0, WINDOW_HEIGHT, WIDTH, HEIGHT-WINDOW_HEIGHT, 0, DefaultDepth(g_dpy, DefaultScreen(g_dpy)),
+			1920, WINDOW_HEIGHT, WIDTH, HEIGHT-WINDOW_HEIGHT, 0, DefaultDepth(g_dpy, DefaultScreen(g_dpy)),
 			CopyFromParent, DefaultVisual(g_dpy, DefaultScreen(g_dpy)),
 			(unsigned long) (CWOverrideRedirect | CWBackPixmap | CWEventMask),
 			&wa);
