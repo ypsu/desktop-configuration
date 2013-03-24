@@ -40,6 +40,7 @@ logexec mount /home
 logexec mount /data
 
 echo Setting up environment
+export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 
 log Starting dbus and wicd
