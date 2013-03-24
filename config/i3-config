@@ -158,6 +158,7 @@ bindsym $mod+Shift+c reload
 exec sysstat
 exec gmail-checker
 exec xterm
+exec firefox
 
 # colors
 # class                 border  backgr. text    indicator

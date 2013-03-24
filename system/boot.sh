@@ -37,12 +37,14 @@ logexec mount /home
 logexec mount /data
 
 echo Setting up environment
-export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 
-logexec alsactl restore
 log Starting dbus and wicd
 (install -m755 -g 81 -o 81 -d /run/dbus; dbus-daemon --system; /usr/sbin/wicd) &
+/home/rlblaster/.bin/firefox-unpack.sh &
+firefox_pid=$!
+
+logexec alsactl restore
 
 log Miscellaneous settings
 hdparm -B 255 /dev/sda >/dev/null
@@ -56,6 +58,9 @@ echo 12000 > /proc/sys/vm/dirty_expire_centisecs
 echo  6000 > /proc/sys/vm/dirty_writeback_centisecs
 echo 131072 > /proc/sys/vm/min_free_kbytes
 (sleep 30; cpupower frequency-set -g powersave) &
+
+log Waiting until firefox is extracted to /tmp
+wait $firefox_pid
 
 log Starting X in the background
 echo 'startx &'
