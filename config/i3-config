@@ -155,7 +155,6 @@ bindsym $mod+Shift+c reload
 #bindsym $mod+Shift+r restart
 
 # startup stuff
-workspace 1 output LVDS
 exec sysstat
 exec gmail-checker
 exec xterm
