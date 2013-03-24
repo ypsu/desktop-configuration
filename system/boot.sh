@@ -43,8 +43,8 @@ echo Setting up environment
 export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 
-log Starting dbus and wicd
-(install -m755 -g 81 -o 81 -d /run/dbus; dbus-daemon --system; /usr/sbin/wicd) &
+log Starting dbus, wicd, acpid
+(install -m755 -g 81 -o 81 -d /run/dbus; dbus-daemon --system; /usr/sbin/wicd; acpid) &
 /home/rlblaster/.bin/firefox-unpack.sh &
 firefox_pid=$!
 
