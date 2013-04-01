@@ -25,6 +25,7 @@ logexec udevadm trigger --action=add --type=devices
 logexec udevadm settle
 
 # Up the device here so wicd can detect the carrier correctly
+ifconfig lo up
 ifconfig enp8s0 up
 
 log Checking filesystems
