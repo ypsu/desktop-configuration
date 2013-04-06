@@ -190,6 +190,8 @@ int main(void)
 		if (init_connection()) {
 			unlink("/dev/shm/R");
 			check_email();
+			destroy_connection();
+			continue;
 		}
 		destroy_connection();
 		unlink("/dev/shm/B");
