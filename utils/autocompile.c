@@ -102,6 +102,7 @@ int main(void)
 			ev = next_event();
 			HANDLE_CASE(ev->len > 3000);
 			if (just_make_it) {
+				should_make = should_make || ends_with(ev->name, ".txt");
 				should_make = should_make || ends_with(ev->name, ".tex");
 				should_make = should_make || ends_with(ev->name, ".h");
 				should_make = should_make || ends_with(ev->name, ".hh");
