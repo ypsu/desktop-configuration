@@ -96,12 +96,14 @@ int main(int argc, char **argv)
 	}
 	redirect_output(); // output is closed after killing X for some reason
 
+	puts("Syncing");
+	sync();
+
 	puts("Saving firefox profile");
 	system("/home/rlblaster/.bin/firefox-pack.sh");
 
 	puts("Unmounting filesystems");
 	system("umount -r -a");
-	puts("Syncing");
 	sync();
 	puts("Remounting root");
 	system("mount -r -o remount,ro /");
