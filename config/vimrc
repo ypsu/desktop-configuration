@@ -206,12 +206,6 @@ map <Leader>c <plug>NERDCommenterComment
 map <Leader>u <plug>NERDCommenterUncomment
 map <Leader>t :NERDTreeToggle<CR>
 
-" Keep window and cursor position when switching buffers
-if v:version >= 700
-  au BufLeave * let b:winview = winsaveview()
-  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
-endif
-
 " Cmdline will be run and the output will be in quickfix.
 function CustomQuickMake(cmdline)
 	let tmp = &makeprg
@@ -232,6 +226,7 @@ endfunction
 " F11 - run via valgrind
 " F12 - check the code's coverage
 function SetCCommands()
+	syntax off
 	set textwidth=0
 
 	map <F5> :!./a.out <CR>
@@ -260,6 +255,7 @@ endfunction
 " 
 " :LT - load my CPP template
 function SetCPPCommands()
+	syntax off
 	set textwidth=0
 
 	map <F5> :!./a.out <CR>
@@ -363,6 +359,13 @@ autocmd BufEnter *.java call SetJavaCommands()
 autocmd BufEnter *.py,*.sh,*.pl call SetShCommands()
 autocmd BufEnter *.tex call SetTexCommands()
 autocmd BufEnter *.gv call SetDotCommands()
+
+" Keep window and cursor position when switching buffers
+" Must be after the above commands because vim is buggy.
+if v:version >= 700
+  au BufLeave * let b:winview = winsaveview()
+  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
+endif
 
 " ex command for toggling hex mode - define mapping if desired
 command -bar Hexmode call ToggleHex()
