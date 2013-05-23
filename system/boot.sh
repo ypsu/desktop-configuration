@@ -19,7 +19,7 @@ logexec mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
 logexec mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=2048000k
 
 log Waiting for udev
-logexec udevd --daemon
+logexec /usr/lib/systemd/systemd-udevd --daemon
 logexec udevadm trigger --action=add --type=subsystems
 logexec udevadm trigger --action=add --type=devices
 logexec udevadm settle
