@@ -42,7 +42,7 @@ int g_memory_committed;
 
 struct CPU_INFO g_cpu;
 
-const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "wlp4s0", "enp8s0" };
+const char NETWORK_INTERFACE[NETWORK_INTERFACE_CNT][16] = { "eth0" };
 struct NETWORK_INFO g_network[NETWORK_INTERFACE_CNT];
 
 struct ACPI_INFO g_acpi_info;
@@ -246,7 +246,7 @@ static double get_normalized_volume(snd_mixer_elem_t *elem, snd_mixer_selem_chan
 {
 	long min, max, value;
 	double normalized;
-	double min_norm;
+	//double min_norm;
 	int err;
 
 	err = snd_mixer_selem_get_playback_dB_range(elem, &min, &max);
@@ -270,8 +270,8 @@ static double get_normalized_volume(snd_mixer_elem_t *elem, snd_mixer_selem_chan
 		return (value - min) / (double)(max - min);
 
 	normalized = exp10((value - max) / 6000.0);
-	min_norm = exp10((min - max) / 6000.0);
-	normalized = (normalized - min_norm) / (1 - min_norm);
+	//min_norm = exp10((min - max) / 6000.0);
+	//normalized = (normalized - min_norm) / (1 - min_norm);
 
 	return normalized;
 }

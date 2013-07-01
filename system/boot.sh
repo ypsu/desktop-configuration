@@ -9,14 +9,17 @@ function log() {
 	echo -e "\e[33m""$@""\e[0m"
 }
 
-hostname shiro
+setfont -f /usr/share/kbd/consolefonts/ter-g12n.psf.gz
+hostname eper
 
 log Mounting system dirs
+logexec mount -t proc proc /proc -o nosuid,noexec,nodev
+logexec mount -t sysfs sys /sys -o nosuid,noexec,nodev
 logexec mount -t tmpfs run /run -o mode=0755,nosuid,nodev
 logexec mkdir -p /dev/pts /dev/shm
 logexec mount -t devpts devpts /dev/pts -o mode=0620,gid=5,nosuid,noexec
 logexec mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
-logexec mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=2048000k
+logexec mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=128000k
 
 log Waiting for udev
 logexec /usr/lib/systemd/systemd-udevd --daemon
@@ -24,12 +27,14 @@ logexec udevadm trigger --action=add --type=subsystems
 logexec udevadm trigger --action=add --type=devices
 logexec udevadm settle
 
-# Up the device here so wicd can detect the carrier correctly
-ifconfig lo up
-ifconfig enp8s0 up
+log Bringing up networking
+logexec ifconfig lo up
+logexec ifconfig eth0 up
+logexec ifconfig eth0 192.168.1.123 netmask 255.255.255.0 broadcast 192.168.1.255
+logexec route add default gw 192.168.1.1 eth0
 
 log Checking filesystems
-fsck -T -C / && fsck -T -C /home && fsck -T -C /data
+logexec fsck -T -C /
 if test $? -ge 2; then
 	agetty -8 -a root --noclear 38400 tty1 linux
 fi
@@ -37,41 +42,32 @@ fi
 log Mounting filesystems
 logexec mount -o remount,rw /
 logexec mount /boot
-logexec mount /home
-logexec mount /data
 
 echo Setting up environment
 export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
-
-log Starting dbus, wicd, acpid
-(install -m755 -g 81 -o 81 -d /run/dbus; dbus-daemon --system; /usr/sbin/wicd; acpid) &
-/home/rlblaster/.bin/firefox-unpack.sh &
-firefox_pid=$!
-
+logexec modprobe snd_bcm2835
 logexec alsactl restore
 
 log Miscellaneous settings
-hdparm -B 255 /dev/sda >/dev/null
 echo Setting tty keymap
 (dumpkeys | grep -i keymaps; echo keycode 58 = Escape) | loadkeys - >/dev/null
 
 echo Setting kernel variables
 echo 100 > /proc/sys/vm/dirty_background_ratio
 echo 100 > /proc/sys/vm/dirty_ratio
-echo 12000 > /proc/sys/vm/dirty_expire_centisecs
-echo  6000 > /proc/sys/vm/dirty_writeback_centisecs
-echo 131072 > /proc/sys/vm/min_free_kbytes
-(sleep 30; cpupower frequency-set -g powersave) &
-
-log Waiting until firefox is extracted to /tmp
-wait $firefox_pid
+echo 30000 > /proc/sys/vm/dirty_expire_centisecs
+echo 18000 > /proc/sys/vm/dirty_writeback_centisecs
+echo 16384 > /proc/sys/vm/min_free_kbytes
 
 log Starting X in the background
 echo 'startx &'
 cd ~rlblaster
 PATH=/home/rlblaster/.bin:$PATH su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
 cd - >/dev/null
+
+log Setting time
+sntp
 
 log Starting ttys
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux &

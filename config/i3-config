@@ -157,18 +157,17 @@ bindsym $mod+Shift+c reload
 exec sysstat
 exec gmail-checker
 exec xterm
-exec firefox
 
 # colors
 # class                 border  backgr. text    indicator
 client.focused          #4c7899 #285577 #ffffff #2e9ef4
 client.focused_inactive #333333 #5f676a #ffffff #484e50
 client.unfocused        #333333 #222222 #888888 #292d2e
-client.urgent           #2f343a #900000 #ffffff #900000
-#client.focused          #99784c #775528 #ffffff #f49e2e
-#client.focused_inactive #333333 #6a675f #ffffff #504e48
-#client.unfocused        #333333 #222222 #888888 #2e2d29
 #client.urgent           #2f343a #900000 #ffffff #900000
+client.focused          #99784c #775528 #ffffff #f49e2e
+client.focused_inactive #333333 #6a675f #ffffff #504e48
+client.unfocused        #333333 #222222 #888888 #2e2d29
+client.urgent           #2f343a #900000 #ffffff #900000
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -204,10 +203,10 @@ bar {
 
         colors {
 
-                #focused_workspace  #99784c #775528 #ffffff
-                #active_workspace   #333333 #6a675f #ffffff
-                #inactive_workspace #333333 #222222 #888888
-                urgent_workspace #ffff00 #ffff00 #000000
-                #urgent_workspace #00ffff #00ffff #000000
+                focused_workspace  #99784c #775528 #ffffff
+                active_workspace   #333333 #6a675f #ffffff
+                inactive_workspace #333333 #222222 #888888
+                #urgent_workspace #ffff00 #ffff00 #000000
+                urgent_workspace #00ffff #00ffff #000000
         }
 }

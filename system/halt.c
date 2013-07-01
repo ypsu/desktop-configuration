@@ -99,11 +99,9 @@ int main(int argc, char **argv)
 	puts("Syncing");
 	sync();
 
-	puts("Saving firefox profile");
-	system("/home/rlblaster/.bin/firefox-pack.sh");
-
 	puts("Unmounting filesystems");
 	system("umount -r -a");
+	puts("Syncing");
 	sync();
 	puts("Remounting root");
 	system("mount -r -o remount,ro /");
