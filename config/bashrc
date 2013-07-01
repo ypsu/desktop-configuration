@@ -34,9 +34,6 @@ complete -cf info
 
 export PYTHONSTARTUP=/home/rlblaster/.pythonrc.py
 
-PAGER=vimpager
-export PAGER
-
 function ,
 {
 	echo "$*" | gp -q
