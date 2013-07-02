@@ -126,31 +126,10 @@ imap <Down> <C-O>gj
 imap <Home> <C-O>g0
 imap <End> <C-O>g$
 
-" Move around windows
-map <M-Left> <C-w>h
-map <M-Right> <C-w>l
-map <M-Up> <C-w>k
-map <M-Down> <C-w>j
-
-
-map <C-Left> :prev <CR>
-map <C-Right> :next <CR>
-
 map <Leader>p :set invpaste <CR>:echo "paste mode: " . &paste<CR>
 
 " Quote in mail
 map <Leader>q :s/^/> / <CR>
-
-" Set meta keys
-set <M-h>=h
-set <M-j>=j
-set <M-k>=k
-set <M-l>=l
-set <M-z>=z
-set <M-x>=x
-set <M-]>=]
-
-map <M-]> <C-w>}
 
 " Move around windows
 map <C-h> <C-w>h
@@ -158,21 +137,9 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
-" Move around tabs
-map <M-h> gT
-map <M-l> gt
-imap <M-h> <C-o>gT
-imap <M-l> <C-o>gt
-
-" Tag stack manipulation
-nmap <M-j> <C-]>
-nmap <M-k> <C-T>
-vmap <M-j> <C-]>
-vmap <M-k> <C-T>
-
 " Signs manipulation
-nmap <M-z> :call SignFixme()<CR>
-nmap <M-x> :call UnSignFixme()<CR>
+nmap <Leader>z :call SignFixme()<CR>
+nmap <Leader>x :call UnSignFixme()<CR>
 
 " F1 - Edit last file
 map <F1> <C-^>
