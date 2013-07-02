@@ -156,7 +156,6 @@ bindsym $mod+Shift+c reload
 
 # startup stuff
 exec sysstat
-exec gmail-checker
 exec xterm
 
 # colors

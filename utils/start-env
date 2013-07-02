@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if ! ps auxw | grep -v grep | grep -q gmail-checker; then
+	nohup gmail-checker >/dev/null 2>/dev/null &
+fi
+set-term-colors
+
+if tmux has-session 2>/dev/null; then
+	echo 'tmux already running!'
+	exit 1
+fi
+
+tmux new-session -d
+tmux rename-window "org"
+tmux split-window
+tmux split-window "tnotes"
+tmux split-window "while true; do remind -c+5 -b1 -m -w160 ~/.reminders; read; done"
+tmux select-layout tiled >/dev/null
+tmux select-pane -t 1
+tmux new-window
+tmux new-window
+tmux new-window
+tmux new-window
+tmux select-window -t 1
+tmux attach
+bash

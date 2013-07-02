@@ -51,7 +51,7 @@ logexec alsactl restore
 
 log Miscellaneous settings
 echo Setting tty keymap
-(dumpkeys | grep -i keymaps; echo keycode 58 = Escape) | loadkeys - >/dev/null
+loadkeys /home/rlblaster/proj/desktop-configuration/config/loadkeys.cfg >/dev/null
 
 echo Setting kernel variables
 echo 100 > /proc/sys/vm/dirty_background_ratio
@@ -60,19 +60,15 @@ echo 30000 > /proc/sys/vm/dirty_expire_centisecs
 echo 18000 > /proc/sys/vm/dirty_writeback_centisecs
 echo 16384 > /proc/sys/vm/min_free_kbytes
 
-log Starting X in the background
-echo 'startx &'
-cd ~rlblaster
-PATH=/home/rlblaster/.bin:$PATH su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
-cd - >/dev/null
-
 log Setting time
 sntp
 
 log Starting ttys
-agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux &
+agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux -l /root/.sbin/start-ui.sh &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty3 linux &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty4 linux &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty5 linux &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty6 linux &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty1 linux &
+
+chvt 2
