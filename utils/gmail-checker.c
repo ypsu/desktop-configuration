@@ -182,6 +182,7 @@ int main(void)
 	act.sa_handler = noop_sighandler;
 	HANDLE_CASE(sigaction(SIGUSR1, &act, NULL) == -1);
 	HANDLE_CASE(sigaction(SIGALRM, &act, NULL) == -1);
+	HANDLE_CASE(sigaction(SIGPIPE, &act, NULL) == -1);
 	alarm(600);
 
 	init_ssl();
