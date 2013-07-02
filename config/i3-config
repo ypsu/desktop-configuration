@@ -31,6 +31,7 @@ bindsym $mod+Shift+Return exec spawn-terminal -name XM-floating
 bindsym $mod+Shift+Escape exec spawn-terminal -name XM-floating
 
 # other hotkeys
+bindsym $mod+t exec /home/rlblaster/.bin/links -g
 bindsym $mod+equal exec /home/rlblaster/proj/gp-gui/gp-gui.sh
 bindsym $mod+backslash exec /home/rlblaster/proj/latex-to-unicode/latex-to-unicode.sh
 for_window [title="Latex to Unicode converter"] floating enable
