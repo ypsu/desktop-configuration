@@ -1,4 +1,4 @@
-set editor = "vim -c ':Mailmode' -c ':set spelllang=hu'"
+set editor = "vim -c 'syntax on' -c ':Mailmode' -c ':set spelllang=hu'"
 set my_name = "Balazs Kezes"
 set from = "Balazs Kezes <rlblaster@gmail.com>"
 set imap_user = rlblaster@gmail.com
