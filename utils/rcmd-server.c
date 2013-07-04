@@ -23,7 +23,7 @@ void handle_case(const char *expr, const char *file, const char *func, int line)
 
 const char fname[] = "/tmp/.rcmd_socket";
 
-int main(void)
+int main(int argc, char **argv)
 {
 	unlink(fname);
 
@@ -41,6 +41,16 @@ int main(void)
 	while ((sz = read(fd, buf, 4095)) != -1) {
 		if (sz == 0)
 			continue;
+		if (sz == 1 && buf[0] >= '1' && buf[0] <= '4') {
+			int idx = buf[0] - '0';
+			if (idx < argc) {
+				int len = strlen(argv[idx]);
+				if (len < 4000) {
+					memcpy(buf, argv[idx], len);
+					sz = len;
+				}
+			}
+		}
 		buf[sz] = 0;
 		printf("\e[H\e[J");
 		puts(buf);

@@ -156,6 +156,10 @@ map <Leader>a :!git commit -av<CR>
 " Leader-d: diff changes
 map <Leader>d :!git diff<CR>
 
+map <Leader>1 :call system("rcmd-run 1")<CR>
+map <Leader>2 :call system("rcmd-run 2")<CR>
+map <Leader>3 :call system("rcmd-run 3")<CR>
+map <Leader>4 :call system("rcmd-run 4")<CR>
 map <Leader>f :<C-U>call SelectFile()<CR>
 map <Leader>g :<C-U>call SelectBuffer()<CR>
 map <Leader>h :Hexmode<CR>
