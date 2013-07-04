@@ -60,7 +60,7 @@ char output_buffer[OUTBUF_MAX];
 void get_term_dimensions(void)
 {
 	struct winsize winsize;
-	ioctl(2, TIOCGWINSZ, &winsize);
+	ioctl(0, TIOCGWINSZ, &winsize);
 	term_width = winsize.ws_col;
 	term_height = winsize.ws_row;
 	HANDLE_CASE(term_width*term_height >= OUTBUF_MAX);
@@ -242,12 +242,30 @@ void noop(char *s)
 
 int main(int argc, char **argv)
 {
-	(void) argc;
-	(void) argv;
+	int opt;
+	while ((opt = getopt(argc, argv, "u:")) != -1) {
+		if (opt == 'u') {
+			int n = atoi(optarg);
+			for (int i = 0; i < n; ++i)
+				chdir("..");
+		} else {
+			puts("file-selector [-u n] [entries...]");
+			puts("");
+			puts("-u n    go up n levels in the directory hierarchy");
+			exit(1);
+		}
+	}
 
 	get_term_dimensions();
 	tolower_table_calc();
-	read_hierarchy();
+
+	if (optind == argc) {
+		read_hierarchy();
+	} else {
+		for (int i = optind; i < argc; ++i) {
+			entry_add(argv[i], strlen(argv[i]));
+		}
+	}
 	qsort(entries, entries_sz, sizeof entries[0], entry_cmp);
 
 	write(1, "\e[H\e[2J", 7);
@@ -272,10 +290,12 @@ int main(int argc, char **argv)
 			reset_fd();
 			rl_deprep_terminal();
 			write(1, "\e[H\e[2J", 7);
-			if (first_match != -1)
-				puts(entries[first_match].name);
-			else
+			if (first_match != -1) {
+				fputs(entries[first_match].name, stderr);
+				fputc('\n', stderr);
+			} else {
 				exit(1);
+			}
 			exit(0);
 		}
 
