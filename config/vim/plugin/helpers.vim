@@ -59,7 +59,7 @@ function! UnSignFixme()
 	execute(":sign unplace ".line("."))
 endfunction
 
-function! SelectFile(...)
+function! SelectFile()
 	let s:cmd = "silent !file-selector 2>/tmp/.fsel-fname -u " . v:count
 	execute s:cmd
 	let s:result = readfile("/tmp/.fsel-fname")
@@ -69,7 +69,7 @@ function! SelectFile(...)
 	redraw!
 endfunction
 
-function! SelectBuffer(...)
+function! SelectBuffer()
 	let s:cmd = "silent !file-selector 2>/tmp/.fsel-fname"
 	let s:i = 1
 	while bufexists(s:i)
@@ -92,4 +92,17 @@ function! ToggleSyntaxHighlight()
 	else
 		syntax enable
 	endif
+endfunction
+
+function! SaveCount()
+	let s:count = v:count
+endfunction
+
+function! RemoteMan(word)
+	let s:cmd = "rcmd-man "
+	if s:count > 0
+		let s:cmd .= s:count . " "
+	endif
+	let s:cmd .= a:word
+	let s:dummy =  system(s:cmd)
 endfunction

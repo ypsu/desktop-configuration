@@ -130,10 +130,6 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
-" Signs manipulation
-nmap <Leader>z :call SignFixme()<CR>
-nmap <Leader>x :call UnSignFixme()<CR>
-
 " F1 - Edit last file
 map <F1> <C-^>
 " F2 - Save
@@ -163,6 +159,11 @@ map <Leader>d :!git diff<CR>
 map <Leader>f :<C-U>call SelectFile()<CR>
 map <Leader>g :<C-U>call SelectBuffer()<CR>
 map <Leader>h :Hexmode<CR>
+map <Leader>k :<C-u>call SaveCount()<CR>"zyiw:call RemoteMan(@z)<CR>
+
+" Signs manipulation
+nmap <Leader>z :call SignFixme()<CR>
+nmap <Leader>x :call UnSignFixme()<CR>
 
 let NERDCreateDefaultMappings=0
 map <Leader>c <plug>NERDCommenterComment
