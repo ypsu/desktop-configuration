@@ -104,5 +104,5 @@ function! RemoteMan(word)
 		let s:cmd .= s:count . " "
 	endif
 	let s:cmd .= a:word
-	let s:dummy =  system(s:cmd)
+	call system(s:cmd)
 endfunction
