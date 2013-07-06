@@ -23,9 +23,10 @@ static void handle_case(const char *expr, const char *file, const char *func, in
 }
 
 enum colorflags {
-	CLRFLG_BLUE = 1,
-	CLRFLG_YELLOW = 2,
-	CLRFLG_RED = 4,
+	CLRFLG_DARK = 1,
+	CLRFLG_BLUE = 2,
+	CLRFLG_YELLOW = 4,
+	CLRFLG_RED = 8,
 };
 
 struct state {
@@ -143,6 +144,8 @@ static void get_colorflags(struct state *s)
 	struct stat buf;
 
 	s->colorflags = 0;
+	if (stat("/dev/shm/D", &buf) == 0)
+		s->colorflags |= CLRFLG_DARK;
 	if (stat("/dev/shm/B", &buf) == 0)
 		s->colorflags |= CLRFLG_BLUE;
 	if (stat("/dev/shm/Y", &buf) == 0)
@@ -192,17 +195,20 @@ static void print_stats(const struct state *old, const struct state *new)
 
 	const char fg_yellow[] = "#[fg=brightyellow]";
 	const char fg_white[] = "#[fg=white]";
+	const char bg_dark[] = "#[bg=black]";
 	const char bg_blue[] = "#[bg=blue]";
 	const char bg_yellow[] = "#[bg=yellow]";
 	const char bg_red[] = "#[bg=red]";
 	const char dflt[] = "#[fg=default,bg=default]";
 
-	printf("%s....%s %s....%s %s....%s DRT:%s%7d%s KiB  MEM:%s%4d%s MiB  eth0:%s%5d%s/%s%5d%s KB  CPU:%s%3d%%  %02d:%02d%s\n",
+	printf("%s....%s %s....%s %s....%s %s....%s DRT:%s%7d%s KiB  MEM:%s%4d%s MiB  eth0:%s%5d%s/%s%5d%s KB  CPU:%s%3d%%  %02d:%02d%s\n",
 			(new->colorflags & CLRFLG_RED) ? bg_red : dflt,
 			dflt,
 			(new->colorflags & CLRFLG_YELLOW) ? bg_yellow : dflt,
 			dflt,
 			(new->colorflags & CLRFLG_BLUE) ? bg_blue : dflt,
+			dflt,
+			(new->colorflags & CLRFLG_DARK) ? bg_dark : dflt,
 			dflt,
 			new->mem_writeback > 0 ? fg_yellow : fg_white,
 			new->mem_dirty + new->mem_writeback,
