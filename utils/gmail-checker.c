@@ -183,7 +183,9 @@ int main(void)
 	HANDLE_CASE(sigaction(SIGUSR1, &act, NULL) == -1);
 	HANDLE_CASE(sigaction(SIGALRM, &act, NULL) == -1);
 	HANDLE_CASE(sigaction(SIGPIPE, &act, NULL) == -1);
-	alarm(600);
+	struct timeval tv = { 600, 0 };
+	struct itimerval itv = { tv, tv };
+	HANDLE_CASE(setitimer(ITIMER_REAL, &itv, NULL) == -1);
 
 	init_ssl();
 
