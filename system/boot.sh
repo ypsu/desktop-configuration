@@ -48,6 +48,7 @@ export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 logexec modprobe snd_bcm2835
 logexec alsactl restore
+logexec gpm -m /dev/input/mice -t imps2
 
 log Miscellaneous settings
 echo Setting tty keymap
