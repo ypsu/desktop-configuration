@@ -48,8 +48,6 @@ export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 logexec modprobe snd_bcm2835
 logexec alsactl restore
-logexec gpm -m /dev/input/mice -t imps2
-logexec atd
 
 log Miscellaneous settings
 echo Setting tty keymap
@@ -64,6 +62,10 @@ echo 16384 > /proc/sys/vm/min_free_kbytes
 
 log Setting time
 sntp
+
+log Starting daemons
+logexec gpm -m /dev/input/mice -t imps2
+logexec atd
 
 log Starting ttys
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux -l /root/.sbin/start-ui.sh &
