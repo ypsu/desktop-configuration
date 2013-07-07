@@ -77,5 +77,6 @@ XTerm*VT100.translations:      #override \n\
         Alt<Key>-: smaller-vt-font() \n\
         Alt<Key>=: larger-vt-font() \n\
         Ctrl<Key>6: string(0x1e) \n\
+        Alt<Key>Return: string(0x1b) string(0x0d) \n\
         Shift<Key>Return: string(0x0d) \n\
         Ctrl<Key>Return: string(0x0d) \n
