@@ -14,7 +14,7 @@ tmux new-session -d
 tmux rename-window "org"
 tmux split-window "mutt"
 tmux split-window "tnotes"
-tmux split-window "while true; do remind -cu+4 -b1 -m -w160 ~/.reminders; read -t 7200; done"
+tmux split-window "while true; do clear; remind -cu+4 -b1 -m -w160 ~/.reminders; read -t 7200; done"
 tmux select-layout tiled >/dev/null
 tmux select-pane -t 1
 tmux new-window
