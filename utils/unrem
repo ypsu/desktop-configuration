@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -f /dev/shm/D
+if (($# > 0)); then
+	at "$@" <<< "touch /dev/shm/D"
+fi
