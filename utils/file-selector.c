@@ -163,9 +163,12 @@ void read_hierarchy(void)
 	HANDLE_CASE(closedir(dirp) == -1);
 }
 
+int matches_count;
+int selection;
 int first_match;
 void match_pattern(const char *pattern)
 {
+restart:
 	// We are doing exact matches except for capital letters. Capital
 	// letters can be preceded by any other characters.
 	first_match = -1;
@@ -209,7 +212,7 @@ void match_pattern(const char *pattern)
 		if (*p == 0) {
 			matched += 1;
 
-			if (matched == 1) {
+			if (matched-1 == selection) {
 				first_match = i;
 				memcpy(buf, " -> ", 4);
 			} else {
@@ -237,6 +240,12 @@ void match_pattern(const char *pattern)
 	buf += 3;
 	HANDLE_CASE(write(1, output_buffer, buf-output_buffer) != buf-output_buffer);
 	rl_refresh_line(0, 0);
+
+	matches_count = matched;
+	if (matched > 0 && selection >= matched) {
+		selection = matched - 1;
+		goto restart;
+	}
 }
 
 void noop(char *s)
@@ -284,18 +293,18 @@ int main(int argc, char **argv)
 	match_pattern("");
 	while (true) {
 		char ch[8];
-		int rby = read(5, ch, 8);
+		int rby = read(5, ch, 1);
 		HANDLE_CASE(rby == -1);
-		if (rby == 1 && ch[0] == 27 && rl_end != 0) {
+		if (rby == 1 && ch[0] == 27 && rl_end != 0) { // Escape on nonempty string
 			rl_delete_text(0, rl_end);
 			rl_callback_handler_install("fuzzy name: ", noop); // why is this needed?
 			rby = 0;
-		} else if (rby == 0 || (rby == 1 && ch[0] == 27)) {
+		} else if (rby == 0 || (rby == 1 && ch[0] == 27)) { // Escape on empty string
 			reset_fd();
 			rl_deprep_terminal();
 			write(1, "\e[H\e[2J", 7);
 			exit(1);
-		} else if (ch[0] == 13) {
+		} else if (ch[0] == 13) { // Return
 			reset_fd();
 			rl_deprep_terminal();
 			write(1, "\e[H\e[2J", 7);
@@ -306,6 +315,16 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 			exit(0);
+		} else if (ch[0] == 10) { // ^J
+			if (selection+1 < matches_count)
+				selection += 1;
+			match_pattern(rl_line_buffer);
+			continue;
+		} else if (ch[0] == 11) { // ^K
+			if (selection > 0)
+				selection -= 1;
+			match_pattern(rl_line_buffer);
+			continue;
 		}
 
 		HANDLE_CASE(write(4, ch, rby) != rby);
