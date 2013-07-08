@@ -137,10 +137,14 @@ void read_subtree(DIR *dirp)
 
 		if (ent->d_type == DT_DIR) {
 			DIR *subdirp = opendir(curpath);
-			HANDLE_CASE(subdirp == NULL);
-			curpath[curpath_sz++] = '/';
-			read_subtree(subdirp);
-			HANDLE_CASE(closedir(subdirp) == -1);
+			if (subdirp == NULL) {
+				HANDLE_CASE(errno != EACCES);
+			} else {
+				HANDLE_CASE(subdirp == NULL);
+				curpath[curpath_sz++] = '/';
+				read_subtree(subdirp);
+				HANDLE_CASE(closedir(subdirp) == -1);
+			}
 		} else {
 			entry_add(bufdup(curpath, curpath_sz+1), curpath_sz);
 		}
@@ -153,7 +157,7 @@ void read_hierarchy(void)
 {
 	puts("reading directory hierarchy");
 
-	DIR *dirp = opendir(".");
+	DIR *dirp = opendir(curpath);
 	HANDLE_CASE(dirp == NULL);
 	read_subtree(dirp);
 	HANDLE_CASE(closedir(dirp) == -1);
@@ -242,12 +246,17 @@ void noop(char *s)
 
 int main(int argc, char **argv)
 {
+	curpath[0] = '.';
+
 	int opt;
 	while ((opt = getopt(argc, argv, "u:")) != -1) {
 		if (opt == 'u') {
 			int n = atoi(optarg);
-			for (int i = 0; i < n; ++i)
-				chdir("..");
+			for (int i = 0; i < n; ++i) {
+				curpath[curpath_sz++] = '.';
+				curpath[curpath_sz++] = '.';
+				curpath[curpath_sz++] = '/';
+			}
 		} else {
 			puts("file-selector [-u n] [entries...]");
 			puts("");
