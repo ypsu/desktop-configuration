@@ -315,12 +315,12 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 			exit(0);
-		} else if (ch[0] == 10) { // ^J
+		} else if (ch[0] == 10 || ch[0] == 14) { // ^J, ^N
 			if (selection+1 < matches_count)
 				selection += 1;
 			match_pattern(rl_line_buffer);
 			continue;
-		} else if (ch[0] == 11) { // ^K
+		} else if (ch[0] == 11 || ch[0] == 16) { // ^K, ^P
 			if (selection > 0)
 				selection -= 1;
 			match_pattern(rl_line_buffer);
