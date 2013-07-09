@@ -64,7 +64,6 @@ log Setting time
 sntp
 
 log Starting daemons
-logexec gpm -m /dev/input/mice -t imps2
 logexec atd
 
 log Starting ttys
