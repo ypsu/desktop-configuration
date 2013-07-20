@@ -9,7 +9,7 @@ function log() {
 	echo -e "\e[33m""$@""\e[0m"
 }
 
-setfont -f /usr/share/kbd/consolefonts/ter-g12n.psf.gz
+setfont -f /usr/share/kbd/consolefonts/ter-v12n.psf.gz
 hostname eper
 
 log Mounting system dirs
