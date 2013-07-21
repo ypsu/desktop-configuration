@@ -86,11 +86,9 @@ nnoremap <silent> <Leader>l
 " Disable automatically adding comment beginnings to the line
 autocmd BufEnter * set formatoptions-=ro
 
-" Enable file type detection.
-" Use the default filetype settings, so that mail gets 'tw' set to 72,
-" 'cindent' is on in C files, etc.
-" Also load indent files, to automatically do language-dependent indenting.
-filetype plugin indent on
+" Enable cindent only in C files
+autocmd BufEnter * set nocindent
+autocmd BufEnter *.c,*.h,*.cpp,*.cc,*.hpp,*.cs,*.java set cindent
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
