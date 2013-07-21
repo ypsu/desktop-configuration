@@ -57,7 +57,6 @@ let &foldmethod = "marker"
 
 set autoindent
 set copyindent
-set preserveindent
 
 set noignorecase
 set nrformats=hex
