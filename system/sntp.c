@@ -49,7 +49,7 @@ int main(void)
 
 	sa.sin_family = AF_INET;
 	sa.sin_port = htons(PORT);
-	inet_pton(AF_INET, "148.6.0.1", &sa.sin_addr);
+	inet_pton(AF_INET, "85.91.1.180", &sa.sin_addr);
 
 	CHECK(sendto(fd, data, sizeof data, 0,
 			(struct sockaddr*) &sa, sizeof sa));
