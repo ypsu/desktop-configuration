@@ -80,7 +80,7 @@ nnoremap <silent> <Leader>l
       \   silent! call matchdelete(w:long_line_match) <Bar>
       \   unlet w:long_line_match <Bar>
       \ else <Bar>
-      \   let w:long_line_match = matchadd('ErrorMsg', '\%>100v.\+', -1) <Bar>
+      \   let w:long_line_match = matchadd('ErrorMsg', '\%>' . &textwidth . 'v.\+', -1) <Bar>
       \ endif<CR>
 
 " Disable automatically adding comment beginnings to the line

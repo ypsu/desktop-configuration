@@ -1,7 +1,7 @@
 shopt -s checkwinsize
 
 export EDITOR=vim
-export GIT_EDITOR="$EDITOR"
+export LESS=-c
 PROMPT_COMMAND=
 HISTFILESIZE=1000000000
 HISTSIZE=1000000
@@ -17,8 +17,6 @@ alias 32=LD_LIBRARY_PATH=/opt/lib32/lib/
 alias ccat='pygmentize -f console256 -P bg=dark -P style=native'
 alias gp='gp -q'
 alias gdb='gdb -q'
-alias vim='vim --servername VIM_SERVER'
-alias vimr='vim --remote'
 alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu"'
 
 function __print_colored_git_branch
@@ -33,9 +31,6 @@ complete -cf man
 complete -cf info
 
 export PYTHONSTARTUP=/home/rlblaster/.pythonrc.py
-
-PAGER=vimpager
-export PAGER
 
 function ,
 {

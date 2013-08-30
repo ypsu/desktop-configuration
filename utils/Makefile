@@ -9,7 +9,7 @@ binaries := $(patsubst %.c,/home/$(USER)/.bin/%,$(sources))
 all: $(scripts_dst) $(binaries)
 
 common_opts := -std=c99 -g -Wall -Wextra -Werror -O2
-link_opts := -lm -lrt -lX11 -lpcap -lssl -lcrypto
+link_opts := -lm -lrt -lX11 -lpcap -lssl -lcrypto -lreadline
 
 clean:
 	rm $(binaries)
