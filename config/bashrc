@@ -53,8 +53,8 @@ function settitle
 }
 
 if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then
-	PS1='\[$(settitle "`pwd_suffix`")\]\[\033[1;34m\][\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
+	PS1='\[$(settitle "`pwd_suffix`")\]\[\033[1;34m\]\h:[\W]\[\033[1;32m\]$(__print_colored_git_branch)\[\033[1;34m\]$\[\033[0m\] '
 	trap '(echo "$BASH_COMMAND" | grep -q "^[^\\]*$") && echo -en "\e]2;$BASH_COMMAND (`pwd_suffix`)\a"' DEBUG
 else
-	PS1='\[\033[1;34m\][\W]$\[\033[0m\] '
+	PS1='\[\033[1;34m\]\h:[\W]$\[\033[0m\] '
 fi
