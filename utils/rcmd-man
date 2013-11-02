@@ -1,3 +1,0 @@
-#!/bin/bash
-
-rcmd-run PAGER=head-screen man "$@" || man "$@"

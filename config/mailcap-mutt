@@ -1,2 +1,0 @@
-text/html; links -dump %s ; copiousoutput
-application/msword; catdoc %s ;
