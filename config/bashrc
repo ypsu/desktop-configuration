@@ -49,7 +49,7 @@ function pwd_suffix
 
 function settitle
 {
-	echo -n -e "\033]2;$1\007"
+	echo -n -e "\033]0;$1\007"
 }
 
 if test $TERM = xterm || test $TERM = xterm-color || test $TERM = rxvt-unicode-256color; then

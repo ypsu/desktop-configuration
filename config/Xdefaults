@@ -66,6 +66,7 @@ XTerm*maxBufSize: 65536
 XTerm*minBufSize: 65536
 XTerm*multiScroll: true
 XTerm*pointerMode: 2
+XTerm*ptyInitialErase: true
 XTerm*saveLines: 10000
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
@@ -74,6 +75,7 @@ XTerm*showMissingGlyphs: true
 XTerm*utf8Title: true
 XTerm*termName: xterm-color
 XTerm*VT100.translations:      #override \n\
+        <Key>BackSpace: string(0x7f) \n\
         Alt<Key>-: smaller-vt-font() \n\
         Alt<Key>=: larger-vt-font() \n\
         Ctrl<Key>6: string(0x1e) \n\
