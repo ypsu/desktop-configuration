@@ -1,0 +1,4 @@
+#!/bin/bash
+
+lines=$(resize | awk 'BEGIN { FS = "=|;" } /LINES=/ { print $2-4 }')
+head -n $lines

@@ -1,0 +1,29 @@
+shopt -s checkwinsize
+shopt -s histappend
+
+HISTSIZE=1000000
+HISTCONTROL=ignoredups
+PS1='\[\033[1;34m\]\h:[\W]\[\033[1;32m\]$(__print_branch)\[\033[1;34m\]$\[\033[0m\] '
+
+export EDITOR=vim
+export LESS=-c
+export PAGER=fastpager
+export PATH="$HOME/.bin:/root/.sbin/:$PATH"
+export LESSCHARSET='utf-8'
+
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -lh'
+alias lt='ls --color=always -lht | head'
+alias grep='grep --color=auto'
+alias gp='gp -q'
+alias gdb='gdb -q'
+alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu,en" -c "set filetype=mail"'
+alias vim='vim -X'
+alias links="links -html-text-color 15 -html-link-color 3"
+
+function __print_branch {
+	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' | tr -d '\n'
+}
+function sshenv {
+	. ~/.bin/sshenv
+}

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+xset r rate 300 40
+xset s 1200
+xset dpms 1200 1200 1200
+xset +fp ~/.fonts
+xmodmap ~/.xmodmap
+
+exec i3

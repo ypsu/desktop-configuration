@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if ! ps auxw | grep -v grep | grep -q sysstat; then
+	local delay=1000
+	local audio=Master
+	if test "$(hostname)" = "eper"; then
+		audio=PCM
+		delay=10000
+	fi
+	sysstat -a $audio -d $delay
+fi
+set_term_colors
+
+if tmux has-session 2>/dev/null; then
+	tmux attach
+	exit
+fi
+
+tmux new-session -d
+if test "$(hostname)" = "eper"; then
+	tmux rename-window "org"
+	tmux split-window "mutt; exec bash"
+	tmux split-window "tnotes; exec bash"
+	tmux split-window "while true; do clear; remind -cu+4 -b1 -m -w110 ~/.reminders; read -t 7200; done; exec bash"
+	tmux select-layout tiled >/dev/null
+	tmux select-pane -t 1
+fi
+settitle xterm
+for i in {2..9}; do
+	tmux new-window -n ____
+done
+tmux select-window -t 1
+tmux attach

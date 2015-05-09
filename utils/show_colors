@@ -1,0 +1,19 @@
+#!/bin/bash
+
+for bg in {0..7}; do
+	for hi in "" ";1"; do
+		if test "$hi" = ""; then
+			echo -n "bg=$bg, hi=no "
+		else
+			echo -n "bg=$bg, hi=yes"
+		fi
+		for fg in {0..7}; do
+			echo -en " "
+			echo -en "\e[4${bg}m"
+			echo -en "\e[3${fg}${hi}m"
+			echo -en "a & b"
+			echo -en "\e[0m"
+		done
+	echo
+	done
+done

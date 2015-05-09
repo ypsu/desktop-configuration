@@ -1,0 +1,80 @@
+*background: #000000
+*foreground: #f8f8f8
+! Black
+*color0: #000000
+! Red
+*color1: #c75646
+! Green
+*color2: #8eb33b
+! Yellow
+*color3: #d0b03c
+! Blue
+*color4: #72b3cc
+! Purple
+*color5: #c8a0d1
+! Cyan
+*color6: #218693
+! White
+*color7: #606060
+! Grey
+*color8: #a0a0a0
+! Light Red
+*color9: #e09690
+! Light Green
+*color10: #cdee69
+! Light Yellow
+*color11: #ffe377
+! Light Blue
+*color12: #9cd9f0
+! Light Purple
+*color13: #fbb1f9
+! Light Cyan
+*color14: #77dfd8
+! Light white
+*color15: #f8f8f8
+
+
+XTerm*alwaysUseMods: true
+XTerm*bellIsUrgent: true
+XTerm*cdXtraScroll: true
+XTerm*cursorColor: #009900
+XTerm*cutNewline: false
+XTerm*allowBoldFonts: false
+XTerm*allowColorOps: true
+XTerm*decTerminalID: 102
+XTerm*eightBitInput: false
+XTerm*fastScroll: true
+XTerm*font: -xos4-terminus-medium-r-normal--12-120-72-72-c-60-iso10646-1
+XTerm*font1: -raccoon-fixed4x6-medium-r-normal--6-60-75-75-p-40-iso10646-1
+XTerm*font2: -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
+XTerm*font3: -xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1
+XTerm*font4: -xos4-terminus-medium-r-normal--24-240-72-72-c-120-iso10646-1
+XTerm*font5: -xos4-terminus-medium-r-normal--28-280-72-72-c-140-iso10646-1
+XTerm*font6: -xos4-terminus-medium-r-normal--32-320-72-72-c-160-iso10646-1
+XTerm*highlightSelection: true
+XTerm*jumpScroll: true
+XTerm*keyboardType: tcap
+XTerm*maxBufSize: 65536
+XTerm*minBufSize: 65536
+XTerm*multiScroll: true
+XTerm*openIm: false
+XTerm*pointerMode: 2
+XTerm*ptyInitialErase: true
+XTerm*saveLines: 10000
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
+XTerm*selectToClipboard: true
+XTerm*showBlinkAsBold: true
+XTerm*showMissingGlyphs: true
+XTerm*utf8Title: true
+XTerm*termName: xterm-color
+XTerm*VT100.translations:      #override \n\
+        Ctrl<Key>BackSpace: string(0x08) \n\
+        Alt<Key>BackSpace: string("") \n\
+        <Key>BackSpace: string(0x7f) \n\
+        Ctrl Alt<Key>Prior: larger-vt-font() \n\
+        Ctrl Alt<Key>Next: smaller-vt-font() \n\
+        Ctrl<Key>6: string(0x1e) \n\
+        Alt<Key>Return: string("") \n\
+        Shift<Key>Return: string(0x0d) \n\
+        Ctrl<Key>Return: string(0x0d) \n
