@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 		sz += asz;
 	}
 
-	write(fd, buf, sz);
+	HANDLE_CASE(write(fd, buf, sz) != sz);
 
 	return 0;
 }
