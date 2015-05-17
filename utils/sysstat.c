@@ -310,7 +310,16 @@ main(int argc, char **argv)
 			long mn = 0, mx = 100, val;
 			int r;
 			r = snd_mixer_selem_get_playback_dB_range(e, &mn, &mx);
-			CHECK(r == 0);
+			if (r != 0) {
+				// Fallback method.
+				const char *c;
+				c = "amixer -M get Master | grep -o '[0-9]*%'";
+				FILE *f = popen(c, "r");
+				CHECK(f != NULL);
+				CHECK(fscanf(f, "%d", &ns.volume) == 1);
+				fclose(f);
+				break;
+			}
 			snd_mixer_selem_channel_id_t ch = SND_MIXER_SCHN_MONO;
 			r = snd_mixer_selem_get_playback_dB(e, ch, &val);
 			CHECK(r == 0);
