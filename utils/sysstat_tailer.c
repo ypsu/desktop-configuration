@@ -26,6 +26,7 @@ check(const char *expr, const char *file, const char *func, int line)
 
 int main(void)
 {
+	setlinebuf(stdout);
 	int sysstat_fd = -1;
 	while (sysstat_fd == -1) {
 		sysstat_fd = open("/tmp/.sysstat", O_RDONLY);
@@ -40,7 +41,6 @@ int main(void)
 	int watchid = inotify_add_watch(inotify_fd, "/tmp/.sysstat", IN_MODIFY);
 	CHECK(watchid != -1);
 	struct inotify_event ev;
-	setlinebuf(stdout);
 	int r;
 	do {
 		char buf[220];

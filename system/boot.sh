@@ -22,13 +22,13 @@ function paks() {
 }
 
 log Mounting system dirs
-logexec mount -t proc proc /proc -o nosuid,noexec,nodev
-logexec mount -t sysfs sys /sys -o nosuid,noexec,nodev
-logexec mount -t tmpfs run /run -o mode=0755,nosuid,nodev
-logexec mkdir -p /dev/pts /dev/shm /run/lock
-logexec mount -t devpts devpts /dev/pts -o mode=0620,gid=5,nosuid,noexec
-logexec mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
-logexec mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=50%
+mount -t proc proc /proc -o nosuid,noexec,nodev 2>/dev/null
+mount -t sysfs sys /sys -o nosuid,noexec,nodev 2>/dev/null
+mount -t tmpfs run /run -o mode=0755,nosuid,nodev
+mkdir -p /dev/pts /dev/shm /run/lock
+mount -t devpts devpts /dev/pts -o mode=0620,gid=5,nosuid,noexec
+mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
+mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=50%
 mkdir -p /tmp/a
 chown rlblaster:users /tmp/a
 
@@ -80,7 +80,7 @@ log Miscellaneous settings
 modprobe loop
 echo Setting tty keymap
 loadkeys -d
-loadkeys /home/rlblaster/proj/desktop-configuration/config/loadkeys.cfg
+loadkeys /home/rlblaster/proj/desktop-configuration/misc/loadkeys.cfg
 
 echo Setting kernel variables
 echo 100 > /proc/sys/vm/dirty_background_ratio
@@ -91,7 +91,7 @@ eper echo 16384 > /proc/sys/vm/min_free_kbytes
 paks echo 262144 > /proc/sys/vm/min_free_kbytes
 
 log Setting time
-sntp
+eper sntp
 
 if test "$(hostname)" = "paks"; then
 	log Starting X in the background
