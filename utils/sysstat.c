@@ -342,9 +342,7 @@ main(int argc, char **argv)
 			int64_t full = extract_number(config.bat_full);
 			int64_t now = extract_number(config.bat_now);
 			ns.battery = now*100 / full;
-			if (ns.battery < 30) {
-				snprintf(bat, 16, "%3d%% bat ", ns.battery);
-			}
+			snprintf(bat, 16, "%3d%% bat ", ns.battery);
 		}
 
 		// Print the stats.
