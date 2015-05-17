@@ -55,8 +55,8 @@ paks logexec ifconfig eno1 192.168.1.200 netmask 255.255.255.0 broadcast 192.168
 paks logexec route add default gw 192.168.1.1 eno1
 
 log Checking filesystems
-eper logexec fsck -T -C /
-paks fsck -T -C / && fsck -T -C /data
+logexec fsck -T -C /
+paks logexec fsck -T -C /data
 if test $? -ge 2; then
 	agetty -8 -a root --noclear 38400 tty1 linux
 fi

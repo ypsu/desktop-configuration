@@ -36,3 +36,4 @@ for i in {2..9}; do
 done
 tmux select-window -t 1
 tmux attach
+bash
