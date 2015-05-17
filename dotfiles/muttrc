@@ -109,7 +109,6 @@ bind index _ collapse-all
 macro index,pager <F5> '<enter-command>toggle sidebar_visible<enter><refresh><redraw-screen>'
 
 folder-hook . push "<collapse-all>\n"
-folder-hook . push <shell-escape>killall<space>-USR1<space>gmail_checker<enter>
 
 auto_view text/html text/enriched application/x-gunzip application/msword
 mime_lookup application/octet-stream
