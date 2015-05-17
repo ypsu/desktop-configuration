@@ -52,6 +52,9 @@ struct state {
 
 	// Volume between 0 and 100.
 	int volume;
+	
+	// Battery level between 0 an 100.
+	int battery;
 };
 
 enum { MAX_IFACES = 4 };
@@ -75,6 +78,7 @@ struct config {
 	struct utsname uname;
 	snd_mixer_t *snd_mixer;
 	snd_mixer_elem_t *snd_elem;
+	int bat_full, bat_now;
 };
 
 static void
@@ -241,6 +245,9 @@ main(int argc, char **argv)
 		config.snd_elem = snd_mixer_find_selem(mixer, sid);
 		CHECK(config.snd_elem != NULL);
 	}
+	int f = O_RDONLY;
+	config.bat_full = open("/sys/class/power_supply/BAT0/energy_full", f);
+	config.bat_now = open("/sys/class/power_supply/BAT0/energy_now", f);
 
 	// Main loop.
 	struct state state;
@@ -329,6 +336,17 @@ main(int argc, char **argv)
 			ns.volume = lrint(v * 100.0);
 		} while (0);
 
+		// Read the battery data.
+		char bat[16] = {};
+		if (config.bat_now != -1 && config.bat_full != -1) {
+			int64_t full = extract_number(config.bat_full);
+			int64_t now = extract_number(config.bat_now);
+			ns.battery = now*100 / full;
+			if (ns.battery < 30) {
+				snprintf(bat, 16, "%3d%% bat ", ns.battery);
+			}
+		}
+
 		// Print the stats.
 		char drt[10], mem[10], up[10], down[10];
 		int vol, cpu;
@@ -348,12 +366,14 @@ main(int argc, char **argv)
 		tm = localtime(&ns.date);
 		vol = ns.volume;
 		snprintf(buf, BS,
+			"%s"
 			"%3d%% vol "
 			"%5s drt %5s mem "
 			"%5s ↑ %5s ↓ "
 			"%3d%% cpu "
 			"%02d:%02d",
-			vol, drt, mem, up, down, cpu, tm->tm_hour, tm->tm_min);
+			bat, vol, drt, mem, up, down, cpu,
+			tm->tm_hour, tm->tm_min);
 		int len = strlen(buf);
 		if (strcmp(config.output, "-") != 0) {
 			int r;
