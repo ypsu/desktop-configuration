@@ -369,8 +369,9 @@ main(int argc, char **argv)
 			"%5s drt %5s mem "
 			"%5s ↑ %5s ↓ "
 			"%3d%% cpu "
-			"%02d:%02d",
+			"%04d-%02d-%02d %02d:%02d",
 			bat, vol, drt, mem, up, down, cpu,
+			tm->tm_year+1900,tm->tm_mon+1, tm->tm_mday,
 			tm->tm_hour, tm->tm_min);
 		int len = strlen(buf);
 		if (strcmp(config.output, "-") != 0) {
