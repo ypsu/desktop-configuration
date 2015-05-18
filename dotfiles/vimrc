@@ -33,6 +33,7 @@ set virtualedit+=block
 set tw=80
 set t_RV=               " there are some problem with the cursor keys without this
 set t_Co=16
+set notitle
 colorscheme desert
 hi Visual ctermfg=4 ctermbg=0
 hi SpellBad ctermbg=1
