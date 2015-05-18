@@ -1,12 +1,15 @@
 #define _GNU_SOURCE
+#include <stdbool.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/file.h>
 #include <sys/inotify.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 
 #define CHECK(cond) \
@@ -24,9 +27,30 @@ check(const char *expr, const char *file, const char *func, int line)
 	abort();
 }
 
-int main(void)
+const char usage[] =
+"sysstat_rewrite [OPTIONS...]\n"
+"Dumps /tmp/.sysstat whenever it changes.\n"
+"\n"
+"-h  Print this message.\n"
+"-r  Rewrite the timedate to the current time.\n";
+
+int main(int argc, char **argv)
 {
 	setlinebuf(stdout);
+	bool rewrite_date = false;
+	int opt;
+	while ((opt = getopt(argc, argv, "hr")) != -1) {
+		switch (opt) {
+		case 'h':
+			fputs(usage, stdout);
+			exit(0);
+		case 'r':
+			rewrite_date = true;
+			break;
+		default:
+			CHECK(false);
+		}
+	}
 	int sysstat_fd = -1;
 	while (sysstat_fd == -1) {
 		sysstat_fd = open("/tmp/.sysstat", O_RDONLY);
@@ -49,6 +73,14 @@ int main(void)
 		CHECK(flock(sysstat_fd, LOCK_UN) == 0);
 		CHECK(r != -1);
 		buf[r] = 0;
+		int len = strlen(buf);
+		if (rewrite_date && len > 20) {
+			time_t t = time(NULL);
+			struct tm *tm = localtime(&t);
+			snprintf(buf+len-16, 17, "%04d-%02d-%02d %02d:%02d",
+				tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
+				tm->tm_hour, tm->tm_min);
+		}
 		CHECK(puts(buf) >= 0);
 	} while ((r = read(inotify_fd, &ev, sizeof ev)) == sizeof ev);
 	CHECK(r == sizeof ev);
