@@ -1,4 +1,0 @@
-#!/bin/bash
-
-export LESS=-c
-col -bx | less
