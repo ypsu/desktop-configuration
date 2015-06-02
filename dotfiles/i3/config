@@ -34,6 +34,7 @@ bindsym $mod+Shift+Escape exec xterm -name XM-floating
 bindsym $mod+t exec links -g
 bindsym $mod+equal exec proj/gp-gui/gp-gui.sh
 bindsym $mod+backslash exec proj/latex-to-unicode/latex-to-unicode.sh
+bindsym $mod+Mod1+l exec xscreensaver-command -lock
 for_window [title="Latex to Unicode converter"] floating enable
 
 bindsym $mod+F11 exec voldec
