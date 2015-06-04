@@ -137,6 +137,7 @@ cnoremap <C-h> <C-w>
 
 " F1 - Edit last file
 map <F1> <C-^>
+imap <F1> <C-o><C-^>
 " <Leader>F1 - Replace the contents with the contents of the clipboard
 map <Leader><F1> ggdG:let @" = system('x2t; tmux save-buffer -')<CR>pkdd
 " F2 - Save
@@ -146,9 +147,6 @@ vmap <F2> <Esc><F2>gv
 map <Leader><F2> ggyG``zz:call system('cat \| tmux load-buffer -; t2x', @")<CR>
 " Leader-F3 - Reload all
 map <Leader><F3> :bufdo set eventignore= \| e <CR>
-" F3 - Make
-map <F3> :make<CR>
-vmap <F3> <Esc><F3>gv
 " F4 - Show terminal
 map <F4> :!exit <CR>
 vmap <F4> <Esc><F4>gv
