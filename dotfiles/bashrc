@@ -6,7 +6,7 @@ HISTFILESIZE=$HISTSIZE
 HISTCONTROL=ignoredups
 PS1='\[\033[1;34m\]\h:[\W]\[\033[1;32m\]$(__print_branch)\[\033[1;34m\]$\[\033[0m\] '
 
-export EDITOR=vim
+export EDITOR="vim -X -c 'set spell'"
 export LESS=-c
 export PATH="$HOME/.bin:/root/.sbin/:$PATH"
 export LESSCHARSET='utf-8'
