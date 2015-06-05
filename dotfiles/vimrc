@@ -53,7 +53,7 @@ endif
 " disable paren highlighting
 let g:loaded_matchparen = 1
 
-"syntax on
+syntax off
 
 " Map <Enter> to : so I don't have to press shift to get to the command line.
 noremap <C-\> <Enter>
