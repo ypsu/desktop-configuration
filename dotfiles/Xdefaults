@@ -1,3 +1,5 @@
+! Compile with this command: xrdb -nocpp .Xdefaults
+
 *background: #000000
 *foreground: #f8f8f8
 ! Black
