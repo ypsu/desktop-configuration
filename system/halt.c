@@ -78,6 +78,7 @@ int main(int argc, char **argv)
 	system("chvt 1");
 	mypid = getpid();
 	for (int sig = 0; sig < 32; ++sig) {
+		if (sig == SIGCHLD) continue;
 		signal(sig, SIG_IGN);
 	}
 
@@ -100,11 +101,12 @@ int main(int argc, char **argv)
 	sync();
 
 	puts("Unmounting filesystems");
-	system("umount -r -a");
-	puts("Syncing");
-	sync();
-	puts("Remounting root");
-	system("mount -r -o remount,ro /");
+	while (system("umount -r -a") != 0) {
+		puts("Unmounting failed.");
+		puts("Please run \"umount -r -a\" manually then exit.");
+		freopen("/dev/tty1", "r", stdin);
+		system("bash");
+	}
 	sync();
 	if (request == CMD_REBOOT) {
 		puts("Rebooting");

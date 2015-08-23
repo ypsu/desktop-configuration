@@ -9,7 +9,7 @@ binaries := $(patsubst %.c,$(HOME)/.sbin/%,$(sources))
 all: $(scripts_dst) $(binaries)
 
 common_opts := -std=c99 -g -Wall -Wextra -Werror -O2
-link_opts := -lm
+link_opts := -lm -static
 
 clean:
 	rm $(binaries)
