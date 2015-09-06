@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 	}
 
 	puts("Sending SIGTERM to the processes");
+	kill(1, SIGTERM); // Make init reload itself so it doesn't block umount.
 	for (int i = 0; i < 20; ++i) {
 		if (killall(SIGTERM))
 			break;
