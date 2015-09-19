@@ -19,7 +19,6 @@ set smtp_url = smtps://$imap_user:$imap_pass@smtp.gmail.com
 set ssl_force_tls = yes
 set ssl_starttls = yes
 
-set sidebar_shortpath = yes
 # don't quote (quoting while top posting is irrational)
 set indent_string = ""
 
