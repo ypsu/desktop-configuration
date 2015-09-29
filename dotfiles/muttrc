@@ -5,7 +5,7 @@ set imap_user = rlblaster@gmail.com
 set imap_pass = `cat personal/.gmail_pwd | sed 's/.* //'`
 set folder = imaps://imap.gmail.com
 set spoolfile = +INBOX
-mailboxes =INBOX =to-do =tmux =recent =[Gmail]/Drafts =[Gmail]/Sent\ Mail =[Gmail]/All\ Mail
+mailboxes =INBOX =to-do =tmux =recent =[Gmail]/Drafts =[Gmail]/Sent\ Mail =[Gmail]/Spam =[Gmail]/All\ Mail
 set header_cache = ~/.cache/mutt
 set message_cachedir = ~/.cache/mutt
 set tmpdir = ~/.cache/mutt
