@@ -83,6 +83,7 @@ loadkeys -d
 loadkeys /home/rlblaster/proj/desktop-configuration/misc/loadkeys.cfg
 
 echo Setting kernel variables
+echo 1 > /proc/sys/kernel/sysrq
 echo 100 > /proc/sys/vm/dirty_background_ratio
 echo 100 > /proc/sys/vm/dirty_ratio
 echo 30000 > /proc/sys/vm/dirty_expire_centisecs
