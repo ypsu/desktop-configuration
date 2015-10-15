@@ -127,6 +127,7 @@ usage[] =
 "Start up the system stats collector.\n"
 "\n"
 "-a DEV     Use DEV alsa device for volume control. Default is Master.\n"
+"           Set to none if not needed.\n"
 "-d MSECS   Wait MSECS milliseconds between updates. The default is 1000 ms.\n"
 "-f         Stay in foreground instead of daemonizing.\n"
 "-h         Show this help.\n"
@@ -232,7 +233,7 @@ main(int argc, char **argv)
 		CHECK((config.up_fd[config.ifaces] = open(f, O_RDONLY)) > 0);
 		config.ifaces += 1;
 	} while((iface = strtok(NULL, ",")) != NULL);
-	{
+	if (strcmp(config.audio, "none") != 0) {
 		CHECK(snd_mixer_open(&config.snd_mixer, 0) == 0);
 		snd_mixer_t *mixer = config.snd_mixer;
 		snd_mixer_selem_id_t *sid;
@@ -244,6 +245,9 @@ main(int argc, char **argv)
 		snd_mixer_selem_id_set_name(sid, config.audio);
 		config.snd_elem = snd_mixer_find_selem(mixer, sid);
 		CHECK(config.snd_elem != NULL);
+	} else {
+		config.snd_mixer = NULL;
+		config.snd_elem = NULL;
 	}
 	int f = O_RDONLY;
 	config.bat_full = open("/sys/class/power_supply/BAT0/energy_full", f);
@@ -307,11 +311,12 @@ main(int argc, char **argv)
 		}
 
 		// Read the volume.
-		do {
+		ns.volume = state.volume;
+		if (config.snd_mixer != NULL) {
 			int evcnt = snd_mixer_handle_events(config.snd_mixer);
 			CHECK(evcnt >= 0);
 			if (evcnt == 0 && state.volume != -1) {
-				break;
+				goto volume_done;
 			}
 			snd_mixer_elem_t *e = config.snd_elem;
 			long mn = 0, mx = 100, val;
@@ -325,7 +330,7 @@ main(int argc, char **argv)
 				CHECK(f != NULL);
 				CHECK(fscanf(f, "%d", &ns.volume) == 1);
 				fclose(f);
-				break;
+				goto volume_done;
 			}
 			snd_mixer_selem_channel_id_t ch = SND_MIXER_SCHN_MONO;
 			r = snd_mixer_selem_get_playback_dB(e, ch, &val);
@@ -334,7 +339,8 @@ main(int argc, char **argv)
 			double b = exp10((mn - mx) / 6000.0);
 			double v = (a - b) / (1.0 - b);
 			ns.volume = lrint(v * 100.0);
-		} while (0);
+volume_done:;
+		}
 
 		// Read the battery data.
 		char bat[16] = {};
