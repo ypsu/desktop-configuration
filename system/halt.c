@@ -12,7 +12,8 @@
 
 int mypid;
 
-// Returns true if there was no process available
+// Returns true if there was no process available. Use sig=-1 to see if there
+// are processes available without sending them a signal.
 bool killall(int sig)
 {
 	bool found_process = false;
@@ -34,7 +35,9 @@ bool killall(int sig)
 		char link[4096];
 		if (readlink(exe, link, sizeof link) == -1)
 			continue;
-		kill(pid, sig);
+		if (sig != -1) {
+			kill(pid, sig);
+		}
 		found_process = true;
 	}
 
@@ -84,16 +87,19 @@ int main(int argc, char **argv)
 
 	puts("Sending SIGTERM to the processes");
 	kill(1, SIGTERM); // Make init reload itself so it doesn't block umount.
+	killall(SIGTERM);
 	for (int i = 0; i < 20; ++i) {
-		if (killall(SIGTERM))
+		if (killall(-1)) {
 			break;
+		}
 		usleep(200000);
 	}
 	redirect_output(); // output is closed after killing X for some reason
 	puts("Sending SIGKILL to the processes");
 	for (int i = 0; i < 10; ++i) {
-		if (killall(SIGKILL))
+		if (killall(SIGKILL)) {
 			break;
+		}
 		usleep(200000);
 	}
 	redirect_output(); // output is closed after killing X for some reason
