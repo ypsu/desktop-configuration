@@ -81,6 +81,7 @@ modprobe loop
 echo Setting tty keymap
 loadkeys -d
 loadkeys /home/rlblaster/proj/desktop-configuration/misc/loadkeys.cfg
+kbdrate -d 500 -r 50
 
 echo Setting kernel variables
 echo 1 > /proc/sys/kernel/sysrq
