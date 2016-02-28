@@ -1,5 +1,6 @@
-# do not bell on tab-completion
 set bell-style none
+set disable-completion on
+set revert-all-at-newline on
 
 set meta-flag on
 set input-meta on

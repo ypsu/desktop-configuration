@@ -1,10 +1,8 @@
 shopt -s checkwinsize
 shopt -s histappend
 
-HISTSIZE=1000000
-HISTFILESIZE=$HISTSIZE
-HISTCONTROL=ignoredups
-PS1='\[\033[1;34m\]\h:[\W]\[\033[1;32m\]$(__print_branch)\[\033[1;34m\]$\[\033[0m\] '
+HISTCONTROL=erasedups
+PS1='\[\e[0m\]$ '
 
 export EDITOR="vim -X -c 'set spell'"
 export LESS=-c
@@ -21,9 +19,11 @@ alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu,en" -c "set filetype=mai
 alias vim='vim -X'
 alias links="links -html-text-color 15 -html-link-color 3"
 
-function __print_branch {
-	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' | tr -d '\n'
-}
 function sshenv {
 	. ~/.bin/sshenv
 }
+
+unset command_not_found_handle
+unset HISTFILE
+unset HISTFILESIZE
+unset PROMPT_COMMAND
