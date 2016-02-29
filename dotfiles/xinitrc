@@ -5,5 +5,6 @@ xset s 1200
 xset dpms 1200 1200 1200
 xset +fp ~/.fonts
 xmodmap ~/.xmodmap
+synclient MaxTapTime=0
 
 exec i3
