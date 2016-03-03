@@ -49,7 +49,7 @@ bindsym $mod+z workspace back_and_forth
 # kill focused window
 bindsym $mod+c kill
 bindsym --release button2 kill
-bindsym --release --whole-window $mod+button2 kill
+bindsym --whole-window $mod+button2 kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
