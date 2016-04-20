@@ -386,6 +386,7 @@ volume_done:;
 			}
 			CHECK(r == 0);
 			CHECK(pwrite(config.output_fd, buf, len, 0) == len);
+			CHECK(ftruncate(config.output_fd, len) == 0);
 			CHECK(flock(config.output_fd, LOCK_UN) == 0);
 		} else {
 			strcat(buf, "\n");
