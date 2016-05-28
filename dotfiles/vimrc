@@ -63,6 +63,9 @@ let &foldmethod = "marker"
 
 set autoindent
 set copyindent
+set shiftwidth=2
+set softtabstop=2
+set expandtab
 
 set noignorecase
 set nrformats=hex
@@ -81,6 +84,9 @@ set list
 " Disable automatically adding comment beginnings to the line
 autocmd BufEnter * set formatoptions-=ro
 autocmd FileType gitcommit setlocal tw=72
+autocmd FileType go setlocal shiftwidth=8
+autocmd FileType go setlocal softtabstop=0
+autocmd FileType go setlocal noexpandtab
 
 " Enable file type detection.
 " Use the default filetype settings, so that mail gets 'tw' set to 72,
