@@ -257,6 +257,7 @@ main(int argc, char **argv)
 	struct state state;
 	memset(&state, 0, sizeof state);
 	state.volume = -1;
+	int last_len = 0;
 	while (true) {
 		struct state ns;
 		enum { BS = 4096 };
@@ -386,7 +387,10 @@ volume_done:;
 			}
 			CHECK(r == 0);
 			CHECK(pwrite(config.output_fd, buf, len, 0) == len);
-			CHECK(ftruncate(config.output_fd, len) == 0);
+			if (len != last_len) {
+				CHECK(ftruncate(config.output_fd, len) == 0);
+				last_len = len;
+                        }
 			CHECK(flock(config.output_fd, LOCK_UN) == 0);
 		} else {
 			strcat(buf, "\n");
