@@ -1,8 +1,8 @@
 #!/bin/bash
 
 xset r rate 500 50
-xset s 1200
-xset dpms 1200 1200 1200
+xset s off
+xset -dpms
 xset +fp ~/.fonts
 xmodmap ~/.xmodmap
 synclient MaxTapTime=0
