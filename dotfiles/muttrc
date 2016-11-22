@@ -65,9 +65,9 @@ set timeout=100
 unset collapse_unread
 unset beep
 set date_format = "%F %H:%M %z"
-set sort = threads
-set sort_aux = reverse-last-date-received
+set sort = subject
 set mark_old = no
+set time_inc = 1000
 set index_format = "%4C %Z %D %-20.20F %s"
 unset wait_key
 set mime_forward=yes
