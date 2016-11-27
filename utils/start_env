@@ -22,14 +22,6 @@ fi
 
 tmux new-session -d
 tmux rename-window "____"
-if test "$(hostname)" = "eper"; then
-	tmux rename-window "org"
-	tmux split-window "mutt; exec bash"
-	tmux split-window "tnotes; exec bash"
-	tmux split-window "while true; do clear; remind -cu+4 -b1 -m -w110 ~/.reminders; read -t 7200; done; exec bash"
-	tmux select-layout tiled >/dev/null
-	tmux select-pane -t 1
-fi
 settitle xterm
 for i in {2..9}; do
 	tmux new-window -n ____
