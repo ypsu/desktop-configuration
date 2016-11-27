@@ -2,10 +2,9 @@ set editor = "vim -X -c ':Mailmode'
 set my_name = "Balazs Kezes"
 set from = "Balazs Kezes <rlblaster@gmail.com>"
 set imap_user = rlblaster@gmail.com
-set imap_pass = `cat personal/.gmail_pwd | sed 's/.* //'`
+set imap_pass = `cat ~/.config/.mail | sed 's/.* //'`
 set folder = imaps://imap.gmail.com
-set spoolfile = +INBOX
-mailboxes =INBOX =to-do =recent =[Gmail]/Drafts =[Gmail]/Sent\ Mail =[Gmail]/Spam =[Gmail]/All\ Mail
+set spoolfile = =recent
 set header_cache = ~/.cache/mutt
 set message_cachedir = ~/.cache/mutt
 set tmpdir = ~/.cache/mutt
@@ -50,7 +49,6 @@ color index brightblue default '~T' # Tagged
 color index magenta default '~D' # Deleted
 color index yellow default '~F' # Flagged
 color index green default '~U' # New
-color sidebar_new cyan default
 
 set delete
 unset confirmappend
@@ -88,9 +86,6 @@ hdr_order From From: To: Cc: Bcc: Date: Reply-To: Subject:
 
 set autoedit
 set edit_headers
-set sidebar_visible="yes"
-set sidebar_width=20
-set sidebar_delim="|"
 
 bind pager k previous-line
 bind pager j next-line
@@ -100,12 +95,8 @@ bind editor <delete> delete-char
 bind pager \e[1~ top
 bind pager G bottom
 bind index "^" imap-fetch-mail
-bind pager,index [ sidebar-prev
-bind pager,index ] sidebar-next
-bind pager,index \\ sidebar-open
 bind index - collapse-thread
 bind index _ collapse-all
-macro index,pager <F5> '<enter-command>toggle sidebar_visible<enter><refresh><redraw-screen>'
 
 folder-hook . push "<collapse-all>\n"
 
