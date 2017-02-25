@@ -30,7 +30,7 @@ int main(void)
 	int child;
 	siginfo_t rv;
 	const char cipherfile[] =
-		"/home/rlblaster/proj/desktop-configuration/.contacts.txt.gpg";
+		"/home/rlblaster/d/desktop-configuration/.contacts.txt.gpg";
 	const char tmpfile[] = "/dev/shm/data";
 
 	// Decrypt.
