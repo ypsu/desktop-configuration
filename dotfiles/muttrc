@@ -14,6 +14,7 @@ unset record
 unset imap_passive
 set imap_keepalive = 300
 set mail_check = 120
+set hostname = localhost
 
 set smtp_url = smtps://$imap_user:$imap_pass@smtp.gmail.com
 set ssl_force_tls = yes
