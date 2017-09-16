@@ -88,7 +88,7 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout toggle all
+bindsym $mod+s layout toggle
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -199,8 +199,8 @@ bindsym $mod+r mode "resize"
 bar {
         position top
         status_command sysstat_tailer
-        wheel_up_cmd exec volinc
-        wheel_down_cmd exec voldec
+        bindsym button4 exec volinc
+        bindsym button5 exec voldec
 
         colors {
                 urgent_workspace #ffff00 #ffff00 #000000
