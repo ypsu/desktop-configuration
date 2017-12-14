@@ -23,7 +23,6 @@ libs := \
 	-lssl \
 	-lX11 \
 	-lXext \
-	-lXft \
 
 flags.opt := -O2
 cflags := -g -std=c99 -Wall -Wextra -Werror
