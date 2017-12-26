@@ -39,17 +39,16 @@
 #define check(cond) checkfunc(cond, #cond, __FILE__, __LINE__)
 void checkfunc(bool ok, const char *s, const char *file, int line);
 
-// status is a string representation of what the application is currently doing.
-// it's a succinct description of the application's current state. it's never
-// logged. it's only helpful to quickly identify why something crashed because
-// checkfail prints its contents.
-enum { statuslen = 80 };
-char status[statuslen + 1];
+// state is a succinct string representation of what the application is
+// currently doing. it's never logged. it's only helpful to quickly identify why
+// something crashed because checkfail prints its contents.
+enum { statelen = 80 };
+char state[statelen + 1];
 __attribute__((format(printf, 1, 2)))
-void setstatus(const char *fmt, ...) {
+void setstatestr(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  vsnprintf(status, statuslen, fmt, ap);
+  vsnprintf(state, statelen, fmt, ap);
   va_end(ap);
 }
 
@@ -90,7 +89,7 @@ void checkfunc(bool ok, const char *s, const char *file, int line) {
   if (ok) return;
   loginfo(file, line);
   logfunc("checkfail %s", s);
-  log("status: %s", status);
+  log("state: %s", state);
   if (errno != 0) log("errno: %m");
   exit(1);
 }
@@ -174,7 +173,7 @@ int main(int argc, char **argv) {
   time_t curtime, lastinterrupt;
 
   // initialize data.
-  setstatus("initializing");
+  setstatestr("initializing");
   httpfd = -1;
   gopherfd = -1;
   s.reloadfiles = true;
@@ -252,7 +251,7 @@ int main(int argc, char **argv) {
   while (true) {
     // reload files if necessary.
     if (s.reloadfiles) {
-      setstatus("reloading files");
+      setstatestr("reloading files");
       s.reloadfiles = false;
       for (i = 0; i < maxfiles; i++) {
         free(s.files[i].data);
@@ -274,7 +273,7 @@ int main(int argc, char **argv) {
           log("skipped the long named %s", dirent->d_name);
           continue;
         }
-        setstatus("reloading %s", dirent->d_name);
+        setstatestr("reloading %s", dirent->d_name);
         fd = open(dirent->d_name, O_RDONLY);
         check(fd != -1);
         len = read(fd, s.buf1, maxfilesize + 1);
@@ -318,7 +317,7 @@ int main(int argc, char **argv) {
     }
 
     // process a socket event.
-    setstatus("waiting for events");
+    setstatestr("waiting for events");
     r = epoll_wait(epollfd, &ev, 1, -1);
     if (r == -1 && errno == EINTR) {
       errno = 0;
@@ -337,7 +336,7 @@ int main(int argc, char **argv) {
     check(r == 1);
     // accept and read the request into s.buf2. pbuf will point at the response
     // eventually and its length will be len.
-    setstatus("accepting a request");
+    setstatestr("accepting a request");
     fd = accept4(ev.data.fd, nil, nil, SOCK_NONBLOCK);
     i = maxfilesize + 1024;
     check(setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &i, sizeof(i)) == 0);
@@ -375,7 +374,7 @@ int main(int argc, char **argv) {
         goto notimplementederror;
       }
     }
-    setstatus("responding to %s /%s", type, s.buf2);
+    setstatestr("responding to %s /%s", type, s.buf2);
     // find the entry via binary search and respond.
     lo = 0, hi = s.filescount - 1;
     while (lo <= hi) {
