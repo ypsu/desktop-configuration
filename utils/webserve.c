@@ -158,9 +158,10 @@ int main(int argc, char **argv) {
   // variables for single purpose.
   int httpfd, gopherfd, epollfd;
   int maxfilesize = 100 * 1000;
+  const char *acmepath = nil;
 
   // helper variables with many different uses.
-  int i, r, port, opt, fd, len;
+  int i, r, port, opt, fd, len, acmefd, ch;
   int lo, hi, mid;
   long long totalbytes;
   char *pbuf;
@@ -183,8 +184,11 @@ int main(int argc, char **argv) {
   // parse cmdline arguments.
   addr.sin_family = AF_INET;
   addr.sin_addr.s_addr = INADDR_ANY;
-  while ((opt = getopt(argc, argv, "g:hp:l:")) != -1) {
+  while ((opt = getopt(argc, argv, "a:g:hp:l:")) != -1) {
     switch (opt) {
+    case 'a':
+      acmepath = optarg;
+      break;
     case 'g':
       port = atoi(optarg);
       check(1 <= port && port <= 65535);
@@ -218,6 +222,7 @@ int main(int argc, char **argv) {
       puts("usage: webserve [args]");
       puts("");
       puts("flags:");
+      puts("  -a path: path to let's encrypt acme challenges");
       puts("  -g port: start gopher server on port");
       puts("  -l size: file size limit. default is 100 kB. make sure the");
       puts("           kernel can buffer this amount of data.");
@@ -396,9 +401,34 @@ int main(int argc, char **argv) {
         hi = mid - 1;
       }
     }
-    log("responded 404 to %s /%s", type, s.buf2);
-    goto notfounderror;
+    // check if the entry is an acme challenge and respond as such.
+    if (acmepath == nil) goto notfounderror;
+    if (memcmp(s.buf2, ".well-known/acme-challenge/", 27) != 0) {
+      goto notfounderror;
+    }
+    for (i = 27; (ch = s.buf2[i]) != 0; i++) {
+      if (ch == '.' || ch == '/') goto notfounderror;
+    }
+    if (snprintf(s.buf1, buffersize, "%s/%s", acmepath, s.buf2) >= buffersize) {
+      goto notfounderror;
+    }
+    acmefd = open(s.buf1, O_RDONLY);
+    if (acmefd == -1) goto notfounderror;
+    r = read(acmefd, s.buf2, buffersize - 1000);
+    check(r != -1);
+    check(close(acmefd) == 0);
+    pbuf = s.buf1;
+    pbuf += sprintf(pbuf, "HTTP/1.1 200 OK\r\n");
+    pbuf += sprintf(pbuf, "Content-Type: text/plain\r\n");
+    pbuf += sprintf(pbuf, "Content-Length: %d\r\n", r);
+    pbuf += sprintf(pbuf, "\r\n");
+    pbuf += sprintf(pbuf, "%s", s.buf2);
+    len = pbuf - s.buf1;
+    pbuf = s.buf1;
+    log("responded success to an acme challenge");
+    goto respond;
 notfounderror:
+    log("responded 404 to %s /%s", type, s.buf2);
     if (ev.data.fd == httpfd) {
       pbuf = (char *)httpnotfound;
       len = sizeof(httpnotfound) - 1;
