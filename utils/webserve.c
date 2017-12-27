@@ -300,6 +300,8 @@ int main(int argc, char **argv) {
           pbuf += sprintf(pbuf, "image/png");
         } else if (memcmp(s.buf1, "\xff\xd8\xff", 3) == 0) {
           pbuf += sprintf(pbuf, "image/jpeg");
+        } else if (memcmp(s.buf1, "%PDF", 4) == 0) {
+          pbuf += sprintf(pbuf, "application/pdf");
         } else {
           pbuf += sprintf(pbuf, "text/plain");
         }
