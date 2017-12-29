@@ -144,12 +144,14 @@ void siginthandler(int sig) {
 const char httpnotfound[] =
   "HTTP/1.1 404 Not Found\r\n"
   "Content-Type: text/plain; charset=utf-8\r\n"
+  "Connection: close\r\n"
   "Content-Length: 14\r\n"
   "\r\n"
   "404 not found\n";
 const char httpnotimpl[] =
   "HTTP/1.1 501 Not Implemented\r\n"
   "Content-Type: text/plain; charset=utf-8\r\n"
+  "Connection: close\r\n"
   "Content-Length: 20\r\n"
   "\r\n"
   "501 not implemented\n";
@@ -307,6 +309,7 @@ int main(int argc, char **argv) {
         }
         pbuf += sprintf(pbuf, "; charset=utf-8\r\n");
         pbuf += sprintf(pbuf, "Cache-Control: max-age=3600\r\n");
+        pbuf += sprintf(pbuf, "Connection: close\r\n");
         pbuf += sprintf(pbuf, "Content-Length: %d\r\n", len);
         pbuf += sprintf(pbuf, "\r\n");
         fdp = &s.files[s.filescount++];
@@ -422,6 +425,7 @@ int main(int argc, char **argv) {
     pbuf = s.buf1;
     pbuf += sprintf(pbuf, "HTTP/1.1 200 OK\r\n");
     pbuf += sprintf(pbuf, "Content-Type: text/plain\r\n");
+    pbuf += sprintf(pbuf, "Connection: close\r\n");
     pbuf += sprintf(pbuf, "Content-Length: %d\r\n", r);
     pbuf += sprintf(pbuf, "\r\n");
     pbuf += sprintf(pbuf, "%s", s.buf2);
