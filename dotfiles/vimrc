@@ -4,6 +4,9 @@
 " Compilation of single files had a little bit more focus because
 " at some point I was doing some ACM/TopCoder style coding competitions.
 
+" Enable file type detection for smart indentation.
+filetype plugin indent on
+
 set backspace=indent,eol,start
 set cmdheight=2
 set history=50          " keep 50 lines of command line history
@@ -83,16 +86,10 @@ set list
 
 " Disable automatically adding comment beginnings to the line
 autocmd BufEnter * set formatoptions-=ro
-autocmd FileType gitcommit setlocal tw=72
+autocmd FileType gitcommit setlocal tw=80
 autocmd FileType go setlocal shiftwidth=8
 autocmd FileType go setlocal softtabstop=0
 autocmd FileType go setlocal noexpandtab
-
-" Enable file type detection.
-" Use the default filetype settings, so that mail gets 'tw' set to 72,
-" 'cindent' is on in C files, etc.
-" Also load indent files, to automatically do language-dependent indenting.
-filetype plugin indent on
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx

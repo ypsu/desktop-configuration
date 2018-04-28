@@ -17,5 +17,5 @@
 [push]
 	default = simple
 [core]
-	editor = vim -X -c 'syntax on | set spell | set textwidth=72'
+	editor = vim -X -c 'syntax on | set spell'
 	pager = vim -X -c 'syntax on' -

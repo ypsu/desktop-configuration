@@ -40,7 +40,7 @@ endfunction
 command -bar Hexmode call ToggleHex()
 
 function! Mailmode()
-	set textwidth=72
+	set textwidth=80
 	set formatoptions+=tc
 	set spell
 	set spelllang=en,hu
