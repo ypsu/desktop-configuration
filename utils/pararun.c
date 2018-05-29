@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
   argc--;
   argv++;
   while (argc >= 1) {
-    if (strcmp(argv[0], "-q") == 0) {
+    if (strcmp(argv[0], "-h") == 0) {
       fputs(usage, stdout);
       exit(0);
     }
