@@ -251,10 +251,9 @@ int main(int argc, char **argv) {
       }
     }
     if (waitpipe && (pfds[1].revents & POLLIN) != 0) {
-      char *buf = g.inbuf;
       int len = 0;
       if (!g.quietmode && !neednewline) {
-        len += sprintf(buf, "\r\e[K");
+        len += sprintf(g.inbuf, "\r\e[K");
       }
       int rby;
       rby = read(g.pipes[g.currentthread], g.inbuf + len, maxline - 50);
@@ -265,7 +264,7 @@ int main(int argc, char **argv) {
         const char fmt[] = "\e[33m%d/%d done\e[0m";
         len += sprintf(g.inbuf + len, fmt, g.finished, g.started);
       }
-      check(write(1, buf, len) == len);
+      check(write(1, g.inbuf, len) == len);
     } else if (waitpipe && (pfds[1].revents & POLLHUP) != 0) {
       check(close(g.pipes[g.currentthread]) == 0);
       g.currentthread = (g.currentthread + 1) % maxthreads;
@@ -280,6 +279,10 @@ int main(int argc, char **argv) {
         check(write(1, g.inbuf, len) == len);
       }
     }
+  }
+  if (!g.quietmode && !neednewline) {
+    int len = sprintf(g.inbuf, "\r\e[K");
+    check(write(1, g.inbuf, len) == len);
   }
   check(feof(stdin) != 0);
   return returncode;
