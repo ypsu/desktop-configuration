@@ -47,7 +47,7 @@ void checkfunc(bool ok, const char *s, const char *file, int line) {
 }
 
 enum { maxargs = 999 };
-enum { maxline = 9999 };
+enum { maxline = 99999 };
 enum { maxthreads = 9999 };
 
 static struct {
@@ -82,6 +82,11 @@ static struct {
   // pipes[i % maxthreads] holds the read end of the running thread of the ith
   // command (starting from 0).
   int pipes[maxthreads];
+
+  // started and finished means the number of threads started and finished. only
+  // used for diagnostics.
+  int started;
+  int finished;
 } g;
 
 int main(int argc, char **argv) {
@@ -181,6 +186,7 @@ int main(int argc, char **argv) {
       check(fcntl(readfd, F_SETFD, flags | FD_CLOEXEC) != -1);
       g.pipes[g.nextthread] = readfd;
       // start the child task.
+      g.started++;
       int chpid = fork();
       if (chpid == -1) {
         printf("could not fork: %m\n");
@@ -228,6 +234,7 @@ int main(int argc, char **argv) {
       check(sfdsi.ssi_signo == SIGCHLD);
       int wstatus;
       while (waitpid(-1, &wstatus, WNOHANG) > 0) {
+        g.finished++;
         g.runningthreads--;
         if (WIFEXITED(wstatus)) {
           if (WEXITSTATUS(wstatus) > returncode) {
@@ -237,19 +244,40 @@ int main(int argc, char **argv) {
           returncode = 1;
         }
       }
+      if (!g.quietmode && !neednewline) {
+        const char fmt[] = "\r\e[K\e[33m%d/%d done\e[0m";
+        int len = sprintf(g.inbuf, fmt, g.finished, g.started);
+        check(write(1, g.inbuf, len) == len);
+      }
     }
     if (waitpipe && (pfds[1].revents & POLLIN) != 0) {
+      char *buf = g.inbuf;
+      int len = 0;
+      if (!g.quietmode && !neednewline) {
+        len += sprintf(buf, "\r\e[K");
+      }
       int rby;
-      rby = read(g.pipes[g.currentthread], g.inbuf, maxline);
+      rby = read(g.pipes[g.currentthread], g.inbuf + len, maxline - 50);
       check(rby > 0);
-      neednewline = g.inbuf[rby - 1] != '\n';
-      check(write(1, g.inbuf, rby) == rby);
+      len += rby;
+      neednewline = g.inbuf[len - 1] != '\n';
+      if (!g.quietmode && !neednewline) {
+        const char fmt[] = "\e[33m%d/%d done\e[0m";
+        len += sprintf(g.inbuf + len, fmt, g.finished, g.started);
+      }
+      check(write(1, buf, len) == len);
     } else if (waitpipe && (pfds[1].revents & POLLHUP) != 0) {
       check(close(g.pipes[g.currentthread]) == 0);
       g.currentthread = (g.currentthread + 1) % maxthreads;
-      if (neednewline) {
-        check(write(1, "\n", 1) == 1);
-        neednewline = false;
+      if (!g.quietmode) {
+        int len = 0;
+        if (!neednewline) {
+          len += sprintf(g.inbuf, "\r\e[K");
+        } else {
+          g.inbuf[len++] = '\n';
+          neednewline = false;
+        }
+        check(write(1, g.inbuf, len) == len);
       }
     }
   }
