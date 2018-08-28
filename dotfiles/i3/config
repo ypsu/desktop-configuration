@@ -149,8 +149,6 @@ bindsym $mod+Shift+q move container to workspace qc
 bindsym $mod+x move workspace to output right
 
 for_window [title="XM-floating"] floating enable
-assign [class="Pidgin"] em
-assign [class="Firefox"] web
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -159,7 +157,6 @@ bindsym $mod+Shift+r restart
 
 # startup stuff
 exec xterm -e start_env
-exec firefox
 
 # colors
 # class                 border  backgr. text    indicator
