@@ -39,7 +39,6 @@ struct state {
 
   // Memory in bytes.
   int64_t mem_avail;
-  int64_t mem_dirty;
 
   // The data transferred in bytes since startup.
   int64_t net_down;
@@ -265,27 +264,11 @@ int main(int argc, char **argv) {
     // Read the memory stats.
     CHECK((rby = pread(config.mem_fd, buf, BS, 0)) > 10);
     enum { MEMINFO_LINE_LENGTH = 28 };
-    if (strncmp(config.uname.release, "3.13", 4) == 0) {
-      const char *p;
-      long long free, cached, dirty;
-      p = buf + 1 * MEMINFO_LINE_LENGTH;
-      CHECK(sscanf(p, "MemFree: %lld", &free) == 1);
-      p = buf + 3 * MEMINFO_LINE_LENGTH;
-      CHECK(sscanf(p, "Cached: %lld", &cached) == 1);
-      p = buf + 15 * MEMINFO_LINE_LENGTH;
-      CHECK(sscanf(p, "Dirty: %lld", &dirty) == 1);
-      ns.mem_avail = (free + cached) * 1024;
-      ns.mem_dirty = dirty * 1024;
-    } else {
-      const char *p;
-      long long avail, dirty;
-      p = buf + 2 * MEMINFO_LINE_LENGTH;
-      CHECK(sscanf(p, "MemAvailable: %lld", &avail) == 1);
-      p = buf + 16 * MEMINFO_LINE_LENGTH;
-      CHECK(sscanf(p, "Dirty: %lld", &dirty) == 1);
-      ns.mem_avail = avail * 1024;
-      ns.mem_dirty = dirty * 1024;
-    }
+    const char *p;
+    long long avail;
+    p = buf + 2 * MEMINFO_LINE_LENGTH;
+    CHECK(sscanf(p, "MemAvailable: %lld", &avail) == 1);
+    ns.mem_avail = avail * 1024;
 
     // Read the network stats.
     ns.net_up = 0;
@@ -337,13 +320,12 @@ int main(int argc, char **argv) {
     }
 
     // Print the stats.
-    char drt[10], mem[10], up[10], down[10];
+    char mem[10], up[10], down[10];
     int vol, cpu;
     struct tm *tm;
     double elapsed_time;
     elapsed_time = ns.time.tv_sec - state.time.tv_sec;
     elapsed_time += (ns.time.tv_nsec - state.time.tv_nsec) / 1.0e9;
-    fmt_bytes(ns.mem_dirty, drt, 2);
     fmt_bytes(ns.mem_avail, mem, 2);
     int64_t up_bytes = ns.net_up - state.net_up;
     int64_t down_bytes = ns.net_down - state.net_down;
@@ -357,11 +339,11 @@ int main(int argc, char **argv) {
     snprintf(buf, BS,
              "%s"
              "%3d%% vol "
-             "%5s drt %5s mem "
+             "%5s mem "
              "%5s ↑ %5s ↓ "
              "%3d%% cpu "
              "%04d-%02d-%02d %02d:%02d",
-             bat, vol, drt, mem, up, down, cpu, tm->tm_year + 1900,
+             bat, vol, mem, up, down, cpu, tm->tm_year + 1900,
              tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
     int len = strlen(buf);
     if (strcmp(config.output, "-") != 0) {
