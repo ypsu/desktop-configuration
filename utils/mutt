@@ -6,7 +6,7 @@ set -e
 firstrem="$(head -c 10 ~/rems)"
 curdate="$(date +%Y-%m-%d)"
 if test "$curdate" '<' "$firstrem"; then
-  /usr/bin/mutt
+  /usr/bin/mutt "$@"
 else
   echo "Please take care of the reminders first in ~/rems."
 fi;
