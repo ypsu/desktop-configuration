@@ -1,39 +1,76 @@
 ! Compile with this command: xrdb -nocpp .Xdefaults
 
-*background: #000000
-*foreground: #f8f8f8
+! light color scheme.
+*foreground: #000000
+*background: #ffffff
 ! Black
 *color0: #000000
 ! Red
-*color1: #c75646
+*color1: #a00000
 ! Green
-*color2: #5e832b
+*color2: #008000
 ! Yellow
-*color3: #d0b03c
+*color3: #808000
 ! Blue
-*color4: #72b3cc
+*color4: #0000a0
 ! Purple
-*color5: #c8a0d1
+*color5: #800080
 ! Cyan
-*color6: #218693
+*color6: #008080
 ! White
-*color7: #606060
-! Grey
-*color8: #a0a0a0
+*color7: #c0c0c0
+! Light Black
+*color8: #808080
 ! Light Red
-*color9: #e09690
+*color9: #ff0000
 ! Light Green
-*color10: #cdee69
+*color10: #00c000
 ! Light Yellow
-*color11: #ffe377
+*color11: #c0c000
 ! Light Blue
-*color12: #9cd9f0
+*color12: #0000ff
 ! Light Purple
-*color13: #fbb1f9
+*color13: #ff00ff
 ! Light Cyan
-*color14: #77dfd8
-! Light white
-*color15: #f8f8f8
+*color14: #00c0c0
+! Light White
+*color15: #ffffff
+
+! dark color scheme
+!*background: #000000
+!*foreground: #f8f8f8
+!! Black
+!*color0: #000000
+!! Red
+!*color1: #c75646
+!! Green
+!*color2: #5e832b
+!! Yellow
+!*color3: #d0b03c
+!! Blue
+!*color4: #72b3cc
+!! Purple
+!*color5: #c8a0d1
+!! Cyan
+!*color6: #218693
+!! White
+!*color7: #606060
+!! Grey
+!*color8: #a0a0a0
+!! Light Red
+!*color9: #e09690
+!! Light Green
+!*color10: #cdee69
+!! Light Yellow
+!*color11: #ffe377
+!! Light Blue
+!*color12: #9cd9f0
+!! Light Purple
+!*color13: #fbb1f9
+!! Light Cyan
+!*color14: #77dfd8
+!! Light white
+!*color15: #f8f8f8
 
 
 XTerm*alwaysUseMods: true

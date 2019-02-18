@@ -37,10 +37,15 @@ set tw=80
 set t_RV=               " there are some problem with the cursor keys without this
 set t_Co=16
 set notitle
-colorscheme desert
-hi Visual ctermfg=4 ctermbg=0
-hi SpellBad ctermbg=1
-hi SpellCap ctermbg=4
+" colors for light theme
+hi Visual ctermfg=11
+hi SpellBad ctermfg=none ctermbg=7
+hi SpellCap cterm=inverse ctermfg=14 ctermbg=0
+" colors for dark theme
+"colorscheme desert
+"hi Visual ctermfg=4 ctermbg=0
+"hi SpellBad ctermbg=1
+"hi SpellCap ctermbg=4
 
 " Disable auto-omnicompletion.
 let g:OmniCpp_MayCompleteDot = 0
