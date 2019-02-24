@@ -44,16 +44,21 @@
 //
 // on startup it reads the contents of ~/.flashcard into memory. if there was an
 // recall event for today already, it quits. if there is no recall event that is
-// due, it quits. otherwise it prints the question and asks for the answer. it
-// keeps asking for the answer until the user enters the correct answer. there
-// is no way to get it to show the correct answer; the user needs to look that
-// up to manually (rationale: making the recalling an item painful makes it
-// easier to remember said item). after a correct answer it asks the user when
-// should be the next recall event in terms of days. the usual flashcard rules
-// apply: the user should enter 1 if answered incorrectly or double the previous
-// days if answered correctly (the tool displays the current number of days).
-// after that the tool records the session in the form of an evt statement and
-// appends it to the file.
+// due, it selects the default challenge (see below). then it prints the
+// question and asks for the answer. it keeps asking for the answer until the
+// user enters the correct answer. there is no way to get it to show the correct
+// answer; the user needs to look that up to manually (rationale: making the
+// recalling an item painful makes it easier to remember said item). after a
+// correct answer it asks the user when should be the next recall event in terms
+// of days. the usual flashcard rules apply: the user should enter 1 if answered
+// incorrectly or double the previous days if answered correctly (the tool
+// displays the current number of days). after that the tool records the session
+// in the form of an evt statement and appends it to the file.
+//
+// the default challenge (identified as "default" in the evt statements but
+// without reference to it in the def statements) is a way to get me practice a
+// specific skill without much tracking. an indulgence. right now is just a
+// multiplication challenge of two relatively small numbers.
 
 #define _GNU_SOURCE
 #include <errno.h>
@@ -103,7 +108,8 @@ int main(void) {
   check(f != NULL);
   char line[1000];
 
-  // defparsing: parse the def statements.
+  // defparsing: parse the def statements. but first, add the default card.
+  card[cards++].id = strdup("default");
   while (fgets(line, 1000, f) != NULL && line[0] != '\n') {
     if (strncmp(line, "def ", 4) != 0) {
       printf("error, line does not start with def: %s", line);
@@ -153,6 +159,10 @@ int main(void) {
     struct card soughtcard = {.id = id};
     struct card *thecard;
     thecard = bsearch(&soughtcard, card, cards, sizeof(card[0]), cardcmp);
+    if (thecard == NULL) {
+      printf("error, identifier not found: %s\n", id);
+      exit(1);
+    }
     struct tm tm = {
         .tm_year = year - 1900,
         .tm_mon = month - 1,
@@ -164,7 +174,7 @@ int main(void) {
     wastoday = wastoday && today.tm_mon == tm.tm_mon;
     wastoday = wastoday && today.tm_mday == tm.tm_mday;
     if (wastoday) {
-      // this event happened today, let us not bother the user anymore.
+      // this event happened today, do not bother the user anymore.
       return 0;
     }
     tm.tm_mday += days;
@@ -176,25 +186,39 @@ int main(void) {
 
   // presentquestion: pick and present a question.
   struct card *acard = NULL;
+  struct card *defaultcard = NULL;
   for (int i = 0; i < cards; i++) {
+    // skip the default question for now.
+    if (strcmp(card[i].id, "default") == 0) {
+      defaultcard = &card[i];
+      continue;
+    }
     if (card[i].triggertime < todaytime) {
       acard = &card[i];
       break;
     }
   }
   if (acard == NULL) {
-    // nothing to present.
-    return 0;
+    // nothing in due, ask the default one.
+    acard = defaultcard;
+    srand(time(NULL));
+    int a = rand() % 8 + 2;
+    int b = rand() % 88 + 12;
+    int c;
+    printf("%d * %d = ?\n", a, b);
+    while (scanf("%d", &c) == 1 && c != a * b) puts("wrong answer, try again!");
+    puts("correct!");
+  } else {
+    puts(acard->question);
+    while (fgets(line, 1000, stdin) != NULL) {
+      int len = strlen(line);
+      if (len > 0 && line[len - 1] == '\n') line[--len] = 0;
+      if (strcmp(line, acard->answer) == 0) break;
+      puts("wrong answer, try again!");
+    }
+    printf("correct! repeat was %d days. new value?\n", acard->days);
+    scanf("%d", &acard->days);
   }
-  puts(acard->question);
-  while (fgets(line, 1000, stdin) != NULL) {
-    int len = strlen(line);
-    if (len > 0 && line[len - 1] == '\n') line[--len] = 0;
-    if (strcmp(line, acard->answer) == 0) break;
-    puts("wrong answer, try again!");
-  }
-  printf("correct! repeat was %d days. new value?\n", acard->days);
-  scanf("%d", &acard->days);
 
   // savedata: write the result back into the file.
   f = fopen(".flashcard", "a");
