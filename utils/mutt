@@ -2,7 +2,8 @@
 
 set -e
 
-# Check for any reminders before checking email.
+# Check for flashcards and any reminders before checking email.
+flashcard
 firstrem="$(head -c 10 ~/rems)"
 curdate="$(date +%Y-%m-%d)"
 if test "$curdate" '<' "$firstrem"; then
