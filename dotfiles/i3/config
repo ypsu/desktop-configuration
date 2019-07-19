@@ -36,6 +36,9 @@ bindsym $mod+t exec links -g
 bindsym $mod+equal exec d/gp-gui/gp-gui.sh
 bindsym $mod+backslash exec d/latex-to-unicode/latex-to-unicode.sh
 bindsym $mod+Mod1+l exec xscreensaver-command -lock
+bindsym $mod+Scroll_Lock exec xscreensaver-command -lock
+bindsym $mod+Mod1+p exec systemctl suspend
+bindsym $mod+Pause exec systemctl suspend
 for_window [title="Latex to Unicode converter"] floating enable
 for_window [window_role="pop-up"] floating enable
 assign [window_role="pop-up"] 1
