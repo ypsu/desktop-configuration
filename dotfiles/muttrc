@@ -4,7 +4,7 @@ set from = "Balazs Kezes <rlblaster@gmail.com>"
 set imap_user = rlblaster@gmail.com
 set imap_pass = `cat ~/.config/.mail | sed 's/.* //'`
 set folder = imaps://imap.gmail.com
-set spoolfile = =recent
+set spoolfile = =triage
 set header_cache = ~/.cache/mutt
 set message_cachedir = ~/.cache/mutt
 set tmpdir = ~/.cache/mutt
