@@ -93,7 +93,7 @@ static void fmt_bytes(int64_t bytes, char *buf, int min_unit) {
     bytes += 1023;
     bytes /= 1024;
   }
-  snprintf(buf, 9, "%4lld%s", (long long)bytes, units[unit]);
+  CHECK(snprintf(buf, 9, "%4lld%s", (long long)bytes, units[unit]) < 9);
 }
 
 // If a file contains only one positive number, this extracts that.

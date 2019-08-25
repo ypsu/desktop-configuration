@@ -77,9 +77,10 @@ int main(int argc, char **argv)
 		if (rewrite_date && len > 20) {
 			time_t t = time(NULL);
 			struct tm *tm = localtime(&t);
-			snprintf(buf+len-16, 17, "%04d-%02d-%02d %02d:%02d",
+			CHECK(snprintf(buf+len-16, 17,
+				"%04d-%02d-%02d %02d:%02d",
 				tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-				tm->tm_hour, tm->tm_min);
+				tm->tm_hour, tm->tm_min) < 17);
 		}
 		CHECK(puts(buf) >= 0);
 	} while ((r = read(inotify_fd, &ev, sizeof ev)) == sizeof ev);
