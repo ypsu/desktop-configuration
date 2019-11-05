@@ -55,7 +55,7 @@ bindsym --release button2 kill
 bindsym --whole-window $mod+button2 kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec PATH=$PATH:$HOME/.bin dmenu_run
 
 # change focus
 bindsym $mod+h focus left
