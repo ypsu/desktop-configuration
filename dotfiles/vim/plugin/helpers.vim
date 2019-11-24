@@ -1,5 +1,10 @@
 " ypsu's helper functions
 
+" This is a hack to recreate vim's tmpdir in case it was deleted.
+function! RecreateTmpdir()
+	call mkdir(fnamemodify(tempname(), ":p:h"), "p", 0700)
+endfunction
+
 function! ToggleHex()
 	" hex mode should be considered a read-only operation
 	" save values for modified and read-only for restoration later,
@@ -94,6 +99,7 @@ function! SelectFileFromCurrent()
 	execute s:cmd
 	let s:result = readfile("/tmp/.fsel_fname")
 	if len(s:result) > 0
+		call RecreateTmpdir()
 		let l:fullpath = expand("%:h") . "/" . s:result[0]
 		let l:shortpath = fnamemodify(fullpath, ":p")
 		" Remove the common path prefix.
@@ -121,6 +127,7 @@ function! SelectBuffer()
 endfunction
 
 function! OpenFromClipboard()
+	call RecreateTmpdir()
 	let l:fname = system("f=$(tmux save-buffer -); echo -n ${f#$(pwd)/}")
 	execute "edit " . l:fname
 endfunction
@@ -141,6 +148,7 @@ function! SaveCount()
 endfunction
 
 function! RemoteMan(word)
+	call RecreateTmpdir()
 	let s:cmd = "rcmd_man "
 	if s:count > 0
 		let s:cmd .= s:count . " "
