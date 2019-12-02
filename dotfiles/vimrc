@@ -37,6 +37,7 @@ set tw=80
 set t_RV=               " there are some problem with the cursor keys without this
 set t_Co=16
 set notitle
+set nomodeline
 " colors for light theme
 hi Visual cterm=inverse ctermfg=11 ctermbg=0
 hi SpellBad ctermfg=none ctermbg=7
