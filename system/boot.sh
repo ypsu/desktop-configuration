@@ -49,10 +49,10 @@ log Bringing up networking
 logexec ifconfig lo up
 eper logexec ifconfig eth0 up
 eper logexec ifconfig eth0 192.168.1.123 netmask 255.255.255.0 broadcast 192.168.1.255
-eper logexec route add default gw 192.168.1.254 eth0
+eper logexec route add default gw 192.168.1.1 eth0
 paks ifconfig eno1 up
 paks logexec ifconfig eno1 192.168.1.200 netmask 255.255.255.0 broadcast 192.168.1.255
-paks logexec route add default gw 192.168.1.254 eno1
+paks logexec route add default gw 192.168.1.1 eno1
 
 log Checking filesystems
 logexec fsck -T -C /
