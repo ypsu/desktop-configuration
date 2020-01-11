@@ -22,6 +22,7 @@ function paks() {
 }
 
 log Mounting system dirs
+modprobe fuse
 mount -t proc proc /proc -o nosuid,noexec,nodev 2>/dev/null
 mount -t sysfs sys /sys -o nosuid,noexec,nodev 2>/dev/null
 mount -t tmpfs run /run -o mode=0755,nosuid,nodev
@@ -29,6 +30,9 @@ mkdir -p /dev/pts /dev/shm /run/lock
 mount -t devpts devpts /dev/pts -o mode=0620,gid=5,nosuid,noexec
 mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
 mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=50%
+eper mount -o mode=0755,uid=1000,gid=100 -t tmpfs tmpfs /homebuf
+eper mount -o bind,rw /homebufrw /homebuf
+eper su rlblaster -c "unionfs -o allow_other,cow,hide_meta_files /homebuf=RW:/homedisk=RO /home"
 mkdir -p /tmp/a
 chown rlblaster:users /tmp/a
 
@@ -62,8 +66,9 @@ if test $? -ge 2; then
 fi
 
 log Mounting filesystems
-logexec mount -o remount,rw /
-logexec mount /boot
+eper logexec mount -o ro /boot
+paks logexec mount -o remount,rw /
+paks logexec mount /boot
 paks logexec mount /data
 
 echo Setting up environment
@@ -74,7 +79,7 @@ paks log Starting dbus
 paks install -m755 -g 81 -o 81 -d /run/{dbus,lock}
 paks dbus-daemon --system &
 logexec alsactl restore
-/root/.sbin/basic_syslogd &
+paks /root/.sbin/basic_syslogd &
 
 log Miscellaneous settings
 modprobe loop

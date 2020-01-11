@@ -1,0 +1,5 @@
+#!/bin/bash
+set -x
+wmount disk || exit
+usync /homebufrw /homedisk
+wmount buf
