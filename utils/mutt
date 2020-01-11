@@ -2,16 +2,26 @@
 
 set -e
 
-# Check for flashcards and any reminders before checking email.
+# check for flashcards and any reminders before checking email.
 flashcard
 firstrem="$(sort ~/.rems | sed '/^$/d' | head -c 10)"
 if ! [[ "$firstrem" =~ ^20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$ ]]; then
-  echo "Error in the ~/.rems file."
+  echo "error in the ~/.rems file."
   exit 1
 fi
 curdate="$(date +%Y-%m-%d)"
 if test "$curdate" '<' "$firstrem"; then
+  # acknowledge the todos if there are any.
+  if test -s ~/todo; then
+    clear
+    echo "acknowledge the following todos first:"
+    echo
+    cat todo
+    echo
+    echo "press enter to continue to mutt"
+    read
+  fi
   /usr/bin/mutt "$@"
 else
-  echo "Please take care of the reminders first in ~/.rems."
+  echo "please take care of the reminders first in ~/.rems."
 fi
