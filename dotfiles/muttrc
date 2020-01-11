@@ -2,7 +2,7 @@ set editor = "mailedit"
 set my_name = "Balazs Kezes"
 set from = "Balazs Kezes <rlblaster@gmail.com>"
 set imap_user = rlblaster@gmail.com
-set imap_pass = `cat ~/.config/.mail | sed 's/.* //'`
+set imap_pass = `awk '/rlblaster/{print $2}' ~/.config/.myemails`
 set folder = imaps://imap.gmail.com
 set spoolfile = =triage
 set header_cache = ~/.cache/mutt
