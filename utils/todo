@@ -8,6 +8,13 @@
 set -e
 flashcard
 
+# todo
+if test -s ~/todo; then
+  echo todo:
+  sed 's/^/  /' ~/todo
+  echo
+fi
+
 # reminders
 curdate="$(date +%Y-%m-%d)"
 awk -v curdate=$curdate '
@@ -21,13 +28,6 @@ awk -v curdate=$curdate '
   END {
     if (init) print ""
   }' ~/.rems
-
-# todo
-if test -s ~/todo; then
-  echo todo:
-  sed 's/^/  /' ~/todo
-  echo
-fi
 
 # check for email.
 printsubjects='
