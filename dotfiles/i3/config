@@ -152,6 +152,7 @@ bindsym $mod+Shift+q move container to workspace qc
 bindsym $mod+x move workspace to output right
 
 for_window [title="XM-floating"] floating enable
+for_window [title="XM-floating"] move position center
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
