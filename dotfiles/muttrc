@@ -59,6 +59,7 @@ set move=no
 
 set pager_index_lines=10
 set charset="utf-8"
+set send_charset="utf-8"
 set use_from
 set use_domain
 set timeout=100
