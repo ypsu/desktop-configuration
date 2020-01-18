@@ -85,7 +85,7 @@ set wildmenu
 set wildignore=*.dll,*.o,*.out,*.pyc,*.bak,*.exe,*.jpg,*.jpeg,*.png,*.gif,*.class,*.pdf
 
 " Some C/C++ specific autoindenting options
-let &cinoptions = ':0,g0,t0,(s'
+let &cinoptions = 'g1,t0,(0'
 " Display tabs to annoy myself
 let &lcs = "trail:.,tab:> "
 set list
