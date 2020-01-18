@@ -42,7 +42,18 @@ printsubjects='
   }
   match($0, /^Subject: (.*)$/, ary) {
     printheader()
-    print "  " (seen ? " " : "u") " " ary[1]
+    printf "  %s", (seen ? " " : "u") " " ary[1]
+    subjectmode = 1
+    next
+  }
+  subjectmode == 1 {
+    printf "%s", $0
+  }
+  /^$/ {
+    if (subjectmode) {
+      subjectmode = 0
+      print ""
+    }
   }
   END {
     if (initialized == 1) {
@@ -57,7 +68,8 @@ cat ~/.config/.myemails | while read user pass inbox; do
   cmd+="a1 select $inbox$nl"
   cmd+="a2 fetch 1:99 (flags body.peek[header.fields (subject)])$nl"
   cmd+="a3 logout$nl"
-  r="$(ncat --no-shutdown --crlf --ssl-verify imap.gmail.com 993 <<<"$cmd")"
+  flags="--no-shutdown --crlf --ssl-verify"
+  r="$(ncat $flags imap.gmail.com 993 <<<"$cmd" | tr -d '\r')"
   echo -en "\r\e[K"
-  awk -v email=$user "$printsubjects" <<<"$r"
+  awk -v email=$user "$printsubjects" <<<"$r" | de2047
 done
