@@ -2,4 +2,4 @@
 
 dev=Master
 test "$(hostname)" = "eper" && dev=PCM
-amixer -M sset $dev 5%-
+flock /tmp/.amixerflock amixer -M sset $dev 5%-
