@@ -15,7 +15,7 @@ alias lt='ls --color=always -lht | head'
 alias grep='grep --color=auto'
 alias gp='gp -q'
 alias gdb='gdb -q'
-alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu,en" -c "set filetype=mail"'
+alias vimmail='vim -c ":Mailmode" -c ":set spelllang=hu,en,de" -c "set filetype=mail"'
 alias vim='vim -X'
 alias links="links -html-text-color 15 -html-link-color 3"
 
