@@ -30,9 +30,6 @@ mkdir -p /dev/pts /dev/shm /run/lock
 mount -t devpts devpts /dev/pts -o mode=0620,gid=5,nosuid,noexec
 mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
 mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=50%
-eper mount -o mode=0755,uid=1000,gid=100 -t tmpfs tmpfs /homebuf
-eper mount -o bind,rw /homebufrw /homebuf
-eper su rlblaster -c "unionfs -o allow_other,cow,hide_meta_files /homebuf=RW:/homedisk=RO /home"
 mkdir -p /tmp/a
 chown rlblaster:users /tmp/a
 
@@ -52,10 +49,10 @@ setfont -f /usr/share/kbd/consolefonts/ter-v12n.psf.gz
 log Bringing up networking
 logexec ifconfig lo up
 eper logexec ifconfig eth0 up
-eper logexec ifconfig eth0 192.168.1.123 netmask 255.255.255.0 broadcast 192.168.1.255
+eper logexec ifconfig eth0 192.168.1.11 netmask 255.255.255.0 broadcast 192.168.1.255
 eper logexec route add default gw 192.168.1.1 eth0
 paks ifconfig eno1 up
-paks logexec ifconfig eno1 192.168.1.200 netmask 255.255.255.0 broadcast 192.168.1.255
+paks logexec ifconfig eno1 192.168.1.13 netmask 255.255.255.0 broadcast 192.168.1.255
 paks logexec route add default gw 192.168.1.1 eno1
 
 log Checking filesystems
@@ -66,19 +63,24 @@ if test $? -ge 2; then
 fi
 
 log Mounting filesystems
-eper logexec mount -o ro /boot
 paks logexec mount -o remount,rw /
 paks logexec mount /boot
 paks logexec mount /data
+eper logexec mount -o ro /boot
+eper logexec mount -o mode=0755,uid=1000,gid=100 -t tmpfs tmpfs /homebuf
+eper logexec mount -o bind,rw /homebuf /homebufrw
+eper logexec mount -o rw,remount /
+eper logexec su rlblaster -c "unionfs -o allow_other,cow,hide_meta_files /homebuf=RW:/homedisk=RO /home"
+eper logexec mount -o ro,remount /
 
-echo Setting up environment
+log Setting up environment
 export LC_ALL=en_US.UTF-8
 export PATH=/root/.sbin:$PATH
 eper logexec modprobe snd_bcm2835
 paks log Starting dbus
 paks install -m755 -g 81 -o 81 -d /run/{dbus,lock}
 paks dbus-daemon --system &
-logexec alsactl restore
+paks logexec alsactl restore
 paks /root/.sbin/basic_syslogd &
 
 log Miscellaneous settings
@@ -86,7 +88,7 @@ modprobe loop
 echo Setting tty keymap
 loadkeys -d
 loadkeys /home/rlblaster/d/cfg/misc/loadkeys.cfg
-kbdrate -d 500 -r 50
+kbdrate -d 300 -r 40
 
 echo Setting kernel variables
 echo 1 > /proc/sys/kernel/sysrq
