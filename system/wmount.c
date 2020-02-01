@@ -9,10 +9,10 @@ void remount(const char *path, const char *mode) {
   assert(strlen(path) < 60 && strlen(mode) == 2);
   sprintf(cmd, "mount -o remount,%s %s", mode, path);
   if (system(cmd) != 0) {
-    sprintf(cmd, "fuser -vMm %s 2>&1 | grep F", path);
+    sprintf(cmd, "fuser -vMm %s 2>&1 | egrep 'F|e\\.'", path);
     puts(cmd);
     system(cmd);
-    sprintf(cmd, "fuser -vMm %s 2>&1 | grep F", "/home");
+    sprintf(cmd, "fuser -vMm %s 2>&1 | egrep 'F|e\\.'", "/home");
     puts(cmd);
     system(cmd);
     exit(1);
