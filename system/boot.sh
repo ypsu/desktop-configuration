@@ -87,7 +87,7 @@ log Miscellaneous settings
 modprobe loop
 echo Setting tty keymap
 loadkeys -d
-loadkeys /home/rlblaster/d/cfg/misc/loadkeys.cfg
+loadkeys /home/rlblaster/.d/cfg/misc/loadkeys.cfg
 kbdrate -d 300 -r 40
 
 echo Setting kernel variables
