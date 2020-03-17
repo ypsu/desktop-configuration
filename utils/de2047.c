@@ -5,6 +5,7 @@
 //   szőlő banán alma dió
 
 #include <assert.h>
+#include <iconv.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -41,7 +42,7 @@ int main(void) {
   // represent the state required to implement that.
   bool hadenc = false, hadspace = false;
   while ((ch = getchar()) != EOF) {
-    char buf[1000];
+    char token[1000];
     int len;
     enum tokentype tokentype = ttnormal;
     if (ch == ' ') {
@@ -60,15 +61,36 @@ int main(void) {
       check(putchar(ch) != EOF);
       continue;
     }
-    scanf("%950s", buf);
-    len = strlen(buf);
-    assert(len < 940);
-    if (len >= 12 && memcmp(buf + len - 2, "?=", 2) == 0) {
-      if (strncasecmp(buf, "?utf-8?b?", 9) == 0) {
-        tokentype = ttbase64;
-      } else if (strncasecmp(buf, "?utf-8?q?", 9) == 0) {
-        tokentype = ttquoted;
-      }
+    scanf("%950s", token);
+    len = strlen(token);
+    check(len < 940);
+    iconv_t iconvd;
+    // inptr - input buffer pointer.
+    char *inptr = NULL;
+    char tmp[1000];
+    if (len >= 12 && memcmp(token + len - 2, "?=", 2) == 0) {
+      strcpy(tmp, token);
+      do {
+        char *fromcode = strtok(tmp, "?");
+        if (fromcode == NULL) break;
+        char *type = strtok(NULL, "?");
+        if (type == NULL) break;
+        inptr = strtok(NULL, "?");
+        if (inptr == NULL) break;
+        char *rem = strtok(NULL, "?");
+        if (strcmp(rem, "=") != 0) break;
+        char *end = strtok(NULL, "?");
+        if (end != NULL) break;
+        if (strcasecmp(type, "b") == 0) {
+          tokentype = ttbase64;
+        } else if (strcasecmp(type, "q") == 0) {
+          tokentype = ttquoted;
+        } else {
+          break;
+        }
+        iconvd = iconv_open("utf-8", fromcode);
+        check(iconvd != (iconv_t)-1);
+      } while (false);
     }
     if (tokentype == ttnormal) {
       if (hadspace) {
@@ -76,50 +98,66 @@ int main(void) {
         hadspace = hadenc = false;
       }
       putchar('=');
-      check(fputs(buf, stdout) != EOF);
+      check(fputs(token, stdout) != EOF);
       continue;
     }
     if (hadspace && !hadenc) putchar(' ');
     hadenc = true;
     hadspace = false;
-    len -= 2;
-    int idx = 9;
+    // a buffer for the encoded string.
+    char enctmp[1000];
+    char *encptr = enctmp;
     if (tokentype == ttquoted) {
-      while (idx < len) {
-        if (buf[idx] == '_') {
-          putchar(' ');
-          idx++;
+      while (*inptr != 0) {
+        if (*inptr == '_') {
+          *encptr++ = ' ';
+          inptr++;
           continue;
         }
-        if (buf[idx] != '=') {
-          putchar(buf[idx++]);
+        if (*inptr != '=') {
+          *encptr++ = *inptr++;
           continue;
         }
-        int v1 = hex2dec[(unsigned char)buf[idx + 1]];
-        int v2 = hex2dec[(unsigned char)buf[idx + 2]];
+        inptr++;
+        check(*inptr != 0 && *(inptr + 1) != 0);
+        int v1 = hex2dec[(unsigned char)*inptr++];
+        int v2 = hex2dec[(unsigned char)*inptr++];
         check(v1 >= 0 && v2 >= 0);
-        putchar(v1 * 16 + v2);
-        idx += 3;
+        *encptr++ = v1 * 16 + v2;
       }
-      continue;
-    }
-    assert(tokentype == ttbase64);
-    while (idx < len) {
-      assert(idx + 4 <= len);
-      int bits = 0;
-      int bytes = 3;
-      if (buf[idx + 3] == '=') bytes = 2;
-      if (buf[idx + 2] == '=') bytes = 1;
-      for (int i = 0; i < 4; i++) {
-        bits <<= 6;
-        check(base64bits[(unsigned char)buf[idx + i]] >= 0);
-        bits |= base64bits[(unsigned char)buf[idx + i]];
+    } else {
+      assert(tokentype == ttbase64);
+      while (*inptr != 0) {
+        check(inptr[1] != 0);
+        check(inptr[2] != 0);
+        check(inptr[3] != 0);
+        int bits = 0;
+        int bytes = 3;
+        if (inptr[3] == '=') bytes = 2;
+        if (inptr[2] == '=') bytes = 1;
+        for (int i = 0; i < 4; i++) {
+          bits <<= 6;
+          check(base64bits[(unsigned char)inptr[i]] >= 0);
+          bits |= base64bits[(unsigned char)inptr[i]];
+        }
+        *encptr++ = bits >> 16;
+        if (bytes >= 2) *encptr++ = (bits >> 8) & 0xff;
+        if (bytes >= 3) *encptr++ = bits & 0xff;
+        inptr += 4;
       }
-      putchar(bits >> 16);
-      if (bytes >= 2) putchar((bits >> 8) & 0xff);
-      if (bytes >= 3) putchar(bits & 0xff);
-      idx += 4;
     }
+    *encptr = 0;
+    size_t isz = encptr - enctmp;
+    encptr = enctmp;
+    char outbuf[3010];
+    char *outptr = outbuf;
+    size_t osz = sizeof(outbuf) - 1;
+    while ((int)iconv(iconvd, &encptr, &isz, &outptr, &osz) > 0)
+      ;
+    check(isz == 0);
+    *outptr = 0;
+    fputs(outbuf, stdout);
+    check(iconv_close(iconvd) == 0);
   }
   return 0;
 }
