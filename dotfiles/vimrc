@@ -91,7 +91,10 @@ let &lcs = "trail:.,tab:> "
 set list
 
 " Disable autowrapping and automatic comment beginnings.
-autocmd BufEnter * set formatoptions-=cort
+autocmd BufEnter * set formatoptions-=c
+autocmd BufEnter * set formatoptions-=o
+autocmd BufEnter * set formatoptions-=r
+autocmd BufEnter * set formatoptions-=t
 autocmd FileType gitcommit setlocal tw=80
 autocmd FileType go setlocal shiftwidth=2
 autocmd FileType go setlocal tabstop=2
