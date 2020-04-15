@@ -90,8 +90,8 @@ let &cinoptions = 'g1,t0,(0'
 let &lcs = "trail:.,tab:> "
 set list
 
-" Disable automatically adding comment beginnings to the line
-autocmd BufEnter * set formatoptions-=ro
+" Disable autowrapping and automatic comment beginnings.
+autocmd BufEnter * set formatoptions-=cort
 autocmd FileType gitcommit setlocal tw=80
 autocmd FileType go setlocal shiftwidth=2
 autocmd FileType go setlocal tabstop=2
