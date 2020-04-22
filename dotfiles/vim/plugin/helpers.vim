@@ -49,6 +49,8 @@ function! Mailmode()
 	set spell
 	set spelllang=en,hu,de
 	set filetype=mail
+	set formatoptions-=t
+	set formatoptions-=c
 endfunction
 
 command Mailmode call Mailmode()
