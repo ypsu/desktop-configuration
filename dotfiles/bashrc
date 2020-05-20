@@ -5,7 +5,7 @@ HISTCONTROL=erasedups
 PS1='\[\e[0m\]$ '
 
 export EDITOR="vim -X -c 'set spell'"
-export LESS="-c --mouse --wheel-lines=3"
+export LESS="-S -c --mouse --wheel-lines=3"
 export PATH="$HOME/.bin:/root/.sbin/:$PATH"
 export LESSCHARSET='utf-8'
 
