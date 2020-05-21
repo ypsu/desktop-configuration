@@ -73,7 +73,7 @@ void reset_fd(void)
 
 enum { BUFFER_MAX = 4*1024*1024 };
 enum { ENTRIES_MAX = 32768 };
-enum { OUTBUF_MAX = 65536 };
+enum { OUTBUF_MAX = 131072 };
 
 int term_width, term_height;
 char output_buffer[OUTBUF_MAX];
