@@ -11,7 +11,10 @@ flashcard
 # todo
 if test -s ~/todo; then
   echo todo:
-  sed 's/^/  /' ~/todo
+  if test "$(head -c1 ~/todo)" != "#"; then
+    echo "  invalid todo file."
+  fi
+  sed -n 's/^#[a-z]/  &/p' ~/todo
   echo
 fi
 
