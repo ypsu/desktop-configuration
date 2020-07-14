@@ -372,8 +372,10 @@ int main(int argc, char **argv) {
       continue;
     }
 
-    swrite(4, ch, rby);
-    for (int i = 0; i < rby; ++i) rl_callback_read_char();
+    for (int i = 0; i < rby; ++i) {
+      swrite(4, ch + i, 1);
+      rl_callback_read_char();
+    }
     match_pattern(rl_line_buffer);
   }
 
