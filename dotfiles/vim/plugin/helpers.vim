@@ -46,7 +46,6 @@ command -bar Hexmode call ToggleHex()
 
 function! Mailmode()
 	set textwidth=80
-	set spell
 	set spelllang=en,hu,de
 	set filetype=mail
 	set formatoptions-=t
