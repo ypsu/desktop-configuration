@@ -1,11 +1,13 @@
 #!/bin/bash
 # checks for any outstanding stuff i have to do:
+# - energy subtraction because of the email check,
 # - daily flashcards,
 # - reminders,
 # - todo,
 # - unread emails.
 
 set -e
+enacc sub 2
 flashcard
 
 # todo
