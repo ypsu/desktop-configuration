@@ -53,12 +53,22 @@ bool processline(char *id, int val) {
     if (strcmp(id, g.dimensionid[dim]) == 0) break;
   }
   if (dim == g.dimensions) {
+    // add a new dimension.
     if (val != 0) {
       sprintf(processlineerror, "unknown id %s.", id);
       return false;
     }
     check(g.dimensions < dimensionslimit);
     strcpy(g.dimensionid[g.dimensions++], id);
+    return true;
+  }
+  if (val == 0) {
+    // remove an existing dimension.
+    if (dim != g.dimensions - 1) {
+      strcpy(g.dimensionid[dim], g.dimensionid[g.dimensions - 1]);
+      g.dimensionvalue[dim] = g.dimensionvalue[g.dimensions - 1];
+    }
+    g.dimensions--;
     return true;
   }
   g.dimensionvalue[dim] += val;
