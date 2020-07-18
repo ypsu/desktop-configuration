@@ -101,29 +101,41 @@ int main(int argc, char **argv) {
   }
 
   // sanity check the command line arguments.
-  if (argc % 2 != 1) {
+  if (argc >= 3 && argc % 2 != 1) {
     puts("invalid number of arguments.");
     exit(1);
   }
   if (argc <= 1) {
     puts("enacc - energy accounter.");
-    puts("usage: enacc [dim val]...");
+    puts("usage 1: enacc [dim val]...");
+    puts("usage 2: enacc [val]");
     puts("dim is either 'sub' or one of the energy dimensions.");
     puts("dim 'sub' subtracts val from each energy dimension.");
     puts("otherwise val is added to the specific dimension.");
+    puts("val on its own is the same as 'sub val'.");
     puts("~/.enacc file comments and energy levels:");
     fputs(allcomments, stdout);
   }
 
   // process the command line arguments.
-  for (int a = 1; a < argc; a += 2) {
-    if (strlen(argv[a]) > idlengthlimit) {
-      fprintf(stderr, "id '%s' too long.\n", argv[a]);
+  int argcnt = argc - 1;
+  char **argstr = argv + 1;
+  char *(tmp[2]);
+  if (argc == 2) {
+    // handle the "enacc [val]" case by treating it as "enacc sub [val]".
+    argcnt = 2;
+    tmp[0] = "sub";
+    tmp[1] = argv[1];
+    argstr = tmp;
+  }
+  for (int a = 0; a < argcnt; a += 2) {
+    if (strlen(argstr[a]) > idlengthlimit) {
+      fprintf(stderr, "id '%s' too long.\n", argstr[a]);
       exit(1);
     }
     int v;
-    if (sscanf(argv[a + 1], "%d", &v) != 1) {
-      fprintf(stderr, "couldn't parse '%s'.\n", argv[a + 1]);
+    if (sscanf(argstr[a + 1], "%d", &v) != 1) {
+      fprintf(stderr, "couldn't parse '%s'.\n", argstr[a + 1]);
       exit(1);
     }
     if (v <= 0) {
@@ -134,7 +146,7 @@ int main(int argc, char **argv) {
       fprintf(stderr, "value too big.\n");
       exit(1);
     }
-    if (!processline(argv[a], v)) {
+    if (!processline(argstr[a], v)) {
       fprintf(stderr, "error: %s\n", processlineerror);
       exit(1);
     }
@@ -152,8 +164,8 @@ int main(int argc, char **argv) {
   strftime(tmstr, 50, "%F %H:%M", localtime(&t));
   FILE *f = fopen(".enacc", "a");
   check(f != NULL);
-  for (int a = 1; a < argc; a += 2) {
-    fprintf(f, "%s %s %s\n", tmstr, argv[a], argv[a + 1]);
+  for (int a = 0; a < argcnt; a += 2) {
+    fprintf(f, "%s %s %s\n", tmstr, argstr[a], argstr[a + 1]);
   }
   check(fclose(f) == 0);
   return 0;
