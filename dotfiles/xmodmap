@@ -3,11 +3,11 @@ keycode 0x42 = Escape
 
 keycode 108 = Mode_switch Mode_switch
 keycode   9 = Escape NoSymbol Escape
-keycode  10 = 1 exclam
-keycode  11 = 2 at twosuperior dead_doubleacute
-keycode  12 = 3 numbersign threesuperior dead_macron
-keycode  13 = 4 dollar
-keycode  14 = 5 percent EuroSign NoSymbol
+keycode  10 = 1 exclam onesuperior onesubscript
+keycode  11 = 2 at twosuperior twosubscript
+keycode  12 = 3 numbersign threesuperior threesubscript
+keycode  13 = 4 dollar EuroSign
+keycode  14 = 5 percent
 keycode  15 = 6 asciicircum onequarter asciicircum
 keycode  16 = 7 ampersand onehalf dead_horn
 keycode  17 = 8 asterisk threequarters dead_ogonek
