@@ -43,7 +43,9 @@ for_window [title="Latex to Unicode converter"] floating enable
 for_window [window_role="pop-up"] floating enable
 
 bindsym $mod+F11 exec voldec
+bindsym XF86AudioLowerVolume exec voldec
 bindsym $mod+F12 exec volinc
+bindsym XF86AudioRaiseVolume exec volinc
 
 # last focused workspace
 bindsym $mod+z workspace back_and_forth
