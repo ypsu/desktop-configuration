@@ -37,6 +37,9 @@ case "$choice" in
 	n)
 		clear
 		read -p "Enter the new name: " name
+		if test "$name" = ""; then
+			name=____
+		fi
 		tmux rename-window "$name"
 		;;
 	g)
