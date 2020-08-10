@@ -45,7 +45,9 @@ bool processline(char *id, int val) {
     return false;
   }
   if (strcmp(id, "sub") == 0) {
-    for (int i = 0; i < g.dimensions; i++) g.dimensionvalue[i] -= val;
+    for (int i = 0; i < g.dimensions; i++) {
+      if (g.dimensionvalue[i] != 0) g.dimensionvalue[i] -= val;
+    }
     return true;
   }
   int dim;
@@ -63,15 +65,13 @@ bool processline(char *id, int val) {
     return true;
   }
   if (val == 0) {
-    // remove an existing dimension.
-    if (dim != g.dimensions - 1) {
-      strcpy(g.dimensionid[dim], g.dimensionid[g.dimensions - 1]);
-      g.dimensionvalue[dim] = g.dimensionvalue[g.dimensions - 1];
-    }
-    g.dimensions--;
+    // reset and hide dimension.
+    g.dimensionvalue[dim] = 0;
     return true;
   }
   g.dimensionvalue[dim] += val;
+  // being at 0 means the dimension doesn't exist so avoid 0.
+  if (g.dimensionvalue[dim] == 0) g.dimensionvalue[dim] = -1;
   if (g.dimensionvalue[dim] > g.limit) g.dimensionvalue[dim] = g.limit;
   return true;
 }
@@ -164,7 +164,9 @@ int main(int argc, char **argv) {
 
   // print the new stats.
   for (int i = 0; i < g.dimensions; i++) {
-    printf("%s:%d ", g.dimensionid[i], g.dimensionvalue[i]);
+    if (g.dimensionvalue[i] != 0) {
+      printf("%s:%d ", g.dimensionid[i], g.dimensionvalue[i]);
+    }
   }
   puts("");
 
