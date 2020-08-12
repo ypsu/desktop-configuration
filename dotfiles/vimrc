@@ -192,7 +192,8 @@ map <Leader>F :<C-U>call SelectFileFromCurrent()<CR>
 map <Leader>g :<C-U>call SelectBuffer()<CR>
 map <Leader>h :Hexmode<CR>
 map <Leader>k :<C-u>call SaveCount()<CR>"zyiw:call RemoteMan(@z)<CR>
-map <Leader>o :<C-U>call OpenFromClipboard()<CR>
+map <Leader>o :<C-U>call OpenFromXClipboard()<CR>
+map <Leader>O :<C-U>call OpenFromTmuxClipboard()<CR>
 
 " Signs manipulation
 nmap <Leader>z :call SignFixme()<CR>

@@ -1,16 +1,11 @@
 #!/bin/bash
-
-if test -z "$PS1"; then
-	echo "You need to source this, otherwise this is a noop."
-fi
-
 function _get_ssh_env() {
-	pts=$(tmux display-message -p '#{client_tty}' | sed s:/dev/::)
-	pid=$(ps a | grep tmux | grep "$pts " | awk '{print $1}')
+	local pts=$(tmux display-message -p '#{client_tty}' | sed s:/dev/::)
+	local pid=$(ps a | grep tmux | grep "$pts " | awk '{print $1}')
 	if test "$pid" = ""; then
 		exit 1
 	fi
-	env=/proc/$pid/environ
+	local env=/proc/$pid/environ
 
 	function get_env() {
 		value=$(tr '\0' '\n' <$env | grep "^$1=" | awk -F= '{print $2}')

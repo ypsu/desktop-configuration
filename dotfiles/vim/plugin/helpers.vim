@@ -126,10 +126,22 @@ function! SelectBuffer()
 	redraw!
 endfunction
 
-function! OpenFromClipboard()
+function! OpenFromTmuxClipboard()
 	call RecreateTmpdir()
 	let l:fname = system("f=$(tmux save-buffer -); echo -n ${f#$(pwd)/}")
 	execute "edit " . l:fname
+endfunction
+
+function! OpenFromXClipboard()
+	call RecreateTmpdir()
+	let l:fname = system("f=$(. ~/.bin/sshenv; xclip -selection clipboard -o); echo -n ${f#$(pwd)/}")
+	" try without the first component too to ignore spurious prefixes.
+	let l:altname = system("f=" . l:fname . "; echo -n ${f#*/}")
+	if !filereadable(l:fname) && filereadable(l:altname)
+		execute "edit " . l:altname
+	else
+		execute "edit " . l:fname
+	endif
 endfunction
 
 function! ToggleSyntaxHighlight()

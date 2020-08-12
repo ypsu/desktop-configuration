@@ -16,7 +16,7 @@ for f in "$@"; do
 	fullname=$(readlink -f "$f")
 	if test "$fullname" != ""; then
 		tmux load-buffer - <<< "$fullname"
-		tmux send-keys -t $id "\o"
+		tmux send-keys -t $id "\O"
 		sleep 0.2
 	fi
 done
