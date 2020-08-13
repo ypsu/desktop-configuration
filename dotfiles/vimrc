@@ -133,8 +133,6 @@ imap <End> <C-O>g$
 imap <C-w> <C-\><C-o>dB
 imap <C-h> <C-\><C-o>db
 
-map <Leader>p :set invpaste <CR>:echo "paste mode: " . &paste<CR>
-
 " Quote in mail
 map <Leader>q :s/^/> / <CR>
 
@@ -155,11 +153,15 @@ map <F1> <C-^>
 imap <F1> <C-o><C-^>
 " <Leader>F1 - Replace the contents with the contents of the clipboard
 map <Leader><F1> ggdG:let @" = system('x2t; tmux save-buffer -')<CR>pkdd
+" <Leader>r - read/replace the contents with the contents of the clipboard
+map <Leader>r ggdG:let @" = system('x2t; tmux save-buffer -')<CR>pkdd
 " F2 - Save
 map <F2> :update <CR>
 vmap <F2> <Esc><F2>gv
 " <Leader>F2 - Copy the whole buffer to the clipboard
 map <Leader><F2> ggyG``zz:call system('cat \| tmux load-buffer -; t2x', @")<CR>
+" <Leader>w - write the whole buffer to the clipboard
+map <Leader>w ggyG``zz:call system('cat \| tmux load-buffer -; t2x', @")<CR>
 " Leader-F3 - Reload all
 map <Leader><F3> :bufdo set eventignore= \| e <CR>
 " F4 - Show terminal
@@ -167,8 +169,8 @@ map <F4> :!exit <CR>
 vmap <F4> <Esc><F4>gv
 
 " Paste from X11 clipboard/tmux buffer.
-map <Leader>r :let @" = system('x2t; tmux save-buffer -')<CR>p
-map <Leader>R :let @" = system('x2t; tmux save-buffer -')<CR>P
+map <Leader>p :let @" = system('x2t; tmux save-buffer -')<CR>p
+map <Leader>P :let @" = system('x2t; tmux save-buffer -')<CR>P
 " Yank to tmux buffer/X11 clipboard.
 map <Leader>y y:call system('cat \| tmux load-buffer -; t2x', @")<CR>
 map <Leader>Y yy:call system('cat \| tmux load-buffer -; t2x', @")<CR>
@@ -180,10 +182,6 @@ map <F12> :call ToggleSyntaxHighlight()<CR>
 " This is enabled by default.
 nnoremap <silent> <Leader>l :call ToggleLongLineMatch()<CR>
 
-" Leader-s: submit/commit current file to git
-map <Leader>s :!git commit %:p -v<CR>
-" Leader-a: submit/commit all to git
-map <Leader>a :!git commit -av<CR>
 " Leader-d: diff changes
 map <Leader>d :!git diff<CR>
 
