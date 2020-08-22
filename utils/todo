@@ -7,7 +7,6 @@
 # - unread emails.
 
 set -e
-enacc sub 2
 flashcard
 
 # todo
