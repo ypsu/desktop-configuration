@@ -32,6 +32,7 @@ mount -t tmpfs shm /dev/shm -o mode=1777,nosuid,nodev
 mount -t tmpfs tmpfs /tmp -o nosuid,nodev,size=50%
 mkdir -p /tmp/a
 chown rlblaster:users /tmp/a
+ln -s /proc/self/fd /dev/fd
 
 if grep -q ARMv6 /proc/cpuinfo; then
 	hostname eper
