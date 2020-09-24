@@ -101,6 +101,8 @@ bind pager G bottom
 bind index "^" imap-fetch-mail
 bind index - collapse-thread
 bind index _ collapse-all
+bind compose K move-up
+bind compose J move-down
 
 folder-hook . push "<collapse-all>\n"
 
