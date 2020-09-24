@@ -1,21 +1,10 @@
 [user]
 	name = Balazs Kezes
 	email = rlblaster@gmail.com
-[color]
-	diff = off
-	status = auto
-	branch = auto
-	ui = auto
-[diff]
-	tool = vimdiff
-[difftool]
-	prompt = false
-[alias]
-	d = difftool
 [merge]
 	tool = vimdiff
 [push]
 	default = simple
 [core]
 	editor = vim -X -c 'syntax on | set spell'
-	pager = vim -X -c 'syntax on' -
+	pager = cat
