@@ -5,7 +5,7 @@ if ! ps auxw | grep -v grep | grep -q 'sysstat\>'; then
 	audio=Master
 	network=eth0
 	if test "$(hostname)" = "eper"; then
-		audio=PCM
+		audio=none
 		delay=10000
 	fi
 	if test "$(hostname)" = "paks"; then
