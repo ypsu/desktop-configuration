@@ -319,9 +319,13 @@ int main(int argc, char **argv) {
       snprintf(bat, 16, "%3d%% bat ", ns.battery);
     }
 
+    // Format the volume level.
+    char vol[16] = {};
+    if (ns.volume != -1) snprintf(vol, 16, "%3d%% vol ", ns.volume);
+
     // Print the stats.
     char mem[10], up[10], down[10];
-    int vol, cpu;
+    int cpu;
     struct tm *tm;
     double elapsed_time;
     elapsed_time = ns.time.tv_sec - state.time.tv_sec;
@@ -335,10 +339,8 @@ int main(int argc, char **argv) {
     double cpu_all = ns.cpu_all - state.cpu_all;
     cpu = lrint(cpu_used * 100.0 / cpu_all);
     tm = localtime(&ns.date);
-    vol = ns.volume;
     snprintf(buf, BS,
-             "%s"
-             "%3d%% vol "
+             "%s%s"
              "%5s mem "
              "%5s ↑ %5s ↓ "
              "%3d%% cpu "
