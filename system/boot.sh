@@ -1,24 +1,24 @@
 #!/bin/bash
 
 function logexec() {
-	echo "$@"
-	"$@"
+  echo "$@"
+  "$@"
 }
 
 function log() {
-	echo -e "\e[33m""$@""\e[0m"
+  echo -e "\e[33m""$@""\e[0m"
 }
 
 function eper() {
-	if test "$(hostname)" = "eper"; then
-		"$@"
-	fi
+  if test "$(hostname)" = "eper"; then
+    "$@"
+  fi
 }
 
 function paks() {
-	if test "$(hostname)" = "paks"; then
-		"$@"
-	fi
+  if test "$(hostname)" = "paks"; then
+    "$@"
+  fi
 }
 
 log Mounting system dirs
@@ -38,9 +38,9 @@ ln -s /proc/self/fd/1 /dev/stdout
 ln -s /proc/self/fd/2 /dev/stderr
 
 if grep -q ARMv6 /proc/cpuinfo; then
-	hostname eper
+  hostname eper
 else
-	hostname paks
+  hostname paks
 fi
 
 log Waiting for udev
@@ -63,7 +63,7 @@ log Checking filesystems
 logexec fsck -T -C /
 paks logexec fsck -T -C /data
 if test $? -ge 2; then
-	agetty -8 -a root --noclear 38400 tty1 linux
+  agetty -8 -a root --noclear 38400 tty1 linux
 fi
 
 log Mounting filesystems
@@ -107,10 +107,10 @@ log Setting time
 eper sntp || sntp || sntp  # Try three times just in case.
 
 if test "$(hostname)" = "paks"; then
-	log Starting X in the background
-	cd ~rlblaster
-	PATH=/home/rlblaster/.bin:$PATH su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
-	cd - >/dev/null
+  log Starting X in the background
+  cd ~rlblaster
+  PATH=/home/rlblaster/.bin:$PATH su -c "startx -- vt7 -nolisten tcp" rlblaster 2>/dev/null >&2 &
+  cd - >/dev/null
 fi
 
 log Starting ttys
