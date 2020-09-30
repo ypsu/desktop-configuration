@@ -201,6 +201,7 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         position top
+        mode hide
         status_command sysstat_tailer
         bindsym button4 exec volinc
         bindsym button5 exec voldec
