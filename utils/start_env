@@ -4,7 +4,7 @@ if ! ps auxw | grep -v grep | grep -q 'sysstat\>'; then
   delay=5000
   audio=Master
   network=eth0
-  if test "$(hostname)" = "eper"; then
+  if test "$(hostname)" = "eper" || test "$(hostname)" = "ipi"; then
     audio=none
     delay=10000
   fi
