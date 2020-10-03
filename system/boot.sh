@@ -6,11 +6,23 @@ function logexec() {
 }
 
 function log() {
-  echo -e "\e[33m""$@""\e[0m"
+  echo "$@"
 }
 
 function eper() {
   if test "$(hostname)" = "eper"; then
+    "$@"
+  fi
+}
+
+function ipi() {
+  if test "$(hostname)" = "ipi"; then
+    "$@"
+  fi
+}
+
+function eperipi() {
+  if test "$(hostname)" = "eper" || test "$(hostname)" = "ipi"; then
     "$@"
   fi
 }
@@ -39,8 +51,32 @@ ln -s /proc/self/fd/2 /dev/stderr
 
 if grep -q ARMv6 /proc/cpuinfo; then
   hostname eper
+elif grep -q ARMv7 /proc/cpuinfo; then
+  hostname ipi
 else
   hostname paks
+fi
+
+if test "$(hostname)" = "ipi"; then
+  echo -en '\e]P0ffffff'  # the backguound
+  echo -en '\e]P1000000'
+  echo -en '\e]P2000000'
+  echo -en '\e]P3000000'
+  echo -en '\e]P4000000'
+  echo -en '\e]P5000000'
+  echo -en '\e]P6000000'
+  echo -en '\e]P7e0e0e0'
+  echo -en '\e]P8000000'
+  echo -en '\e]P9000000'
+  echo -en '\e]Pa000000'
+  echo -en '\e]Pb000000'
+  echo -en '\e]Pc000000'
+  echo -en '\e]Pd000000'
+  echo -en '\e]Pe000000'
+  echo -en '\e]Pf000000'  # the foreground
+  echo -en '\e[?48;0;64c'
+  echo -en '\e[97m\e[40m'
+  echo -en '\e[8]'
 fi
 
 log Waiting for udev
@@ -52,16 +88,20 @@ setfont -f /usr/share/kbd/consolefonts/ter-v12n.psf.gz
 
 log Bringing up networking
 logexec ifconfig lo up
-eper logexec ifconfig eth0 up
+eperipi logexec ifconfig eth0 up
 eper logexec ifconfig eth0 192.168.1.11 netmask 255.255.255.0 broadcast 192.168.1.255
-eper logexec route add default gw 192.168.1.1 eth0
+ipi logexec ifconfig eth0 192.168.1.12 netmask 255.255.255.0 broadcast 192.168.1.255
+eperipi logexec route add default gw 192.168.1.1 eth0
 paks ifconfig eno1 up
 paks logexec ifconfig eno1 192.168.1.13 netmask 255.255.255.0 broadcast 192.168.1.255
 paks logexec route add default gw 192.168.1.1 eno1
 
 log Checking filesystems
-logexec fsck -T -C /
-paks logexec fsck -T -C /data
+eperipi logexec fsck /dev/mmcblk0p2
+if test $? -ge 2; then
+  agetty -8 -a root --noclear 38400 tty1 linux
+fi
+paks logexec fsck /data
 if test $? -ge 2; then
   agetty -8 -a root --noclear 38400 tty1 linux
 fi
@@ -70,6 +110,8 @@ log Mounting filesystems
 paks logexec mount -o remount,rw /
 paks logexec mount /boot
 paks logexec mount /data
+ipi logexec mount -o remount,rw /
+ipi logexec mount /boot
 eper logexec mount -o ro /boot
 eper logexec mount -o mode=0755,uid=1000,gid=100 -t tmpfs tmpfs /homebuf
 eper logexec mount -o bind,rw /homebuf /homebufrw
@@ -101,10 +143,11 @@ echo 100 > /proc/sys/vm/dirty_ratio
 echo 30000 > /proc/sys/vm/dirty_expire_centisecs
 echo 18000 > /proc/sys/vm/dirty_writeback_centisecs
 eper echo 16384 > /proc/sys/vm/min_free_kbytes
+ipi echo 262144 > /proc/sys/vm/min_free_kbytes
 paks echo 262144 > /proc/sys/vm/min_free_kbytes
 
 log Setting time
-eper sntp || sntp || sntp  # Try three times just in case.
+eperipi sntp || sntp || sntp || sntp  # Try 4 times just in case.
 
 if test "$(hostname)" = "paks"; then
   log Starting X in the background
@@ -115,6 +158,7 @@ fi
 
 log Starting ttys
 paks agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux &
+ipi  agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux &
 eper agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty2 linux -l /root/.sbin/start_ui.sh &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty3 linux &
 agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty4 linux &
@@ -124,4 +168,4 @@ agetty -8 -a rlblaster -o "-p -f rlblaster" --noclear 38400 tty1 linux &
 
 eper chvt 2
 
-eper su rlblaster -c "/usr/bin/sshd -f /home/rlblaster/.sshd_config"
+eperipi su rlblaster -c "/usr/bin/sshd -f /home/rlblaster/.sshd_config"
