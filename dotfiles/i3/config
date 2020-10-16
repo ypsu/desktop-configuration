@@ -103,12 +103,6 @@ bindsym $mod+Shift+s sticky toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
-# focus the parent container
-bindsym $mod+a focus parent
-
-# focus the child container
-#bindcode $mod+d focus child
-
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -153,7 +147,9 @@ bindsym $mod+q workspace qc
 bindsym $mod+Shift+q move container to workspace qc
 
 # switch workspace's monitor
-bindsym $mod+x move workspace to output right
+bindsym $mod+a move workspace to output right
+# toggle i3 bar's visibility
+bindsym $mod+x bar mode toggle
 
 for_window [title="XM-floating"] floating enable
 for_window [title="XM-floating"] move position center
