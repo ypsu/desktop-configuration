@@ -82,37 +82,37 @@ XTerm*VT100.translations:      #override \n\
 *color15: #ffffff
 
 ! dark color scheme
-!*background: #000000
-!*foreground: #f8f8f8
-!! Black
-!*color0: #000000
-!! Red
-!*color1: #c75646
-!! Green
-!*color2: #5e832b
-!! Yellow
-!*color3: #d0b03c
-!! Blue
-!*color4: #72b3cc
-!! Purple
-!*color5: #c8a0d1
-!! Cyan
-!*color6: #218693
-!! White
-!*color7: #606060
-!! Grey
-!*color8: #a0a0a0
-!! Light Red
-!*color9: #e09690
-!! Light Green
-!*color10: #cdee69
-!! Light Yellow
-!*color11: #ffe377
-!! Light Blue
-!*color12: #9cd9f0
-!! Light Purple
-!*color13: #fbb1f9
-!! Light Cyan
-!*color14: #77dfd8
-!! Light white
-!*color15: #f8f8f8
+*background: #000000
+*foreground: #f8f8f8
+! Black
+*color0: #000000
+! Red
+*color1: #c75646
+! Green
+*color2: #5e832b
+! Yellow
+*color3: #d0b03c
+! Blue
+*color4: #72b3cc
+! Purple
+*color5: #c8a0d1
+! Cyan
+*color6: #218693
+! White
+*color7: #606060
+! Grey
+*color8: #a0a0a0
+! Light Red
+*color9: #e09690
+! Light Green
+*color10: #cdee69
+! Light Yellow
+*color11: #ffe377
+! Light Blue
+*color12: #9cd9f0
+! Light Purple
+*color13: #fbb1f9
+! Light Cyan
+*color14: #77dfd8
+! Light white
+*color15: #f8f8f8
