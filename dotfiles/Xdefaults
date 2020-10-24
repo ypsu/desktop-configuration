@@ -36,12 +36,12 @@ XTerm*utf8Title: true
 XTerm*termName: xterm-color
 XTerm*VT100.translations:      #override \n\
         Ctrl<Key>BackSpace: string(0x08) \n\
-        Alt<Key>BackSpace: string("") \n\
+        Alt<Key>BackSpace: string(0x1b) string(0x7f) \n\
         <Key>BackSpace: string(0x7f) \n\
         Ctrl Alt<Key>Prior: larger-vt-font() \n\
         Ctrl Alt<Key>Next: smaller-vt-font() \n\
         Ctrl<Key>6: string(0x1e) \n\
-        Alt<Key>Return: string("") \n\
+        Alt<Key>Return: string(0x1b) string(0x0d) \n\
         Shift<Key>Return: string(0x0d) \n\
         Ctrl<Key>Return: string(0x0d) \n
 
