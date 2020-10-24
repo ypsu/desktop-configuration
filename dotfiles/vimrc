@@ -39,6 +39,7 @@ set t_Co=16
 set notitle
 set nomodeline
 set viminfo=""
+hi endofbuffer ctermfg=none
 " colors for light theme
 hi Visual cterm=inverse ctermfg=11 ctermbg=0
 hi SpellBad ctermfg=none ctermbg=7
