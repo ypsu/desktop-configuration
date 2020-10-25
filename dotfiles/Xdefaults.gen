@@ -1,3 +1,5 @@
+#!/bin/bash
+cat <<eof
 ! Compile with this command: xrdb -nocpp .Xdefaults
 
 XTerm*alwaysUseMods: true
@@ -45,6 +47,11 @@ XTerm*VT100.translations:      #override \n\
         Shift<Key>Return: string(0x0d) \n\
         Ctrl<Key>Return: string(0x0d) \n
 
+eof
+
+colorscheme=dark
+
+test $colorscheme = light && cat <<eof
 ! light color scheme.
 *foreground: #000000
 *background: #ffffff
@@ -64,7 +71,9 @@ XTerm*VT100.translations:      #override \n\
 *color13: #ff00ff
 *color14: #00c0c0
 *color15: #ffffff
+eof
 
+test $colorscheme = dark && cat <<eof
 ! dark color scheme
 *background: #000000
 *foreground: #f8f8f8
@@ -84,3 +93,4 @@ XTerm*VT100.translations:      #override \n\
 *color13: #fbb1f9
 *color14: #77dfd8
 *color15: #f8f8f8
+eof
