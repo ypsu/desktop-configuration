@@ -1,5 +1,5 @@
 src := $(filter-out Makefile,$(sort $(wildcard *)))
-dst := $(patsubst %,$(HOME)/.%,$(src))
+dst := $(src:%=$(HOME)/.%)
 
 .PHONY: all clean
 all: $(dst)
