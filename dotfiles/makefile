@@ -1,4 +1,4 @@
-src := $(filter-out Makefile,$(sort $(wildcard *)))
+src := $(filter-out makefile,$(sort $(wildcard *)))
 dst := $(src:%=$(HOME)/.%)
 
 .PHONY: all clean
