@@ -208,6 +208,15 @@ bar {
 
         colors {
                 urgent_workspace #ffff00 #ffff00 #000000
+eof
+
+test "$HOSTNAME" = ipi && cat <<'eof'
+                urgent_workspace #ffffff #ffffff #000000
+                background #ffffff
+                statusline #000000
+eof
+
+cat <<'eof'
         }
 }
 eof
