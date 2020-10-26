@@ -50,6 +50,7 @@ XTerm*VT100.translations:      #override \n\
 eof
 
 colorscheme=dark
+test $HOSTNAME = ipi && colorscheme=monochrome
 
 test $colorscheme = light && cat <<eof
 ! light color scheme.
@@ -93,4 +94,25 @@ test $colorscheme = dark && cat <<eof
 *color13: #fbb1f9
 *color14: #77dfd8
 *color15: #f8f8f8
+eof
+
+test $colorscheme = monochrome && cat <<eof
+*foreground: #000000
+*background: #ffffff
+*color0: #000000
+*color1: #000000
+*color2: #000000
+*color3: #000000
+*color4: #000000
+*color5: #000000
+*color6: #000000
+*color7: #e0e0e0
+*color8: #000000
+*color9: #000000
+*color10: #000000
+*color11: #000000
+*color12: #000000
+*color13: #000000
+*color14: #000000
+*color15: #ffffff
 eof
