@@ -15,7 +15,7 @@ for src in *.gen; do
   haddiff=1
   diff -u --label=live/.$base --label=head/.$base $dst <(./$src)
   if test "$regen" = 1; then
-    echo "applying this diff:"
+    echo "applied the above diff."
     ./$src >$dst
   fi
 done
