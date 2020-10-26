@@ -11,4 +11,4 @@ regen:
 	@./regen
 
 clean:
-	rm $(dst)
+	rm $(dst) $(patsubst %.gen,$(HOME)/.%,$(wildcard *.gen))
