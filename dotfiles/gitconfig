@@ -2,6 +2,7 @@
 	name = Balazs Kezes
 	email = rlblaster@gmail.com
 [merge]
+	conflictstyle = diff3
 	tool = vimdiff
 [push]
 	default = simple
@@ -9,4 +10,4 @@
 	editor = vim -X -c 'syntax on | set spell'
 	pager = cat
 [pull]
-	ff = only
+	rebase = true
