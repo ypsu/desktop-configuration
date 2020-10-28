@@ -1,7 +1,12 @@
 #!/bin/bash
-if test "$#" -ne 1; then
+if test "$#" -ge 2 || test "$1" = -h || test "$1" = --help; then
   echo 'usage: ta [hostname]'
   echo 'run tmux attach on a remote host.'
+  echo 'attach locally when running without args.'
+  exit
+fi
+if test "$#" -eq 0; then
+  tmux attach
   exit
 fi
 test "$1" = work && export SSH_AUTH_SOCK=/home/$USER/.cache/agent-tty
