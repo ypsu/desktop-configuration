@@ -4,8 +4,6 @@ if test "$HOSTNAME" = ipi; then
   xsetroot -solid '#ffffff'
 else
   xsetroot -solid '#000'
-  hsetroot -solid '#000000'
-  nohup compton --backend glx --vsync opengl-swc >/dev/null 2>/dev/null &
 fi
 xsetroot -cursor_name arrow
 xset r rate 300 40
