@@ -26,7 +26,7 @@ libs := \
 
 flags.opt := -O2
 cflags := -g -std=c99 -Wall -Wextra -Werror
-compile_cmd := gcc $(cflags) $(flags.$(BUILD)) $(libs)
+compile_cmd := gcc $(cflags) $(flags.$(BUILD))
 $(info compile_cmd: $(compile_cmd))
 
 .PHONY: all clean
@@ -35,7 +35,7 @@ clean:
 	rm -f $(scripts_dst) $(binaries)
 $(HOME)/.bin/%: %.c
 	@echo building $(notdir $@)
-	@$(compile_cmd) -o $@ $<
+	@$(compile_cmd) -o $@ $< $(libs)
 $(HOME)/.bin/%: %
 	@echo symlinking $(notdir $@)
 	@ln -s $(PWD)/$< $@
