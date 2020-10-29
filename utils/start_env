@@ -14,6 +14,7 @@ if ! ps auxw | grep -v grep | grep -q 'sysstat\>'; then
   sysstat -a $audio -d $delay -n $network
 fi
 set_term_colors
+test "$HOSTNAME" = kezport && /usr/sbin/sshd -f ~/.sshd_config
 
 if tmux has-session 2>/dev/null; then
   tmux attach
