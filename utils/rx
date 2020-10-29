@@ -6,7 +6,6 @@ else
   xsetroot -solid '#000'
   hsetroot -solid 0
   nohup compton --backend glx --vsync opengl-swc >/dev/null 2>/dev/null &
-  synclient MaxTapTime=0
 fi
 xsetroot -cursor_name arrow
 xset r rate 300 40
