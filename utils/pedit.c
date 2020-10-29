@@ -14,11 +14,10 @@
       check(#cond, __FILE__, __func__, __LINE__); \
     }                                             \
   } while (0)
-static void check(const char *expr, const char *file, const char *func,
-                  int line) {
+static void check(const char *expr, const char *file, const char *fn, int ln) {
   const char *fmt;
   fmt = "check \"%s\" in %s at %s:%d failed, errno = %d (%m)\n";
-  printf(fmt, expr, func, file, line, errno);
+  printf(fmt, expr, fn, file, ln, errno);
   abort();
 }
 
