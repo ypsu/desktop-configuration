@@ -26,8 +26,9 @@ int main(void) {
   CHECK(strlen(pwd) < 100);
   int child;
   siginfo_t rv;
-  const char cipherfile[] = "/home/rlblaster/.d/cfg/.contacts.txt.gpg";
+  const char cipherfile[] = ".d/cfg/.contacts.txt.gpg";
   const char tmpfile[] = "/dev/shm/data";
+  CHECK(chdir(getenv("HOME")) == 0);
 
   // Decrypt.
   child = fork();
