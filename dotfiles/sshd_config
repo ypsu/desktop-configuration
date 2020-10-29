@@ -1,6 +1,0 @@
-Port 9022
-PasswordAuthentication no
-PubkeyAuthentication yes
-HostKey /home/rlblaster/.ssh/host
-X11Forwarding yes
-Subsystem sftp /usr/lib/ssh/sftp-server
