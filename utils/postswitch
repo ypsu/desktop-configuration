@@ -10,7 +10,6 @@ sleep 1
 home=$(pwd)
 export DISPLAY=:0
 export XAUTHORITY=$home/.Xauthority
-xset s 1200
 xset r rate 300 40
 xmodmap $home/.xmodmap
 ' &
