@@ -1,6 +1,6 @@
 #!/bin/bash
 # reset x settings to reasonable defaults.
-if "$HOSTNAME" = ipi; then
+if test "$HOSTNAME" = ipi; then
   xsetroot -solid '#ffffff'
 else
   xsetroot -solid '#000'
