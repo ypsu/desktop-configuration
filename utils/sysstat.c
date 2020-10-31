@@ -235,6 +235,8 @@ int main(int argc, char **argv) {
   int f = O_RDONLY;
   config.bat_full = open("/sys/class/power_supply/BAT0/energy_full", f);
   config.bat_now = open("/sys/class/power_supply/BAT0/energy_now", f);
+  char hostname[32] = {};
+  CHECK(gethostname(hostname, 31) == 0);
 
   // Main loop.
   struct state state;
@@ -340,12 +342,13 @@ int main(int argc, char **argv) {
     cpu = lrint(cpu_used * 100.0 / cpu_all);
     tm = localtime(&ns.date);
     snprintf(buf, BS,
+             "[%s] "
              "%s%s"
              "%5s mem "
              "%5s ↑ %5s ↓ "
              "%3d%% cpu "
              "%04d-%02d-%02d %02d:%02d",
-             bat, vol, mem, up, down, cpu, tm->tm_year + 1900,
+             hostname, bat, vol, mem, up, down, cpu, tm->tm_year + 1900,
              tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
     int len = strlen(buf);
     if (strcmp(config.output, "-") != 0) {
