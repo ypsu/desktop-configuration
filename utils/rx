@@ -9,6 +9,12 @@ xsetroot -cursor_name arrow
 xset r rate 300 40
 xset s off
 xset -dpms
+if test "$HOSTNAME" = kezport; then
+  # enable screensaving on kezport.
+  xset s noblank
+  xset s 900
+  xset dpms 915
+fi
 xset +fp ~/.fonts
 xrdb ~/.Xdefaults
 xmodmap ~/.xmodmap
