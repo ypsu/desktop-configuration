@@ -13,7 +13,7 @@ if test "$HOSTNAME" = kezport; then
   # enable screensaving on kezport.
   xset s noblank
   xset s 900
-  xset dpms 915
+  xset dpms 915 915 915
 fi
 xset +fp ~/.fonts
 xrdb ~/.Xdefaults
