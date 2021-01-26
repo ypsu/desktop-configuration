@@ -9,7 +9,7 @@ set header_cache = /tmp/mutt/
 set message_cachedir = /tmp/mutt/
 set tmpdir = /tmp/mutt/
 set postponed = "+[Gmail]/Drafts"
-set reply_regexp = "^((re:)|(fwd:)|(aw:)|(\\[[^]]*\\])| )*"
+set reply_regexp = "^((re:)|(fwd?:)|(aw:)|(\\[[^]]*\\])| )*"
 unset record
 unset imap_passive
 set imap_keepalive = 300
