@@ -42,8 +42,8 @@ set viminfo=""
 hi endofbuffer ctermfg=none
 " colors for light theme
 hi Visual cterm=inverse ctermfg=11 ctermbg=0
-hi SpellBad ctermfg=none ctermbg=7
-hi SpellCap cterm=inverse ctermfg=14 ctermbg=0
+hi SpellCap ctermfg=none ctermbg=7
+hi SpellBad cterm=inverse ctermfg=14 ctermbg=0
 " colors for dark theme
 "colorscheme desert
 "hi Visual ctermfg=4 ctermbg=0
