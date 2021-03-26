@@ -200,3 +200,34 @@ function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
     endif
   endwhile
 endfunction
+
+function! Format()
+  if &filetype == 'c' || &filetype == 'cpp' || &filetype == 'js'
+    let filter = 'clang-format'
+  elseif &filetype == 'go'
+    let filter = 'goimports'
+  else
+    echo "no formatter for " . &filetype
+    return
+  endif
+  call RecreateTmpdir()
+  let oldlines = getline(1, '$')
+  call writefile(oldlines, "/tmp/.vimfmtold")
+  call system(filter . " </tmp/.vimfmtold >/tmp/.vimfmtnew 2>/tmp/.vimfmterr")
+  let errlines = readfile("/tmp/.vimfmterr")
+  if errlines != []
+    for l in errlines
+      echo l
+    endfor
+    return
+  endif
+  let newlines = readfile("/tmp/.vimfmtnew")
+  if newlines == oldlines
+    return
+  endif
+  let winview = winsaveview()
+  :%delete _
+  call setline(1, newlines)
+  echo ""
+  call winrestview(winview)
+endfunction

@@ -138,6 +138,9 @@ imap <C-h> <C-\><C-o>db
 " Quote in mail
 map <Leader>q :s/^/> / <CR>
 
+" Run goimports or just reformat file for C++.
+map <Leader>i :call Format()<CR>
+
 " Move around windows
 map <C-h> <C-w>h
 map <C-j> <C-w>j
