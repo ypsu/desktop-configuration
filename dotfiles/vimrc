@@ -41,6 +41,7 @@ set nomodeline
 set viminfo=""
 hi endofbuffer ctermfg=none
 " colors for light theme
+hi SignColumn ctermfg=none ctermbg=0
 hi Visual cterm=inverse ctermfg=11 ctermbg=0
 hi SpellCap ctermfg=none ctermbg=7
 hi SpellBad cterm=inverse ctermfg=14 ctermbg=0
