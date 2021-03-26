@@ -69,7 +69,7 @@ function! ToggleLongLineMatch()
     silent! call matchdelete(w:long_line_match)
     unlet w:long_line_match
   else
-    let l:m = matchadd('ErrorMsg', '\%>' . &textwidth . 'v.\+', -1)
+    let l:m = matchadd('ErrorMsg', '\%' . &textwidth . 'v.', -1)
     let w:long_line_match = l:m
   endif
 endfunction
