@@ -79,7 +79,7 @@ set pager_stop
 unset markers
 set narrow_tree
 
-alternative_order text/plain text text/html
+alternative_order text/plain text/html
 set include = yes
 
 ignore *
