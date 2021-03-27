@@ -68,10 +68,10 @@ func toHTML(inputbuf []byte) []byte {
 			if m == noneMode {
 				m = ulMode
 				output.WriteString("<ul><li>")
-				line = "<span hidden>-</span>" + line[1:]
+				line = "<span style=display:none>-</span>" + line[1:]
 			} else if m == ulMode {
 				output.WriteString("</li><li>")
-				line = "<span hidden>-</span>" + line[1:]
+				line = "<span style=display:none>-</span>" + line[1:]
 			}
 		} else if strings.HasPrefix(line, "# ") {
 			if m != noneMode {
@@ -84,7 +84,7 @@ func toHTML(inputbuf []byte) []byte {
 				output.WriteString("<blockquote style='border-left:solid 1px;padding:0 0.5em'>")
 			}
 			if m == blockquoteMode {
-				line = "<span hidden>&gt;</span>" + line[4:]
+				line = "<span style=display:none>&gt;</span>" + line[4:]
 			}
 		} else {
 			if m == noneMode {
@@ -137,7 +137,7 @@ func main() {
 	conv := func(b []byte) []byte { return b }
 	if *rFlag && isHTML {
 		conv = toMarkdown
-	} else if !isHTML {
+	} else if !*rFlag && !isHTML {
 		conv = toHTML
 	}
 	ioutil.WriteFile("/dev/stdout", conv(inputbuf), 0)
