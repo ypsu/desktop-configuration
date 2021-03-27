@@ -36,14 +36,20 @@ func close(output *bytes.Buffer, m mode) {
 	}
 }
 
-func toHTML(inputbuf []byte) []byte {
+// autolinks is something like "doc|go|groups|oncall|sheets|who".
+// Those will be autolinkified if they are followed by a slash.
+// Leave it empty if no autolinkification is needed.
+func toHTML(inputbuf []byte, autolinks []byte) []byte {
 	output := &bytes.Buffer{}
 
 	// Escape HTML characters.
 	input := strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&#039;").Replace(string(inputbuf))
 
 	// Linkify links.
-	re := regexp.MustCompile("\\b((http(s)?://([-.a-z0-9]+)/?)|(youtu.be)/)(\\S*)?\\b")
+	if len(autolinks) == 0 {
+		autolinks = []byte("__autolink_placeholder__")
+	}
+	re := regexp.MustCompile("\\b((http(s)?://([-.a-z0-9]+)/?)|(" + string(autolinks) + ")/)(\\S*)?\\b")
 	input = re.ReplaceAllString(input, "<a href='http$3://$4$5/$6'>$0</a>")
 
 	// Add a some styling.
@@ -132,13 +138,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Read autolinks if available.
+	autolinks, _ := ioutil.ReadFile(os.Getenv("HOME") + "/.autolinks")
+	autolinks = bytes.TrimSpace(autolinks)
+
 	// Run the conversion.
+	outbuf := inputbuf
 	isHTML := bytes.HasPrefix(inputbuf, []byte("<"))
-	conv := func(b []byte) []byte { return b }
 	if *rFlag && isHTML {
-		conv = toMarkdown
+		outbuf = toMarkdown(inputbuf)
 	} else if !*rFlag && !isHTML {
-		conv = toHTML
+		outbuf = toHTML(inputbuf, autolinks)
 	}
-	ioutil.WriteFile("/dev/stdout", conv(inputbuf), 0)
+	ioutil.WriteFile("/dev/stdout", outbuf, 0)
 }
