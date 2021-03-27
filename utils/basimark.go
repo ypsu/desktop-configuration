@@ -1,5 +1,15 @@
 // Command basimark can convert between markdown and HTML representations.
 // Does nothing if it detects that the input is the right format already.
+//
+// It can also watch a file and continuously serve it over the web.
+// In web mode while basimark polls the file, the web client uses blocking connections
+// to keep the traffic to minimum.
+// It's implemented by two handlers:
+// /preview (meant for the user) and /content (meant as an implementation detail).
+// The /content has a timestamp on the first line
+// which when passed as a ts parameter to /content,
+// the handler will then block until the next update in the file.
+// Rest of the /content handler is the generated HTML.
 package main
 
 import (
@@ -8,9 +18,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
+	"time"
+	"unicode"
 )
 
 type mode int
@@ -121,26 +134,173 @@ func toMarkdown(inputbuf []byte) []byte {
 	return []byte(output)
 }
 
+func handlePreview(w http.ResponseWriter, _ *http.Request) {
+	w.Write([]byte(`<title>basimark</title>
+		<body><div id=hcontent></div>
+		<script>
+			let main = async _ => {
+				hcontent.innerText = "loading...";
+				let ts = "";
+				try {
+					for (let i = 0; ; i++) {
+						let resp = await fetch("/content?ts=" + ts)
+						let body = await resp.text();
+						let m = body.match(/^([0-9]+)\n(.*)$/s);
+						ts = m[1];
+						hcontent.innerHTML = m[2];
+					}
+				} catch (e) {
+					hcontent.innerText = e;
+				}
+			};
+			main()
+		</script>
+		</body>
+	`))
+}
+
+type contentRequest struct {
+	w    http.ResponseWriter
+	req  *http.Request
+	done chan<- bool
+}
+
+var requestQueue chan<- contentRequest
+
+func handleContent(w http.ResponseWriter, req *http.Request) {
+	done := make(chan bool, 1)
+	requestQueue <- contentRequest{w, req, done}
+	<-done
+}
+
 func main() {
 	// Set up flags.
+	pFlag := flag.Int("p", 8080, "Port to use for the web server for -f and -t flags. The content will be on /preview.")
 	rFlag := flag.Bool("r", false, "Restore the HTML back to the original text.")
+	fFlag := flag.String("f", "", "File to watch and serve via web.")
+	tFlag := flag.String("t", "", "Todo item to watch from my todo list.")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "Usage: basimark <input >output")
 		fmt.Fprintln(os.Stderr, "input is markdown, output is html unless reversed with the -r flag.")
+		fmt.Fprintln(os.Stderr, "-f and -t start a webserver instead.")
 		fmt.Fprintln(os.Stderr, "Flags:")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+	if len(*tFlag) > 0 && len(*fFlag) == 0 {
+		*fFlag = os.Getenv("HOME") + "/todo"
+	}
+
+	// Read autolinks if available.
+	autolinks, _ := ioutil.ReadFile(os.Getenv("HOME") + "/.autolinks")
+	autolinks = bytes.TrimSpace(autolinks)
+
+	if len(*fFlag) > 0 {
+		http.HandleFunc("/preview", handlePreview)
+		http.HandleFunc("/content", handleContent)
+		addr := fmt.Sprintf(":%d", *pFlag)
+		log.Printf("Server listening on %s.", addr)
+		go func() { log.Fatal(http.ListenAndServe(addr, nil)) }()
+
+		// Serve the content request in this file while polling the file
+		// and unblocking the waiting requests if there are some.
+		var lastMod time.Time
+		var content []byte
+		waitingRequests := make([]contentRequest, 0, 100)
+		wq := make(chan contentRequest, 100) // WorkQueue
+		requestQueue = wq
+		for true {
+			info, err := os.Stat(*fFlag)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if info.ModTime() != lastMod {
+				lastMod = info.ModTime()
+				content, err = ioutil.ReadFile(*fFlag)
+				if err != nil {
+					log.Fatal(err)
+				}
+				if len(*tFlag) > 0 {
+					var curItem string
+					var todoContent bytes.Buffer
+					for _, line := range bytes.Split(content, []byte("\n")) {
+						if bytes.HasPrefix(line, []byte("#")) {
+							var item []byte
+							for i := 1; i < len(line) && (unicode.IsLetter(rune(line[i])) || unicode.IsDigit(rune(line[i]))); i++ {
+								item = line[1 : i+1]
+							}
+							if len(item) > 0 {
+								curItem = string(item)
+								if curItem == *tFlag {
+									todoContent.Write([]byte("# "))
+									todoContent.Write(line[1:])
+									todoContent.WriteByte('\n')
+									continue
+								}
+							}
+						}
+						if curItem == *tFlag {
+							todoContent.Write(line)
+							todoContent.WriteByte('\n')
+						}
+					}
+					content = todoContent.Bytes()
+				}
+				content = toHTML(content, autolinks)
+				for _, r := range waitingRequests {
+					fmt.Fprintf(r.w, "%d\n", lastMod.UnixNano())
+					r.w.Write(content)
+					r.done <- true
+				}
+				waitingRequests = waitingRequests[:0]
+			}
+
+			select {
+			case <-time.After(time.Second * 1):
+			case req := <-wq:
+				var ts int64
+				fmt.Sscanf(req.req.FormValue("ts"), "%d", &ts)
+				if lastMod.UnixNano() > ts {
+					fmt.Fprintf(req.w, "%d\n", lastMod.UnixNano())
+					req.w.Write(content)
+					req.done <- true
+				} else if lastMod.UnixNano() == ts {
+					if len(waitingRequests) == cap(waitingRequests) {
+						foundStaleConn := false
+						for i, r := range waitingRequests {
+							if r.req.Context().Err() != nil {
+								foundStaleConn = true
+								r.w.WriteHeader(408)
+								fmt.Fprintln(r.w, "Client cancelled the request?")
+								r.done <- true
+								waitingRequests[i] = req
+								break
+							}
+						}
+						if !foundStaleConn {
+							req.w.WriteHeader(503)
+							fmt.Fprintln(req.w, "Too many pending requests.")
+							req.done <- true
+						}
+					} else {
+						waitingRequests = append(waitingRequests, req)
+					}
+				} else {
+					req.w.WriteHeader(400)
+					fmt.Fprintln(req.w, "Invalid ts (timestamp) value.")
+					req.done <- true
+				}
+			}
+		}
+	}
+
+	// Ordinary stdin/stdout path from now on.
 
 	// Read input buffers.
 	inputbuf, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Read autolinks if available.
-	autolinks, _ := ioutil.ReadFile(os.Getenv("HOME") + "/.autolinks")
-	autolinks = bytes.TrimSpace(autolinks)
 
 	// Run the conversion.
 	outbuf := inputbuf
