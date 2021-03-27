@@ -69,9 +69,15 @@ int main(int argc, char **argv) {
   }
   char contactfile[120];
   snprintf(contactfile, 110, "%s/.emails", getenv("HOME"));
-  char cmd[200];
-  snprintf(cmd, 190, "vim -X -c :Mailmode %s", argv[1]);
-  if (strlen(cmd) > 180) {
+  char cmd[1000];
+  snprintf(cmd, 990,
+           "grep -qz '^<' %s; html=$?;"
+           "test 0 = $html && basimark -r <%s | sponge %s;"
+           "vim -X -c :Mailmode %s;"
+           "test 0 = $html && basimark <%s | sponge %s;"
+           "true",
+           argv[1], argv[1], argv[1], argv[1], argv[1], argv[1]);
+  if (strlen(cmd) > 980) {
     printf("%s too long, aborting.\n", argv[1]);
     exit(1);
   }
