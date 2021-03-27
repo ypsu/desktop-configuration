@@ -1,9 +1,11 @@
 // Command basimark can convert between markdown and HTML representations.
-// It detects which way to convert based on the first byte of the input.
+// Does nothing if it detects that the input is the right format already.
 package main
 
 import (
 	"bytes"
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -114,6 +116,16 @@ func toMarkdown(inputbuf []byte) []byte {
 }
 
 func main() {
+	// Set up flags.
+	rFlag := flag.Bool("r", false, "Restore the HTML back to the original text.")
+	flag.Usage = func() {
+		fmt.Fprintln(os.Stderr, "Usage: basimark <input >output")
+		fmt.Fprintln(os.Stderr, "input is markdown, output is html unless reversed with the -r flag.")
+		fmt.Fprintln(os.Stderr, "Flags:")
+		flag.PrintDefaults()
+	}
+	flag.Parse()
+
 	// Read input buffers.
 	inputbuf, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -121,9 +133,12 @@ func main() {
 	}
 
 	// Run the conversion.
-	conv := toHTML
-	if bytes.HasPrefix(inputbuf, []byte("<")) {
+	isHTML := bytes.HasPrefix(inputbuf, []byte("<"))
+	conv := func(b []byte) []byte { return b }
+	if *rFlag && isHTML {
 		conv = toMarkdown
+	} else if !isHTML {
+		conv = toHTML
 	}
 	ioutil.WriteFile("/dev/stdout", conv(inputbuf), 0)
 }
