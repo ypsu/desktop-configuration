@@ -203,7 +203,7 @@ endfunction
 
 function! Format()
   if &filetype == 'c' || &filetype == 'cpp' || &filetype == 'js'
-    let filter = 'clang-format'
+    let filter = 'clang-format --assume-filename=' . expand("%:t")
   elseif &filetype == 'go'
     let filter = 'goimports'
   else
