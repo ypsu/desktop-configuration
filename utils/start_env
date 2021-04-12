@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p /tmp/a
 if ! ps auxw | grep -v grep | grep -q 'sysstat\>'; then
   delay=5000
   audio=Master
