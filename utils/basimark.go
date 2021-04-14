@@ -135,28 +135,29 @@ func toMarkdown(inputbuf []byte) []byte {
 }
 
 func handlePreview(w http.ResponseWriter, _ *http.Request) {
-	w.Write([]byte(`<title>basimark</title>
-		<body><div id=hcontent></div>
-		<script>
-			let main = async _ => {
-				hcontent.innerText = "loading...";
-				let ts = "";
-				try {
-					for (let i = 0; ; i++) {
-						let resp = await fetch("/content?ts=" + ts)
-						let body = await resp.text();
-						let m = body.match(/^([0-9]+)\n(.*)$/s);
-						ts = m[1];
-						hcontent.innerHTML = m[2];
-					}
-				} catch (e) {
-					hcontent.innerText = e;
-				}
-			};
-			main()
-		</script>
-		</body>
-	`))
+	w.Write([]byte(`<head><title>basimark</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body><div id=hcontent></div>
+<script>
+	let main = async _ => {
+		hcontent.innerText = "loading...";
+		let ts = "";
+		try {
+			for (let i = 0; ; i++) {
+				let resp = await fetch("/content?ts=" + ts)
+				let body = await resp.text();
+				let m = body.match(/^([0-9]+)\n(.*)$/s);
+				ts = m[1];
+				hcontent.innerHTML = m[2];
+			}
+		} catch (e) {
+			hcontent.innerText = e;
+		}
+	};
+	main()
+</script>
+</body>
+`))
 }
 
 type contentRequest struct {
