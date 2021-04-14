@@ -199,7 +199,7 @@ func main() {
 		http.HandleFunc("/preview", handlePreview)
 		http.HandleFunc("/content", handleContent)
 		addr := fmt.Sprintf(":%d", *pFlag)
-		log.Printf("Server listening on %s.", addr)
+		log.Printf("preview available at %s/preview", addr)
 		go func() { log.Fatal(http.ListenAndServe(addr, nil)) }()
 
 		// Serve the content request in this file while polling the file
