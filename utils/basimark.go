@@ -200,120 +200,120 @@ func main() {
 	autolinks, _ := ioutil.ReadFile(os.Getenv("HOME") + "/.autolinks")
 	autolinks = bytes.TrimSpace(autolinks)
 
-	if len(*fFlag) > 0 {
-		http.HandleFunc("/preview", handlePreview)
-		http.HandleFunc("/content", handleContent)
-		addr := fmt.Sprintf(":%d", *pFlag)
-		log.Printf("preview available at %s/preview", addr)
-		go func() { log.Fatal(http.ListenAndServe(addr, nil)) }()
+	if len(*fFlag) == 0 {
+		// Read input buffers.
+		inputbuf, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		// Serve the content request in this file while polling the file
-		// and unblocking the waiting requests if there are some.
-		var lastMod time.Time
-		var content []byte
-		waitingRequests := make([]contentRequest, 0, 100)
-		wq := make(chan contentRequest, 100) // WorkQueue
-		requestQueue = wq
-		for true {
-			info, err := os.Stat(*fFlag)
+		// Run the conversion.
+		outbuf := inputbuf
+		isHTML := bytes.HasPrefix(inputbuf, []byte("<"))
+		if *rFlag && isHTML {
+			outbuf = toMarkdown(inputbuf)
+		} else if !*rFlag && !isHTML {
+			outbuf = toHTML(inputbuf, autolinks)
+		}
+		ioutil.WriteFile("/dev/stdout", outbuf, 0)
+		return
+	}
+
+	// Webserver stuff from now on.
+	http.HandleFunc("/preview", handlePreview)
+	http.HandleFunc("/content", handleContent)
+	addr := fmt.Sprintf(":%d", *pFlag)
+	log.Printf("preview available at %s/preview", addr)
+	go func() { log.Fatal(http.ListenAndServe(addr, nil)) }()
+
+	// Serve the content request in this file while polling the file
+	// and unblocking the waiting requests if there are some.
+	var lastMod time.Time
+	var content []byte
+	waitingRequests := make([]contentRequest, 0, 100)
+	wq := make(chan contentRequest, 100) // WorkQueue
+	requestQueue = wq
+	for true {
+		info, err := os.Stat(*fFlag)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if info.ModTime() != lastMod {
+			lastMod = info.ModTime()
+			content, err = ioutil.ReadFile(*fFlag)
 			if err != nil {
 				log.Fatal(err)
 			}
-			if info.ModTime() != lastMod {
-				lastMod = info.ModTime()
-				content, err = ioutil.ReadFile(*fFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-				if len(*tFlag) > 0 {
-					var curItem string
-					var todoContent bytes.Buffer
-					for _, line := range bytes.Split(content, []byte("\n")) {
-						if bytes.HasPrefix(line, []byte("#")) {
-							var item []byte
-							for i := 1; i < len(line) && (unicode.IsLetter(rune(line[i])) || unicode.IsDigit(rune(line[i]))); i++ {
-								item = line[1 : i+1]
-							}
-							if len(item) > 0 {
-								curItem = string(item)
-								if curItem == *tFlag {
-									todoContent.Write([]byte("# "))
-									todoContent.Write(line[1:])
-									todoContent.WriteByte('\n')
-									continue
-								}
-							}
+			if len(*tFlag) > 0 {
+				var curItem string
+				var todoContent bytes.Buffer
+				for _, line := range bytes.Split(content, []byte("\n")) {
+					if bytes.HasPrefix(line, []byte("#")) {
+						var item []byte
+						for i := 1; i < len(line) && (unicode.IsLetter(rune(line[i])) || unicode.IsDigit(rune(line[i]))); i++ {
+							item = line[1 : i+1]
 						}
-						if curItem == *tFlag {
-							todoContent.Write(line)
-							todoContent.WriteByte('\n')
+						if len(item) > 0 {
+							curItem = string(item)
+							if curItem == *tFlag {
+								todoContent.Write([]byte("# "))
+								todoContent.Write(line[1:])
+								todoContent.WriteByte('\n')
+								continue
+							}
 						}
 					}
-					content = todoContent.Bytes()
+					if curItem == *tFlag {
+						todoContent.Write(line)
+						todoContent.WriteByte('\n')
+					}
 				}
-				content = toHTML(content, autolinks)
-				for _, r := range waitingRequests {
-					fmt.Fprintf(r.w, "%d\n", lastMod.UnixNano())
-					r.w.Write(content)
-					r.done <- true
-				}
-				waitingRequests = waitingRequests[:0]
+				content = todoContent.Bytes()
 			}
+			content = toHTML(content, autolinks)
+			for _, r := range waitingRequests {
+				fmt.Fprintf(r.w, "%d\n", lastMod.UnixNano())
+				r.w.Write(content)
+				r.done <- true
+			}
+			waitingRequests = waitingRequests[:0]
+		}
 
-			select {
-			case <-time.After(time.Second * 1):
-			case req := <-wq:
-				var ts int64
-				fmt.Sscanf(req.req.FormValue("ts"), "%d", &ts)
-				if lastMod.UnixNano() > ts {
-					fmt.Fprintf(req.w, "%d\n", lastMod.UnixNano())
-					req.w.Write(content)
-					req.done <- true
-				} else if lastMod.UnixNano() == ts {
-					if len(waitingRequests) == cap(waitingRequests) {
-						foundStaleConn := false
-						for i, r := range waitingRequests {
-							if r.req.Context().Err() != nil {
-								foundStaleConn = true
-								r.w.WriteHeader(408)
-								fmt.Fprintln(r.w, "Client cancelled the request?")
-								r.done <- true
-								waitingRequests[i] = req
-								break
-							}
+		select {
+		case <-time.After(time.Second * 1):
+		case req := <-wq:
+			var ts int64
+			fmt.Sscanf(req.req.FormValue("ts"), "%d", &ts)
+			if lastMod.UnixNano() > ts {
+				fmt.Fprintf(req.w, "%d\n", lastMod.UnixNano())
+				req.w.Write(content)
+				req.done <- true
+			} else if lastMod.UnixNano() == ts {
+				if len(waitingRequests) == cap(waitingRequests) {
+					foundStaleConn := false
+					for i, r := range waitingRequests {
+						if r.req.Context().Err() != nil {
+							foundStaleConn = true
+							r.w.WriteHeader(408)
+							fmt.Fprintln(r.w, "Client cancelled the request?")
+							r.done <- true
+							waitingRequests[i] = req
+							break
 						}
-						if !foundStaleConn {
-							req.w.WriteHeader(503)
-							fmt.Fprintln(req.w, "Too many pending requests.")
-							req.done <- true
-						}
-					} else {
-						waitingRequests = append(waitingRequests, req)
+					}
+					if !foundStaleConn {
+						req.w.WriteHeader(503)
+						fmt.Fprintln(req.w, "Too many pending requests.")
+						req.done <- true
 					}
 				} else {
-					req.w.WriteHeader(400)
-					fmt.Fprintln(req.w, "Invalid ts (timestamp) value.")
-					req.done <- true
+					waitingRequests = append(waitingRequests, req)
 				}
+			} else {
+				req.w.WriteHeader(400)
+				fmt.Fprintln(req.w, "Invalid ts (timestamp) value.")
+				req.done <- true
 			}
 		}
 	}
-
-	// Ordinary stdin/stdout path from now on.
-
-	// Read input buffers.
-	inputbuf, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Run the conversion.
-	outbuf := inputbuf
-	isHTML := bytes.HasPrefix(inputbuf, []byte("<"))
-	if *rFlag && isHTML {
-		outbuf = toMarkdown(inputbuf)
-	} else if !*rFlag && !isHTML {
-		outbuf = toHTML(inputbuf, autolinks)
-	}
-	ioutil.WriteFile("/dev/stdout", outbuf, 0)
 }
