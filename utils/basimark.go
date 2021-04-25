@@ -83,27 +83,27 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 					output.WriteString("<pre>")
 				}
 			}
-		} else if line[0] == '-' {
+		} else if strings.HasPrefix(line, "- ") {
 			if m == noneMode {
 				m = ulMode
 				output.WriteString("<ul><li>")
-				line = "<!-- - -->" + line[1:]
+				line = "<!-- - -->" + strings.TrimLeft(line[2:], " ")
 			} else if m == ulMode {
 				output.WriteString("</li><li>")
-				line = "<!-- - -->" + line[1:]
+				line = "<!-- - -->" + strings.TrimLeft(line[2:], " ")
 			}
 		} else if strings.HasPrefix(line, "# ") {
 			if m != noneMode {
 				log.Fatalf("line %d: # must be starting its own paragraph: %s", ln+1, line)
 			}
-			line = "<p style=font-weight:bold>" + line + "</p>"
-		} else if strings.HasPrefix(line, "&gt;") {
+			line = "<!-- # --><p style=font-weight:bold>" + line[2:] + "</p>"
+		} else if strings.HasPrefix(line, "&gt; ") {
 			if m == noneMode {
 				m = blockquoteMode
 				output.WriteString("<blockquote style='border-left:solid 1px;padding:0 0.5em'>")
 			}
 			if m == blockquoteMode {
-				line = "<!-- &gt; -->" + line[4:]
+				line = "<!-- &gt; -->" + line[5:]
 			}
 		} else {
 			if m == noneMode {
@@ -121,7 +121,7 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 func toMarkdown(inputbuf []byte) []byte {
 	// Uncomment all hidden markers (- for lists, > for quotes).
 	re := regexp.MustCompile("<!-- ([^ ]*) -->")
-	outputbuf := re.ReplaceAll(inputbuf, []byte("$1"))
+	outputbuf := re.ReplaceAll(inputbuf, []byte("$1 "))
 
 	// Remove HTML tags.
 	re = regexp.MustCompile("<[^>]*>")
