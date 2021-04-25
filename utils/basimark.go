@@ -87,10 +87,10 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 			if m == noneMode {
 				m = ulMode
 				output.WriteString("<ul><li>")
-				line = "<span style=display:none>-</span>" + line[1:]
+				line = "<!-- - -->" + line[1:]
 			} else if m == ulMode {
 				output.WriteString("</li><li>")
-				line = "<span style=display:none>-</span>" + line[1:]
+				line = "<!-- - -->" + line[1:]
 			}
 		} else if strings.HasPrefix(line, "# ") {
 			if m != noneMode {
@@ -103,7 +103,7 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 				output.WriteString("<blockquote style='border-left:solid 1px;padding:0 0.5em'>")
 			}
 			if m == blockquoteMode {
-				line = "<span style=display:none>&gt;</span>" + line[4:]
+				line = "<!-- &gt; -->" + line[4:]
 			}
 		} else {
 			if m == noneMode {
@@ -119,9 +119,13 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 }
 
 func toMarkdown(inputbuf []byte) []byte {
+	// Uncomment all hidden markers (- for lists, > for quotes).
+	re := regexp.MustCompile("<!-- ([^ ]*) -->")
+	outputbuf := re.ReplaceAll(inputbuf, []byte("$1"))
+
 	// Remove HTML tags.
-	re := regexp.MustCompile("<[^>]*>")
-	outputbuf := re.ReplaceAll(inputbuf, []byte(""))
+	re = regexp.MustCompile("<[^>]*>")
+	outputbuf = re.ReplaceAll(outputbuf, []byte(""))
 
 	// Remove spurious newlines.
 	re = regexp.MustCompile("\n\n\n+")
