@@ -45,6 +45,7 @@ hi SignColumn ctermfg=none ctermbg=0
 hi Visual cterm=inverse ctermfg=11 ctermbg=0
 hi SpellCap ctermfg=none ctermbg=7
 hi SpellBad cterm=inverse ctermfg=14 ctermbg=0
+hi ErrorMsg cterm=inverse ctermfg=1 ctermbg=15
 " colors for dark theme
 "colorscheme desert
 "hi Visual ctermfg=4 ctermbg=0
