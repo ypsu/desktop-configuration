@@ -100,9 +100,9 @@ func toHTML(inputbuf []byte, autolinks []byte) []byte {
 		} else if strings.HasPrefix(line, "&gt; ") {
 			if m == noneMode {
 				m = blockquoteMode
-				output.WriteString("<blockquote style='border-left:solid 1px;padding:0 0.5em'>")
-			}
-			if m == blockquoteMode {
+				output.WriteString("<blockquote style='border-left:solid 1px;padding:0 0.5em;margin:1em 0'>")
+				line = "<span style=display:none>&gt; </span>" + line[5:]
+			} else if m == blockquoteMode {
 				line = "<!-- &gt; -->" + line[5:]
 			}
 		} else {
