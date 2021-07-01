@@ -1,5 +1,6 @@
 set history save
 set history filename ~/.gdb_history
+set auto-load safe-path /
 
 # C++ pretty printers
 #python
